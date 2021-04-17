@@ -1,0 +1,323 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true"
+    tools:context=".Views.ClientRegisterFragment">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="20dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/titleDatosPersonalesCli"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:fontFamily="@font/nunitosansbold"
+            android:text="Datos Personales" />
+
+        <RelativeLayout
+            android:id="@+id/rltDatosPersonalesCli"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/titleDatosPersonalesCli">
+
+            <RelativeLayout
+                android:id="@+id/rltNombreCli"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_alignParentTop="true"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/fieldsbackground"
+                android:orientation="horizontal">
+
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true">
+
+                    <EditText
+                        android:id="@+id/nombreTxtCli"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_centerVertical="true"
+                        android:layout_gravity="center"
+                        android:layout_marginLeft="10dp"
+                        android:background="#00FFFFFF"
+                        android:ems="10"
+                        android:fontFamily="@font/nunitosansregular"
+                        android:gravity="center|left"
+                        android:hint="Nombre"
+                        android:imeOptions="actionNext"
+                        android:inputType="textPersonName"
+                        android:paddingLeft="10dp"
+                        android:paddingRight="10dp"
+                        android:singleLine="true"
+                        android:textColor="#6c6d70"
+                        android:textSize="15dp" />
+                </RelativeLayout>
+
+            </RelativeLayout>
+
+
+            <RelativeLayout
+                android:id="@+id/rltApellidoCli"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_below="@id/rltNombreCli"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/fieldsbackground"
+                android:orientation="horizontal">
+
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true">
+
+                    <EditText
+                        android:id="@+id/apellidoTxtCli"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_centerVertical="true"
+                        android:layout_gravity="center"
+                        android:layout_marginLeft="10dp"
+                        android:background="#00FFFFFF"
+                        android:ems="10"
+                        android:fontFamily="@font/nunitosansregular"
+                        android:gravity="center|left"
+                        android:hint="Apellido"
+                        android:imeOptions="actionNext"
+                        android:inputType="textPersonName"
+                        android:paddingLeft="10dp"
+                        android:paddingRight="10dp"
+                        android:singleLine="true"
+                        android:textColor="#6c6d70"
+                        android:textSize="15dp" />
+                </RelativeLayout>
+
+            </RelativeLayout>
+
+
+            <RelativeLayout
+                android:id="@+id/rltCiudadCli"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_below="@id/rltApellidoCli"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/fieldsbackground"
+                android:orientation="horizontal">
+
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true">
+
+                    <EditText
+                        android:id="@+id/ciudadTxtCli"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_centerVertical="true"
+                        android:layout_gravity="center"
+                        android:layout_marginLeft="10dp"
+                        android:background="#00FFFFFF"
+                        android:ems="10"
+                        android:fontFamily="@font/nunitosansregular"
+                        android:gravity="center|left"
+                        android:hint="Ciudad"
+                        android:imeOptions="actionNext"
+                        android:inputType="textPersonName"
+                        android:paddingLeft="10dp"
+                        android:paddingRight="10dp"
+                        android:singleLine="true"
+                        android:textColor="#6c6d70"
+                        android:textSize="15dp" />
+                </RelativeLayout>
+
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/rltTelefonoCli"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_below="@id/rltCiudadCli"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/fieldsbackground"
+                android:orientation="horizontal">
+
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true">
+
+                    <EditText
+                        android:id="@+id/telefonoTxtCli"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_centerVertical="true"
+                        android:layout_gravity="center"
+                        android:layout_marginLeft="10dp"
+                        android:background="#00FFFFFF"
+                        android:ems="10"
+                        android:inputType="phone"
+                        android:fontFamily="@font/nunitosansregular"
+                        android:gravity="center|left"
+                        android:hint="Teléfono"
+                        android:imeOptions="actionNext"
+                        android:paddingLeft="10dp"
+                        android:paddingRight="10dp"
+                        android:singleLine="true"
+                        android:textColor="#6c6d70"
+                        android:textSize="15dp" />
+                </RelativeLayout>
+
+            </RelativeLayout>
+
+        </RelativeLayout>
+
+        <TextView
+            android:id="@+id/titleDatosUsuarioCli"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/rltDatosPersonalesCli"
+            android:layout_marginTop="20dp"
+            android:fontFamily="@font/nunitosansbold"
+            android:text="Datos de Usuario" />
+
+        <RelativeLayout
+            android:id="@+id/rltDatosUsuarioCli"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/titleDatosUsuarioCli">
+
+            <RelativeLayout
+                android:id="@+id/rltCorreoCli"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/fieldsbackground"
+                android:orientation="horizontal">
+
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true">
+                    <ImageView
+                        android:id="@+id/correoIconCli"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentBottom="false"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="10dp"
+                        android:gravity="center"
+                        android:src="@drawable/round_mail"
+                        android:textSize="16sp" />
+
+                    <EditText
+                        android:id="@+id/correoTxtCli"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_centerVertical="true"
+                        android:layout_gravity="center"
+                        android:layout_marginLeft="10dp"
+                        android:layout_toRightOf="@id/correoIconCli"
+                        android:layout_weight="0.75"
+                        android:background="#00FFFFFF"
+                        android:ems="10"
+                        android:fontFamily="@font/nunitosansregular"
+                        android:gravity="center|left"
+                        android:hint="Correo"
+                        android:imeOptions="actionNext"
+                        android:inputType="textEmailAddress"
+                        android:maxLength="15"
+                        android:paddingLeft="10dp"
+                        android:paddingRight="10dp"
+                        android:singleLine="true"
+                        android:textColor="#6c6d70"
+                        android:textSize="15dp" />
+                </RelativeLayout>
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/rltPasswordCli"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_below="@id/rltCorreoCli"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/fieldsbackground"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:id="@+id/passwordIconCli"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentBottom="false"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="10dp"
+                    android:gravity="center"
+                    android:src="@drawable/key_pass"
+                    android:textSize="16sp" />
+
+                <EditText
+                    android:id="@+id/passwordTxtCli"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_centerVertical="true"
+                    android:layout_gravity="center"
+                    android:layout_marginLeft="10dp"
+                    android:layout_toRightOf="@id/passwordIconCli"
+                    android:layout_weight="0.75"
+                    android:background="#00FFFFFF"
+                    android:ems="10"
+                    android:fontFamily="@font/nunitosansregular"
+                    android:gravity="center|left"
+                    android:hint="Contraseña"
+                    android:imeOptions="actionNext"
+                    android:inputType="textPassword"
+                    android:maxLength="15"
+                    android:paddingLeft="10dp"
+                    android:paddingRight="10dp"
+                    android:singleLine="true"
+                    android:textColor="#6c6d70"
+                    android:textSize="15dp" />
+            </RelativeLayout>
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/btnRegisterCli"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/rltDatosUsuarioCli"
+            android:layout_alignParentLeft="false"
+            android:layout_centerVertical="false"
+            android:layout_marginHorizontal="40dp"
+            android:layout_marginTop="40dp"
+            android:background="@drawable/buttonbackgroundlogin"
+            android:gravity="center"
+            android:padding="10dp"
+            android:paddingVertical="10dp">
+
+            <TextView
+                android:id="@+id/registerTextoCli"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="15dp"
+                android:fontFamily="@font/nunitosansregular"
+                android:gravity="center"
+                android:paddingRight="5dp"
+                android:text="Registrar Cliente"
+                android:textColor="#FFFFFF"
+                android:textSize="13sp" />
+        </RelativeLayout>
+
+    </RelativeLayout>
+
+</androidx.core.widget.NestedScrollView>

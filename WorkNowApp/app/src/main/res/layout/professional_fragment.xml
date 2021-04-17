@@ -1,0 +1,381 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true"
+    tools:context=".Views.ProfessionalRegisterFragment">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="20dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/titleDatosPersonalesProf"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:fontFamily="@font/nunitosansbold"
+            android:text="Datos Personales" />
+
+        <RelativeLayout
+            android:id="@+id/rltDatosPersonalesProf"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/titleDatosPersonalesProf">
+
+            <RelativeLayout
+                android:id="@+id/rltNombreProf"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_alignParentTop="true"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/fieldsbackground"
+                android:orientation="horizontal">
+
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true">
+
+                    <EditText
+                        android:id="@+id/nombreTxtProf"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_centerVertical="true"
+                        android:layout_gravity="center"
+                        android:layout_marginLeft="10dp"
+                        android:background="#00FFFFFF"
+                        android:ems="10"
+                        android:fontFamily="@font/nunitosansregular"
+                        android:gravity="center|left"
+                        android:hint="Nombre"
+                        android:imeOptions="actionNext"
+                        android:inputType="textPersonName"
+                        android:paddingLeft="10dp"
+                        android:paddingRight="10dp"
+                        android:singleLine="true"
+                        android:textColor="#6c6d70"
+                        android:textSize="15dp" />
+                </RelativeLayout>
+
+            </RelativeLayout>
+
+
+            <RelativeLayout
+                android:id="@+id/rltApellidoProf"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_below="@id/rltNombreProf"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/fieldsbackground"
+                android:orientation="horizontal">
+
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true">
+
+                    <EditText
+                        android:id="@+id/apellidoTxtProf"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_centerVertical="true"
+                        android:layout_gravity="center"
+                        android:layout_marginLeft="10dp"
+                        android:background="#00FFFFFF"
+                        android:ems="10"
+                        android:fontFamily="@font/nunitosansregular"
+                        android:gravity="center|left"
+                        android:hint="Apellido"
+                        android:imeOptions="actionNext"
+                        android:inputType="textPersonName"
+                        android:paddingLeft="10dp"
+                        android:paddingRight="10dp"
+                        android:singleLine="true"
+                        android:textColor="#6c6d70"
+                        android:textSize="15dp" />
+                </RelativeLayout>
+
+            </RelativeLayout>
+
+
+            <RelativeLayout
+                android:id="@+id/rltCiudadProf"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_below="@id/rltApellidoProf"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/fieldsbackground"
+                android:orientation="horizontal">
+
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true">
+
+                    <EditText
+                        android:id="@+id/ciudadTxtProf"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_centerVertical="true"
+                        android:layout_gravity="center"
+                        android:layout_marginLeft="10dp"
+                        android:background="#00FFFFFF"
+                        android:ems="10"
+                        android:fontFamily="@font/nunitosansregular"
+                        android:gravity="center|left"
+                        android:hint="Ciudad"
+                        android:imeOptions="actionNext"
+                        android:inputType="textPersonName"
+                        android:paddingLeft="10dp"
+                        android:paddingRight="10dp"
+                        android:singleLine="true"
+                        android:textColor="#6c6d70"
+                        android:textSize="15dp" />
+                </RelativeLayout>
+
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/rltTelefonoProf"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_below="@id/rltCiudadProf"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/fieldsbackground"
+                android:orientation="horizontal">
+
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true">
+
+                    <EditText
+                        android:id="@+id/telefonoTxtProf"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_centerVertical="true"
+                        android:layout_gravity="center"
+                        android:layout_marginLeft="10dp"
+                        android:background="#00FFFFFF"
+                        android:ems="10"
+                        android:inputType="phone"
+                        android:fontFamily="@font/nunitosansregular"
+                        android:gravity="center|left"
+                        android:hint="Teléfono"
+                        android:imeOptions="actionNext"
+                        android:paddingLeft="10dp"
+                        android:paddingRight="10dp"
+                        android:singleLine="true"
+                        android:textColor="#6c6d70"
+                        android:textSize="15dp" />
+                </RelativeLayout>
+
+            </RelativeLayout>
+
+        </RelativeLayout>
+
+        <TextView
+            android:id="@+id/titleDatosProfesionalProf"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/rltDatosPersonalesProf"
+            android:layout_marginTop="20dp"
+            android:fontFamily="@font/nunitosansbold"
+            android:text="Datos del Profesional" />
+
+        <RelativeLayout
+            android:id="@+id/rltDatosProfesionalProf"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/titleDatosProfesionalProf">
+
+            <RelativeLayout
+                android:id="@+id/rltCategoriasProf"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/fieldsbackground"
+                android:layout_alignParentTop="true"
+                android:orientation="horizontal">
+                <Spinner
+                    android:id="@+id/spinnerCategoriasProf"
+                    android:layout_width="match_parent"
+                    android:layout_height="40sp" />
+            </RelativeLayout>
+
+
+            <RelativeLayout
+                android:id="@+id/rltDescripcionProf"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_below="@id/rltCategoriasProf"
+                android:background="@drawable/fieldsbackground"
+                android:orientation="horizontal">
+                <EditText
+                    android:id="@+id/descripcionTxtProf"
+                    android:layout_width="match_parent"
+                    android:background="@null"
+                    android:layout_height="wrap_content"
+                    android:ems="10"
+                    android:singleLine="false"
+                    android:padding="10dp"
+                    android:maxLines="4"
+                    android:lines="4"
+                    android:hint="Descripción de su actividad laboral"
+                    android:fontFamily="@font/nunitosansregular"
+                    android:gravity="start|top"
+                    android:inputType="textMultiLine" />
+            </RelativeLayout>
+
+
+
+        </RelativeLayout>
+
+        <TextView
+            android:id="@+id/titleDatosUsuarioProf"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/rltDatosProfesionalProf"
+            android:layout_marginTop="20dp"
+            android:fontFamily="@font/nunitosansbold"
+            android:text="Datos de Usuario" />
+
+        <RelativeLayout
+            android:id="@+id/rltDatosUsuarioProf"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/titleDatosUsuarioProf">
+
+            <RelativeLayout
+                android:id="@+id/rltCorreoProf"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/fieldsbackground"
+                android:orientation="horizontal">
+
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true">
+                    <ImageView
+                        android:id="@+id/correoIconProf"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentBottom="false"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="10dp"
+                        android:gravity="center"
+                        android:src="@drawable/round_mail"
+                        android:textSize="16sp" />
+
+                    <EditText
+                        android:id="@+id/correoTxtProf"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_centerVertical="true"
+                        android:layout_gravity="center"
+                        android:layout_marginLeft="10dp"
+                        android:layout_toRightOf="@id/correoIconProf"
+                        android:layout_weight="0.75"
+                        android:background="#00FFFFFF"
+                        android:ems="10"
+                        android:fontFamily="@font/nunitosansregular"
+                        android:gravity="center|left"
+                        android:hint="Correo"
+                        android:imeOptions="actionNext"
+                        android:inputType="textEmailAddress"
+                        android:maxLength="15"
+                        android:paddingLeft="10dp"
+                        android:paddingRight="10dp"
+                        android:singleLine="true"
+                        android:textColor="#6c6d70"
+                        android:textSize="15dp" />
+                </RelativeLayout>
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/rltPasswordProf"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_below="@id/rltCorreoProf"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/fieldsbackground"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:id="@+id/passwordIconProf"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentBottom="false"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="10dp"
+                    android:gravity="center"
+                    android:src="@drawable/key_pass"
+                    android:textSize="16sp" />
+
+                <EditText
+                    android:id="@+id/passwordTxtProfProf"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_centerVertical="true"
+                    android:layout_gravity="center"
+                    android:layout_marginLeft="10dp"
+                    android:layout_toRightOf="@id/passwordIconProf"
+                    android:layout_weight="0.75"
+                    android:background="#00FFFFFF"
+                    android:ems="10"
+                    android:fontFamily="@font/nunitosansregular"
+                    android:gravity="center|left"
+                    android:hint="Contraseña"
+                    android:imeOptions="actionNext"
+                    android:inputType="textPassword"
+                    android:maxLength="15"
+                    android:paddingLeft="10dp"
+                    android:paddingRight="10dp"
+                    android:singleLine="true"
+                    android:textColor="#6c6d70"
+                    android:textSize="15dp" />
+            </RelativeLayout>
+        </RelativeLayout>
+
+
+        <RelativeLayout
+            android:id="@+id/btnRegisterProf"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/rltDatosUsuarioProf"
+            android:layout_alignParentLeft="false"
+            android:layout_centerVertical="false"
+            android:layout_marginHorizontal="40dp"
+            android:layout_marginTop="40dp"
+            android:background="@drawable/buttonbackgroundlogin"
+            android:gravity="center"
+            android:padding="10dp"
+            android:paddingVertical="10dp">
+
+            <TextView
+                android:id="@+id/registerTextoProf"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="15dp"
+                android:fontFamily="@font/nunitosansregular"
+                android:gravity="center"
+                android:paddingRight="5dp"
+                android:text="Registrar Profesional"
+                android:textColor="#FFFFFF"
+                android:textSize="13sp" />
+        </RelativeLayout>
+
+    </RelativeLayout>
+
+</androidx.core.widget.NestedScrollView>

@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".Views.RegisterFragment">
+
+    <RelativeLayout
+        android:id="@+id/mainViewRegister"
+        android:layout_alignParentTop="true"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/backgroundlogin"
+        android:paddingVertical="15dp"
+        android:paddingRight="20dp"
+        android:paddingLeft="10dp">
+
+        <ImageView
+            android:id="@+id/backbtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:src="@drawable/ic_back" />
+
+        <ImageView
+            android:id="@+id/loginLogo"
+            android:layout_width="wrap_content"
+            android:layout_height="80sp"
+            android:layout_alignParentRight="true"
+            android:src="@drawable/icon_app" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/loginLogo"
+            android:layout_alignParentRight="true"
+            android:layout_marginTop="30sp"
+            android:fontFamily="@font/nunitosansbold"
+            android:text="Registro"
+            android:textColor="#FFFFFF"
+            android:textSize="24sp" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/formViewRegister"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_below="@id/mainViewRegister">
+
+        <com.google.android.material.tabs.TabLayout
+            android:id="@+id/tablayoutRegister"
+            app:tabBackground="@drawable/tablayoutitem"
+            app:tabMode="fixed"
+            app:tabTextColor="#989898"
+            app:tabSelectedTextColor="#FBAC45"
+            android:layout_marginTop="15sp"
+            android:layout_marginHorizontal="30sp"
+            app:tabGravity="fill"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <androidx.viewpager.widget.ViewPager
+            android:id="@+id/viewPagerRegister"
+            android:layout_marginHorizontal="5dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@id/tablayoutRegister" />
+    </RelativeLayout>
+    <Button
+        android:id="@+id/btnGuardar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:text="Guardar" />
+</RelativeLayout>
