@@ -63,12 +63,23 @@
 
             </RelativeLayout>
 
+            <TextView
+                android:id="@+id/errorNombreCli"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/rltNombreCli"
+                android:layout_marginHorizontal="30dp"
+                android:textColor="@color/rederror"
+                android:layout_marginTop="5dp"
+                android:fontFamily="@font/nunitosanslight"
+                android:text="Complete el campo de nombre"
+                android:visibility="gone"/>
 
             <RelativeLayout
                 android:id="@+id/rltApellidoCli"
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
-                android:layout_below="@id/rltNombreCli"
+                android:layout_below="@id/errorNombreCli"
                 android:layout_marginTop="20dp"
                 android:background="@drawable/fieldsbackground"
                 android:orientation="horizontal">
@@ -101,12 +112,23 @@
 
             </RelativeLayout>
 
+            <TextView
+                android:id="@+id/errorApellidoCli"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/rltApellidoCli"
+                android:layout_marginHorizontal="30dp"
+                android:textColor="@color/rederror"
+                android:layout_marginTop="5dp"
+                android:fontFamily="@font/nunitosanslight"
+                android:text="Complete el campo de nombre"
+                android:visibility="gone"/>
 
             <RelativeLayout
                 android:id="@+id/rltCiudadCli"
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
-                android:layout_below="@id/rltApellidoCli"
+                android:layout_below="@id/errorApellidoCli"
                 android:layout_marginTop="20dp"
                 android:background="@drawable/fieldsbackground"
                 android:orientation="horizontal">
@@ -140,11 +162,23 @@
 
             </RelativeLayout>
 
+            <TextView
+                android:id="@+id/errorCiudadCli"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/rltCiudadCli"
+                android:layout_marginHorizontal="30dp"
+                android:textColor="@color/rederror"
+                android:layout_marginTop="5dp"
+                android:fontFamily="@font/nunitosanslight"
+                android:text="Complete el campo de nombre"
+                android:visibility="gone"/>
+
             <RelativeLayout
                 android:id="@+id/rltTelefonoCli"
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
-                android:layout_below="@id/rltCiudadCli"
+                android:layout_below="@id/errorCiudadCli"
                 android:layout_marginTop="20dp"
                 android:background="@drawable/fieldsbackground"
                 android:orientation="horizontal">
@@ -176,6 +210,18 @@
                 </RelativeLayout>
 
             </RelativeLayout>
+
+            <TextView
+                android:id="@+id/errorTelefonoCli"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/rltTelefonoCli"
+                android:layout_marginHorizontal="30dp"
+                android:textColor="@color/rederror"
+                android:layout_marginTop="5dp"
+                android:fontFamily="@font/nunitosanslight"
+                android:text="Complete el campo de nombre"
+                android:visibility="gone"/>
 
         </RelativeLayout>
 
@@ -226,7 +272,6 @@
                         android:layout_gravity="center"
                         android:layout_marginLeft="10dp"
                         android:layout_toRightOf="@id/correoIconCli"
-                        android:layout_weight="0.75"
                         android:background="#00FFFFFF"
                         android:ems="10"
                         android:fontFamily="@font/nunitosansregular"
@@ -234,7 +279,6 @@
                         android:hint="Correo"
                         android:imeOptions="actionNext"
                         android:inputType="textEmailAddress"
-                        android:maxLength="15"
                         android:paddingLeft="10dp"
                         android:paddingRight="10dp"
                         android:singleLine="true"
@@ -244,11 +288,23 @@
 
             </RelativeLayout>
 
+            <TextView
+                android:id="@+id/errorCorreoCli"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/rltCorreoCli"
+                android:layout_marginHorizontal="30dp"
+                android:textColor="@color/rederror"
+                android:layout_marginTop="5dp"
+                android:fontFamily="@font/nunitosanslight"
+                android:text="Complete el campo de correo"
+                android:visibility="gone"/>
+
             <RelativeLayout
                 android:id="@+id/rltPasswordCli"
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
-                android:layout_below="@id/rltCorreoCli"
+                android:layout_below="@id/errorCorreoCli"
                 android:layout_marginTop="20dp"
                 android:background="@drawable/fieldsbackground"
                 android:orientation="horizontal">
@@ -273,7 +329,6 @@
                     android:layout_gravity="center"
                     android:layout_marginLeft="10dp"
                     android:layout_toRightOf="@id/passwordIconCli"
-                    android:layout_weight="0.75"
                     android:background="#00FFFFFF"
                     android:ems="10"
                     android:fontFamily="@font/nunitosansregular"
@@ -281,13 +336,24 @@
                     android:hint="Contraseña"
                     android:imeOptions="actionNext"
                     android:inputType="textPassword"
-                    android:maxLength="15"
                     android:paddingLeft="10dp"
                     android:paddingRight="10dp"
                     android:singleLine="true"
                     android:textColor="#6c6d70"
                     android:textSize="15dp" />
             </RelativeLayout>
+
+            <TextView
+                android:id="@+id/errorPasswordCli"
+                android:layout_below="@id/rltPasswordCli"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="30dp"
+                android:textColor="@color/rederror"
+                android:layout_marginTop="5dp"
+                android:fontFamily="@font/nunitosanslight"
+                android:visibility="gone"
+                android:text="Complete el campo de correo"/>
         </RelativeLayout>
 
         <RelativeLayout

@@ -62,12 +62,24 @@
 
             </RelativeLayout>
 
+            <TextView
+                android:id="@+id/errorNombreProf"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/rltNombreProf"
+                android:layout_marginHorizontal="30dp"
+                android:textColor="@color/rederror"
+                android:layout_marginTop="5dp"
+                android:fontFamily="@font/nunitosanslight"
+                android:text="Complete el campo de correo"
+                android:visibility="gone"/>
+
 
             <RelativeLayout
                 android:id="@+id/rltApellidoProf"
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
-                android:layout_below="@id/rltNombreProf"
+                android:layout_below="@id/errorNombreProf"
                 android:layout_marginTop="20dp"
                 android:background="@drawable/fieldsbackground"
                 android:orientation="horizontal">
@@ -100,12 +112,23 @@
 
             </RelativeLayout>
 
+            <TextView
+                android:id="@+id/errorApellidoProf"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/rltApellidoProf"
+                android:layout_marginHorizontal="30dp"
+                android:textColor="@color/rederror"
+                android:layout_marginTop="5dp"
+                android:fontFamily="@font/nunitosanslight"
+                android:text="Complete el campo de correo"
+                android:visibility="gone"/>
 
             <RelativeLayout
                 android:id="@+id/rltCiudadProf"
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
-                android:layout_below="@id/rltApellidoProf"
+                android:layout_below="@id/errorApellidoProf"
                 android:layout_marginTop="20dp"
                 android:background="@drawable/fieldsbackground"
                 android:orientation="horizontal">
@@ -139,11 +162,23 @@
 
             </RelativeLayout>
 
+            <TextView
+                android:id="@+id/errorCiudadProf"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/rltCiudadProf"
+                android:layout_marginHorizontal="30dp"
+                android:textColor="@color/rederror"
+                android:layout_marginTop="5dp"
+                android:fontFamily="@font/nunitosanslight"
+                android:text="Complete el campo de correo"
+                android:visibility="gone"/>
+
             <RelativeLayout
                 android:id="@+id/rltTelefonoProf"
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
-                android:layout_below="@id/rltCiudadProf"
+                android:layout_below="@id/errorCiudadProf"
                 android:layout_marginTop="20dp"
                 android:background="@drawable/fieldsbackground"
                 android:orientation="horizontal">
@@ -176,6 +211,18 @@
 
             </RelativeLayout>
 
+            <TextView
+                android:id="@+id/errorTelefonoProf"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/rltTelefonoProf"
+                android:layout_marginHorizontal="30dp"
+                android:textColor="@color/rederror"
+                android:layout_marginTop="5dp"
+                android:fontFamily="@font/nunitosanslight"
+                android:text="Complete el campo de correo"
+                android:visibility="gone"/>
+
         </RelativeLayout>
 
         <TextView
@@ -201,19 +248,38 @@
                 android:background="@drawable/fieldsbackground"
                 android:layout_alignParentTop="true"
                 android:orientation="horizontal">
-                <Spinner
+                <TextView
                     android:id="@+id/spinnerCategoriasProf"
                     android:layout_width="match_parent"
+                    android:fontFamily="@font/nunitosansregular"
+                    android:gravity="start|top"
+                    android:padding="10dp"
+                    android:layout_gravity="center"
+                    android:text="Escoja su categoria"
+                    android:singleLine="true"
+                    android:textColor="#9E9FA1"
+                    android:drawableRight="@drawable/ic_arrowdrop"
                     android:layout_height="40sp" />
             </RelativeLayout>
 
+            <TextView
+                android:id="@+id/errorCategoriaProf"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/rltCategoriasProf"
+                android:layout_marginHorizontal="30dp"
+                android:textColor="@color/rederror"
+                android:layout_marginTop="5dp"
+                android:fontFamily="@font/nunitosanslight"
+                android:text="Complete el campo de correo"
+                android:visibility="gone"/>
 
             <RelativeLayout
                 android:id="@+id/rltDescripcionProf"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
-                android:layout_below="@id/rltCategoriasProf"
+                android:layout_below="@id/errorCategoriaProf"
                 android:background="@drawable/fieldsbackground"
                 android:orientation="horizontal">
                 <EditText
@@ -232,8 +298,17 @@
                     android:inputType="textMultiLine" />
             </RelativeLayout>
 
-
-
+            <TextView
+                android:id="@+id/errorDescripcionProf"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/rltDescripcionProf"
+                android:layout_marginHorizontal="30dp"
+                android:textColor="@color/rederror"
+                android:layout_marginTop="5dp"
+                android:fontFamily="@font/nunitosanslight"
+                android:text="Complete el campo de correo"
+                android:visibility="gone"/>
         </RelativeLayout>
 
         <TextView
@@ -283,7 +358,6 @@
                         android:layout_gravity="center"
                         android:layout_marginLeft="10dp"
                         android:layout_toRightOf="@id/correoIconProf"
-                        android:layout_weight="0.75"
                         android:background="#00FFFFFF"
                         android:ems="10"
                         android:fontFamily="@font/nunitosansregular"
@@ -291,7 +365,6 @@
                         android:hint="Correo"
                         android:imeOptions="actionNext"
                         android:inputType="textEmailAddress"
-                        android:maxLength="15"
                         android:paddingLeft="10dp"
                         android:paddingRight="10dp"
                         android:singleLine="true"
@@ -301,11 +374,23 @@
 
             </RelativeLayout>
 
+            <TextView
+                android:id="@+id/errorCorreoProf"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/rltCorreoProf"
+                android:layout_marginHorizontal="30dp"
+                android:textColor="@color/rederror"
+                android:layout_marginTop="5dp"
+                android:fontFamily="@font/nunitosanslight"
+                android:text="Complete el campo de correo"
+                android:visibility="gone"/>
+
             <RelativeLayout
                 android:id="@+id/rltPasswordProf"
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
-                android:layout_below="@id/rltCorreoProf"
+                android:layout_below="@id/errorCorreoProf"
                 android:layout_marginTop="20dp"
                 android:background="@drawable/fieldsbackground"
                 android:orientation="horizontal">
@@ -323,14 +408,13 @@
                     android:textSize="16sp" />
 
                 <EditText
-                    android:id="@+id/passwordTxtProfProf"
+                    android:id="@+id/passwordTxtProf"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_centerVertical="true"
                     android:layout_gravity="center"
                     android:layout_marginLeft="10dp"
                     android:layout_toRightOf="@id/passwordIconProf"
-                    android:layout_weight="0.75"
                     android:background="#00FFFFFF"
                     android:ems="10"
                     android:fontFamily="@font/nunitosansregular"
@@ -338,13 +422,24 @@
                     android:hint="Contraseña"
                     android:imeOptions="actionNext"
                     android:inputType="textPassword"
-                    android:maxLength="15"
                     android:paddingLeft="10dp"
                     android:paddingRight="10dp"
                     android:singleLine="true"
                     android:textColor="#6c6d70"
                     android:textSize="15dp" />
             </RelativeLayout>
+
+            <TextView
+                android:id="@+id/errorPasswordProf"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/rltPasswordProf"
+                android:layout_marginHorizontal="30dp"
+                android:textColor="@color/rederror"
+                android:layout_marginTop="5dp"
+                android:fontFamily="@font/nunitosanslight"
+                android:text="Complete el campo de correo"
+                android:visibility="gone"/>
         </RelativeLayout>
 
 
