@@ -1,0 +1,76 @@
+.full-width {
+  width: 100%;
+}
+
+.shipping-card {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  -ms-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
+  height: calc(70% + 32px);
+  width: calc(70% + 32px);
+}
+
+.card-content{
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  -ms-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
+  width: calc(100%);
+}
+
+.mat-radio-button {
+  display: block;
+  margin: 5px 0;
+}
+
+.row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+}
+
+.row-content {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  height: calc(100% + 32px);
+  width: calc(90%);
+}
+
+.col {
+  flex: 1;
+  text-align: center;
+}
+
+.col:last-child {
+  margin-right: 0;
+}
+
+#background {
+  height: fit-content;
+  position: relative;
+  background-image: url(../../../assets/img/backgroundlogin.png); 
+  background-size: cover;
+  min-height: 100vh;
+}
+
+.mat-card.shipping-card {
+  border-radius: 1px;
+}
+
+.mat-card-image {
+  text-align: center;
+  width: calc(70%);
+  padding: 20px;
+}
+
+.mat-card-image:first-child {
+  margin-top: 0px;
+}
+
+

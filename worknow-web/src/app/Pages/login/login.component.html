@@ -1,0 +1,43 @@
+<div id="background" >
+  <mat-card class="shipping-card">
+    <mat-card-content class="card-content">
+      <div class="row row-content ">
+        <div class="col">
+          <form [formGroup]="addressForm" novalidate (ngSubmit)="onSubmit()">
+            <mat-card>
+              <mat-card-header>
+                <mat-card-title>Login Página Administrativa</mat-card-title>
+              </mat-card-header>
+              <mat-card-content>
+                <mat-form-field class="full-width" appearance="fill">
+                  <mat-label>Correo</mat-label>
+                  <input matInput placeholder="email@example.com">
+                  <!--<mat-error *ngIf="email.invalid">{{getErrorMessage()}}</mat-error>-->
+                </mat-form-field>
+
+                <mat-form-field class="full-width" appearance="fill">
+                  <mat-label>Contraseña</mat-label>
+                  <input matInput [type]="hide ? 'password' : 'text'">
+                  <button mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hide">
+                  <mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
+                  </button>
+                </mat-form-field>
+                
+              </mat-card-content>
+              <mat-card-actions>
+                <button class="full-width" mat-raised-button color="primary" type="submit">Iniciar sesión</button>
+              </mat-card-actions>
+            </mat-card>
+          </form>
+        </div>
+        <div class="col" [fxHide.xs]="true" [fxHide.sm]="true" >
+          <div class="row">
+            <div class="col">
+              <img mat-card-image src="../../../assets/img/personlogin.png" >
+            </div>
+          </div>
+        </div>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>
