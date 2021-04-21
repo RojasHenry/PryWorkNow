@@ -25,3 +25,54 @@
 .col:last-child {
   margin-right: 0;
 }
+
+.example-section {
+  margin: 12px 0;
+}
+
+.example-margin {
+  margin: 10px 20px;
+}
+
+ul {
+  list-style-type: none;
+  margin-top: 4px;
+}
+
+.md-margin{
+  padding: 20px;
+}
+
+.md-margin button{
+  margin-top: 30px;
+}
+
+table {
+  width: 100%;
+}
+
+.mat-form-field {
+  font-size: 14px;
+  width: 100%;
+}
+
+td, th {
+  width: 25%;
+}
+th.mat-header-cell:last-of-type, td.mat-cell:last-of-type, td.mat-footer-cell:last-of-type {
+  padding: 10px;
+}
+
+.md-margin button {
+  margin-top: 0px !important;
+}
+
+.md-margin table {
+  margin-top: 0px !important;
+  padding: 0px 10px;
+}
+
+.md-filterInput {
+  padding: 0px 20px;
+}
+

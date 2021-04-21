@@ -1,93 +1,119 @@
-import { Component } from '@angular/core';
-import { FormBuilder, Validators } from '@angular/forms';
+import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import Categoria from 'src/app/Models/categoria';
+import { DataBaseConnService } from 'src/app/Services/data-base-conn.service';
+import { map } from 'rxjs/operators';
+import { MatTableDataSource } from '@angular/material/table';
 
 @Component({
   selector: 'app-categorias',
   templateUrl: './categorias.component.html',
   styleUrls: ['./categorias.component.scss']
 })
-export class CategoriasComponent {
-  addressForm = this.fb.group({
-    company: null,
-    firstName: [null, Validators.required],
-    lastName: [null, Validators.required],
-    address: [null, Validators.required],
-    address2: null,
-    city: [null, Validators.required],
-    state: [null, Validators.required],
-    postalCode: [null, Validators.compose([
-      Validators.required, Validators.minLength(5), Validators.maxLength(5)])
-    ],
-    shipping: ['free', Validators.required]
+export class CategoriasComponent implements OnInit {
+
+  categoriaColum: string[] = ['nombre','fechaIniFin','masPersonas','detalleFoto','estado','mas'];
+  newCategoria: Categoria = new Categoria()
+  listCategorias: any = []
+  dataSource = new MatTableDataSource()
+
+  editKey:string = ""
+  isEdit:boolean = false
+
+  categoriaForm: FormGroup = this.fb.group({
+    categoria: [null, Validators.required]
   });
 
-  hasUnitNumber = false;
+  constructor(private fb: FormBuilder, private dbService: DataBaseConnService) {}
 
-  states = [
-    {name: 'Alabama', abbreviation: 'AL'},
-    {name: 'Alaska', abbreviation: 'AK'},
-    {name: 'American Samoa', abbreviation: 'AS'},
-    {name: 'Arizona', abbreviation: 'AZ'},
-    {name: 'Arkansas', abbreviation: 'AR'},
-    {name: 'California', abbreviation: 'CA'},
-    {name: 'Colorado', abbreviation: 'CO'},
-    {name: 'Connecticut', abbreviation: 'CT'},
-    {name: 'Delaware', abbreviation: 'DE'},
-    {name: 'District Of Columbia', abbreviation: 'DC'},
-    {name: 'Federated States Of Micronesia', abbreviation: 'FM'},
-    {name: 'Florida', abbreviation: 'FL'},
-    {name: 'Georgia', abbreviation: 'GA'},
-    {name: 'Guam', abbreviation: 'GU'},
-    {name: 'Hawaii', abbreviation: 'HI'},
-    {name: 'Idaho', abbreviation: 'ID'},
-    {name: 'Illinois', abbreviation: 'IL'},
-    {name: 'Indiana', abbreviation: 'IN'},
-    {name: 'Iowa', abbreviation: 'IA'},
-    {name: 'Kansas', abbreviation: 'KS'},
-    {name: 'Kentucky', abbreviation: 'KY'},
-    {name: 'Louisiana', abbreviation: 'LA'},
-    {name: 'Maine', abbreviation: 'ME'},
-    {name: 'Marshall Islands', abbreviation: 'MH'},
-    {name: 'Maryland', abbreviation: 'MD'},
-    {name: 'Massachusetts', abbreviation: 'MA'},
-    {name: 'Michigan', abbreviation: 'MI'},
-    {name: 'Minnesota', abbreviation: 'MN'},
-    {name: 'Mississippi', abbreviation: 'MS'},
-    {name: 'Missouri', abbreviation: 'MO'},
-    {name: 'Montana', abbreviation: 'MT'},
-    {name: 'Nebraska', abbreviation: 'NE'},
-    {name: 'Nevada', abbreviation: 'NV'},
-    {name: 'New Hampshire', abbreviation: 'NH'},
-    {name: 'New Jersey', abbreviation: 'NJ'},
-    {name: 'New Mexico', abbreviation: 'NM'},
-    {name: 'New York', abbreviation: 'NY'},
-    {name: 'North Carolina', abbreviation: 'NC'},
-    {name: 'North Dakota', abbreviation: 'ND'},
-    {name: 'Northern Mariana Islands', abbreviation: 'MP'},
-    {name: 'Ohio', abbreviation: 'OH'},
-    {name: 'Oklahoma', abbreviation: 'OK'},
-    {name: 'Oregon', abbreviation: 'OR'},
-    {name: 'Palau', abbreviation: 'PW'},
-    {name: 'Pennsylvania', abbreviation: 'PA'},
-    {name: 'Puerto Rico', abbreviation: 'PR'},
-    {name: 'Rhode Island', abbreviation: 'RI'},
-    {name: 'South Carolina', abbreviation: 'SC'},
-    {name: 'South Dakota', abbreviation: 'SD'},
-    {name: 'Tennessee', abbreviation: 'TN'},
-    {name: 'Texas', abbreviation: 'TX'},
-    {name: 'Utah', abbreviation: 'UT'},
-    {name: 'Vermont', abbreviation: 'VT'},
-    {name: 'Virgin Islands', abbreviation: 'VI'},
-    {name: 'Virginia', abbreviation: 'VA'},
-    {name: 'Washington', abbreviation: 'WA'},
-    {name: 'West Virginia', abbreviation: 'WV'},
-    {name: 'Wisconsin', abbreviation: 'WI'},
-    {name: 'Wyoming', abbreviation: 'WY'}
-  ];
-
-  constructor(private fb: FormBuilder) {}
+  ngOnInit(): void {
+    this.getCategorias();
+  }
+  getCategorias() {
+    this.dbService.getAllCategorias().snapshotChanges()
+    .pipe(
+      map(changes =>
+        changes.map(c =>
+          ({ key: c.key, ...c.payload.val() })
+        )
+      )
+    )
+    .subscribe(data =>{
+      this.listCategorias = data
+      console.log(data)
+      this.dataSource.data = this.listCategorias;
+    })
+  }
 
   onSubmit(): void {
-    alert('Thanks!');
+    if (this.categoriaForm.valid){
+      if(!this.isEdit){
+        this.dbService.createCategoria(this.newCategoria)
+        .then((success)=>{
+          alert("Creado correctamente. ")
+          this.newCategoria = new Categoria();
+        })
+        .catch((error)=>{
+          console.log(error);
+        })
+      }else{
+        this.dbService.updateCategoria(this.editKey,this.newCategoria)
+        .then((success)=>{
+          this.newCategoria = new Categoria()
+          this.isEdit = false
+          this.categoriaForm.get('categoria')?.setErrors({ passwordMatch: true })
+        })
+        .catch((error)=>{
+          console.log(error);
+        })
+      }
+    }else{
+      alert("complete los campos del formulario.")
+    }
   }
+
+  onChangeFecha(e: any) {
+    this.newCategoria.fechaIniFin = e.checked
+  }
+
+  onChangePersonas(e: any) {
+    this.newCategoria.masPersonas = e.checked
+  }
+
+  onChangeFoto(e: any) {
+    this.newCategoria.detalleFoto = e.checked
+  }
+
+
+  applyFilter(event: Event) {
+    const filterValue = (event.target as HTMLInputElement).value;
+    this.dataSource.filter = filterValue.trim().toLowerCase();
+  }
+
+  deshabilitar(element: any, newEstado:boolean){
+    const key: string = element.key
+    delete element["key"]
+    element.estado = newEstado
+    this.dbService.updateCategoria(key,element)
+    .then((success)=>{
+      alert("Actualizado correctamente. ")
+    })
+    .catch((error)=>{
+      console.log(error);
+    })
+  }
+
+  activarEditar(element: any){
+    this.editKey = element.key
+    delete element["key"]
+    this.newCategoria = element
+    this.isEdit = true
+  }
+
+  cancelarEditar(){
+    this.newCategoria = new Categoria()
+    this.isEdit = false
+  }
+
+
 }
