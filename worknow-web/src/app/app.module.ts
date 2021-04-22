@@ -26,12 +26,15 @@ import { AuthService } from './Services/auth.service';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { DataBaseConnService } from './Services/data-base-conn.service';
 import { MatTableModule } from '@angular/material/table';
+import { DialogComponent } from './Components/dialog/dialog.component';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 
 
 @NgModule({
   declarations: [
     AppComponent,
     routingComponents,
+    DialogComponent,
   ],
   imports: [
     BrowserModule,
@@ -51,6 +54,7 @@ import { MatTableModule } from '@angular/material/table';
     MatGridListModule,
     MatMenuModule,
     MatTableModule,
+    MatDialogModule,
     FormsModule,
     MatCheckboxModule,
     FlexLayoutModule,

@@ -4,6 +4,8 @@ import Categoria from 'src/app/Models/categoria';
 import { DataBaseConnService } from 'src/app/Services/data-base-conn.service';
 import { map } from 'rxjs/operators';
 import { MatTableDataSource } from '@angular/material/table';
+import {MatDialog} from '@angular/material/dialog';
+import { DialogComponent } from '../dialog/dialog.component';
 
 @Component({
   selector: 'app-categorias',
@@ -24,11 +26,12 @@ export class CategoriasComponent implements OnInit {
     categoria: [null, Validators.required]
   });
 
-  constructor(private fb: FormBuilder, private dbService: DataBaseConnService) {}
+  constructor(private fb: FormBuilder, private dbService: DataBaseConnService, public dialog: MatDialog) {}
 
   ngOnInit(): void {
     this.getCategorias();
   }
+  
   getCategorias() {
     this.dbService.getAllCategorias().snapshotChanges()
     .pipe(
@@ -50,25 +53,52 @@ export class CategoriasComponent implements OnInit {
       if(!this.isEdit){
         this.dbService.createCategoria(this.newCategoria)
         .then((success)=>{
-          alert("Creado correctamente. ")
-          this.newCategoria = new Categoria();
+          const dialogRef = this.dialog.open(DialogComponent,{
+            disableClose: true,
+            data: {title: "Aviso", message: `La categoria ${this.newCategoria.nombre} fué creada exitosamente`,twoButtons:false}
+          });
+
+          dialogRef.afterClosed().subscribe(result => {
+            this.newCategoria = new Categoria();
+          })
+          
         })
         .catch((error)=>{
-          console.log(error);
+          const dialogRef = this.dialog.open(DialogComponent,{
+            disableClose: true,
+            data: {title: "Error", message: `No se pudo registrar ${this.newCategoria.nombre}: ${error}`,twoButtons:false}
+          });
+
+          dialogRef.afterClosed().subscribe(result => {
+          })
         })
       }else{
         this.dbService.updateCategoria(this.editKey,this.newCategoria)
         .then((success)=>{
-          this.newCategoria = new Categoria()
-          this.isEdit = false
-          this.categoriaForm.get('categoria')?.setErrors({ passwordMatch: true })
+          const dialogRef = this.dialog.open(DialogComponent,{
+            disableClose: true,
+            data: {title: "Aviso", message: `La categoria ${this.newCategoria.nombre} fué actualizada exitosamente`,twoButtons:false}
+          });
+
+          dialogRef.afterClosed().subscribe(result => {
+            this.newCategoria = new Categoria();
+            this.isEdit = false
+            this.categoriaForm.get('categoria')?.setErrors({ passwordMatch: true })
+          })
+          
         })
         .catch((error)=>{
-          console.log(error);
+          this.dialog.open(DialogComponent,{
+            disableClose: true,
+            data: {title: "Error", message: `No se pudo actualizar ${this.newCategoria.nombre}: ${error}`,twoButtons:false}
+          });
         })
       }
     }else{
-      alert("complete los campos del formulario.")
+     this.dialog.open(DialogComponent,{
+        disableClose: true,
+        data: {title: "Error", message: `Complete los campos del formulario.`,twoButtons:false}
+      });
     }
   }
 
@@ -91,23 +121,44 @@ export class CategoriasComponent implements OnInit {
   }
 
   deshabilitar(element: any, newEstado:boolean){
-    const key: string = element.key
-    delete element["key"]
-    element.estado = newEstado
-    this.dbService.updateCategoria(key,element)
-    .then((success)=>{
-      alert("Actualizado correctamente. ")
-    })
-    .catch((error)=>{
-      console.log(error);
-    })
+    const dialogRef = this.dialog.open(DialogComponent,{
+      disableClose: true,
+      data: {title: "Aviso", message: `Esta seguro que desea ${ newEstado ? 'habilitar' : 'deshabilitar'}  la categoria ${element.nombre}? `,twoButtons:true}
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if(result){
+        const key: string = element.key
+        delete element["key"]
+        element.estado = newEstado
+        this.dbService.updateCategoria(key,element)
+        .then((success)=>{
+          alert("Actualizado correctamente. ")
+        })
+        .catch((error)=>{
+          console.log(error);
+        })
+      }
+      
+    });
+    
   }
 
   activarEditar(element: any){
-    this.editKey = element.key
-    delete element["key"]
-    this.newCategoria = element
-    this.isEdit = true
+
+    const dialogRef = this.dialog.open(DialogComponent,{
+      disableClose: true,
+      data: {title: "Aviso", message: `Esta seguro que desea editar la categoria ${element.nombre}? `,twoButtons:true}
+    });
+    dialogRef.afterClosed().subscribe(result => {
+      if(result){
+        this.editKey = element.key
+        delete element["key"]
+        this.newCategoria = element
+        this.isEdit = true
+      }
+    })
+    
   }
 
   cancelarEditar(){

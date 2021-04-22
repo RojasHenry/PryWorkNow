@@ -3,11 +3,32 @@
       [attr.role]="(isHandset$ | async) ? 'dialog' : 'navigation'"
       [mode]="(isHandset$ | async) ? 'over' : 'side'"
       [opened]="(isHandset$ | async) === false">
-    <mat-toolbar>Menu</mat-toolbar>
+    <mat-card>
+      <mat-card-header>
+        <div mat-card-avatar class="example-header-image"></div>
+        <mat-card-title>Administrador</mat-card-title>
+        <mat-card-subtitle>{{emailuser}}</mat-card-subtitle>
+      </mat-card-header>
+    </mat-card>
+    <mat-toolbar>Principal</mat-toolbar>
+    <mat-divider></mat-divider>
     <mat-nav-list>
-      <a mat-list-item [routerLink]="['usuarioslist']">Dashboard</a>
-      <a mat-list-item [routerLink]="['solicitudeslist']">Usuarios</a>
-      <a mat-list-item [routerLink]="['categorias']">Categorías</a>
+      <a mat-list-item [routerLink]="['usuarioslist']">
+        <mat-icon aria-hidden="false">dashboard</mat-icon>
+        Dashboard</a>
+      <a mat-list-item [routerLink]="['solicitudeslist']">
+        <mat-icon aria-hidden="false">people</mat-icon>
+        Usuarios</a>
+      <a mat-list-item [routerLink]="['categorias']">
+        <mat-icon aria-hidden="false">category</mat-icon> 
+        Categorías</a>
+    </mat-nav-list>
+    <mat-toolbar>Sesión</mat-toolbar>
+    <mat-divider></mat-divider>
+    <mat-nav-list>
+      <a mat-list-item (click)="cerrarSesion()" >
+        <mat-icon aria-hidden="false">logout</mat-icon> 
+        Cerrar Sesión</a>
     </mat-nav-list>
   </mat-sidenav>
   <mat-sidenav-content>
@@ -20,7 +41,7 @@
         *ngIf="isHandset$ | async">
         <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
       </button>
-      <span>worknow-web</span>
+      <span>{{titleToolbar}}</span>
     </mat-toolbar>
     <!-- Add Content Here -->
     <router-outlet></router-outlet>

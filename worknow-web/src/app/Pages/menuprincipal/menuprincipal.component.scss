@@ -3,7 +3,7 @@
 }
 
 .sidenav {
-  width: 200px;
+  width: 220px;
 }
 
 .sidenav .mat-toolbar {
@@ -14,4 +14,13 @@
   position: sticky;
   top: 0;
   z-index: 1;
+}
+
+.example-header-image {
+  background-image: url('../../../assets/img/user.jpg');
+  background-size: cover;
+}
+
+mat-icon{
+  margin-right: 15px;
 }
