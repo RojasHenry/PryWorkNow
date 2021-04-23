@@ -10,6 +10,7 @@ import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.core.widget.addTextChangedListener
+import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.findNavController
@@ -51,6 +52,17 @@ class LoginFragment : Fragment() {
 
     @InternalCoroutinesApi
     private fun collectorFlow() {
+
+        lifecycleScope.launch {
+            viewModel.validateViewUserLogged().observe(viewLifecycleOwner, {
+                if (it) {
+                    viewModel.getViewUserLogged().observe(viewLifecycleOwner, {
+                        Toast.makeText(context, "Usuario ya logueado ${it.uid}", Toast.LENGTH_SHORT).show()
+                    })
+                }
+            })
+        }
+
         lifecycleScope.launch {
             viewModel.isFormSucess.collect { value: Boolean ->
                 btnLogin.isEnabled = value
@@ -122,11 +134,13 @@ class LoginFragment : Fragment() {
         btnLogin.setOnClickListener {
             if (correoTxt.length() > 0 && passwordTxt.length() > 0) {
                 viewModel.viewModelScope.launch {
-                    val user = viewModel.registerViewUser(
+                    val user = viewModel.loginViewUser(
                         correoTxt.text.toString(),
                         passwordTxt.text.toString()
                     )
-                    Toast.makeText(activity, "Usuario actual $user", Toast.LENGTH_SHORT).show()
+                    if (user != null) {
+                        Toast.makeText(activity, "Usuario actual ${user.uid}", Toast.LENGTH_SHORT).show()
+                    }
                 }
             } else {
                 Toast.makeText(activity, "Error al registrar usuario", Toast.LENGTH_SHORT).show()

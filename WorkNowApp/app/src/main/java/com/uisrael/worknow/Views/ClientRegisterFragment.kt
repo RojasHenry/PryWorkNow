@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.core.widget.addTextChangedListener
@@ -14,6 +15,8 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewModelScope
 import com.uisrael.worknow.Model.Data.CredencialesData
 import com.uisrael.worknow.Model.Data.UsuariosData
+import com.uisrael.worknow.Model.FirebaseAuthRepository
+import com.uisrael.worknow.Model.FirebaseModelsRepository
 import com.uisrael.worknow.R
 import com.uisrael.worknow.ViewModel.ClientViewModel
 import kotlinx.android.synthetic.main.client_fragment.*
@@ -44,7 +47,6 @@ class ClientRegisterFragment : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         viewModel = ViewModelProvider(this).get(ClientViewModel::class.java)
-        // TODO: Use the ViewModel
         inicializarListeners()
         collectorFlow()
     }
@@ -253,6 +255,23 @@ class ClientRegisterFragment : Fragment() {
                 }
             } else {
                 viewModel.viewModelScope.launch { viewModel.setPasswordCli(it.toString().trim()) }
+            }
+        }
+
+        btnRegisterCli.setOnClickListener{
+            viewModel.viewModelScope.launch {
+                val user = viewModel.registerViewCli()
+                if (user != null) {
+                    val datosProf = viewModel.registeViewCliDataUsuario(user.uid)
+                    if(datosProf != null){
+                        val credencialesProf = viewModel.registeViewCliCredenciales(user.uid)
+                        if(credencialesProf != null){
+                            Toast.makeText(activity, "Usuario ${user.uid} Registrado exitosamente.", Toast.LENGTH_SHORT).show()
+                        }
+                    }
+                }else{
+                    Toast.makeText(activity, "Error al crear el usuario", Toast.LENGTH_SHORT).show()
+                }
             }
         }
     }

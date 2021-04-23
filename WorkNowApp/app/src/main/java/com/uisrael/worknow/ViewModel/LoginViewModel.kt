@@ -1,7 +1,7 @@
 package com.uisrael.worknow.ViewModel
 
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseUser
 import com.uisrael.worknow.Model.FirebaseAuthRepository
 import com.uisrael.worknow.ViewModel.ValidatorRespuestas.Respuesta
@@ -17,8 +17,16 @@ class LoginViewModel : ViewModel() {
 
     private var authFirebaseRepository: FirebaseAuthRepository = FirebaseAuthRepository()
 
-    suspend fun registerViewUser(email: String, password: String): FirebaseUser?{
-        return authFirebaseRepository.registerUser(email, password)?.user
+    suspend fun loginViewUser(email: String, password: String): FirebaseUser?{
+        return authFirebaseRepository.loginUser(email, password)?.user
+    }
+
+    fun validateViewUserLogged(): MutableLiveData<Boolean> {
+        return authFirebaseRepository.validateUserLogged()
+    }
+
+    fun getViewUserLogged(): MutableLiveData<FirebaseUser> {
+        return authFirebaseRepository.getUserLogged()
     }
 
     fun setCorreo (correo: String){
@@ -55,7 +63,12 @@ class LoginViewModel : ViewModel() {
     val isPasswordOK: Flow<Respuesta> = combine(_password) { password ->
         val respuesta = Respuesta()
         val validatorPassword = Validator(password[0])
-        if(!validatorPassword.nonEmpty().check()){
+        if(validatorPassword.nonEmpty().check()){
+            if(!validatorPassword.minLength(6).check()){
+                respuesta.respuesta = 2
+                respuesta.mensaje = "La contraseña debe ser de 6 o más caracteres."
+            }
+        }else{
             respuesta.respuesta = 1
             respuesta.mensaje = "Complete el campo de contraseña"
         }

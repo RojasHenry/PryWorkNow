@@ -8,14 +8,19 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.core.widget.addTextChangedListener
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewModelScope
+import com.uisrael.worknow.Model.Data.CategoriasData
 import com.uisrael.worknow.R
 import com.uisrael.worknow.ViewModel.ProfessionalViewModel
+import kotlinx.android.synthetic.main.login_fragment.*
 import kotlinx.android.synthetic.main.professional_fragment.*
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.flow.cancellable
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
@@ -30,9 +35,10 @@ class ProfessionalRegisterFragment : Fragment() {
     var isCorreoTypedProf : Boolean = false
     var isPaswordTypedProf : Boolean = false
 
-    var categoriasRepository = arrayOf("Plomería", "Electricista", "Carpinteria")
+    var categoriasViewRepository: MutableList<CategoriasData> = ArrayList()
+    var categoriasRepository: Array<String> = emptyArray()
 
-    var selectecCategoria: BooleanArray =  BooleanArray(categoriasRepository.size)
+    lateinit var selectecCategoria: BooleanArray
 
     var categoriasList = arrayListOf<Int>()
 
@@ -206,7 +212,7 @@ class ProfessionalRegisterFragment : Fragment() {
                             errorPasswordProf.text = value.mensaje
                             rltPasswordProf.background = context?.let { ContextCompat.getDrawable(it,R.drawable.fieldsbackground) }
                         }
-                        1 -> {
+                        1,2 -> {
                             errorPasswordProf.isVisible = true
                             errorPasswordProf.text = value.mensaje
                             rltPasswordProf.background = context?.let { ContextCompat.getDrawable(it,R.drawable.fieldsbackgrounderror) }
@@ -214,6 +220,23 @@ class ProfessionalRegisterFragment : Fragment() {
                     }
                 }
             }
+        }
+
+        lifecycleScope.launch {
+            viewModel.getViewCategorias().collect{ value ->
+                categoriasViewRepository = value as MutableList<CategoriasData>
+                var categoriasAux = arrayListOf<String>()
+
+                value.forEachIndexed { _ , b ->
+                    if(b.estado)
+                        categoriasAux.add(b.nombre)
+                }
+
+                categoriasRepository = categoriasAux.toTypedArray()
+                selectecCategoria =  BooleanArray(categoriasRepository.size)
+            }
+            // cancelar el realtime
+            this.cancel()
         }
     }
 
@@ -292,11 +315,14 @@ class ProfessionalRegisterFragment : Fragment() {
                     categoriasList.remove(i)
                 }
             }
+
             builder.setPositiveButton("Aceptar") { dialog, which ->
                 var categoriasSelected = arrayListOf<String>()
+                var categoriasUis = arrayListOf<String>()
 
                 categoriasList.map { i ->
                     categoriasSelected.add(categoriasRepository[i])
+                    categoriasUis.add(categoriasViewRepository[i].uid)
                 }
 
                 spinnerCategoriasProf.text = categoriasSelected.joinToString()
@@ -304,13 +330,13 @@ class ProfessionalRegisterFragment : Fragment() {
                 if(!isCategoriaTypedProf){
                     isCategoriaTypedProf = true
                     if(spinnerCategoriasProf.text.toString().isNotEmpty()){
-                        viewModel.viewModelScope.launch { viewModel.setCategoriasProf(categoriasSelected.joinToString()) }
+                        viewModel.viewModelScope.launch { viewModel.setCategoriasProf(categoriasUis.joinToString()) }
                     }else{
                         viewModel.viewModelScope.launch { viewModel.setCategoriasProf("A") }
                     }
                 } else {
                     if(spinnerCategoriasProf.text.toString().isNotEmpty()){
-                        viewModel.viewModelScope.launch { viewModel.setCategoriasProf(categoriasSelected.joinToString()) }
+                        viewModel.viewModelScope.launch { viewModel.setCategoriasProf(categoriasUis.joinToString()) }
                     }else{
                         viewModel.viewModelScope.launch { viewModel.setCategoriasProf("A") }
                     }
@@ -398,6 +424,24 @@ class ProfessionalRegisterFragment : Fragment() {
                 viewModel.viewModelScope.launch { viewModel.setPasswordProf(it.toString().trim()) }
             }
         }
+
+        btnRegisterProf.setOnClickListener{
+            viewModel.viewModelScope.launch {
+                val user = viewModel.registerViewProf()
+                if (user != null) {
+                    val datosProf = viewModel.registeViewProfDataUsuario(user.uid)
+                    if(datosProf != null){
+                        val credencialesProf = viewModel.registeViewProfCredenciales(user.uid)
+                        if(credencialesProf != null){
+                            Toast.makeText(activity, "Usuario ${user.uid} Registrado exitosamente.", Toast.LENGTH_SHORT).show()
+                        }
+                    }
+                }else{
+                    Toast.makeText(activity, "Error al crear el usuario", Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+
     }
 
 }

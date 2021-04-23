@@ -2,9 +2,13 @@ package com.uisrael.worknow.ViewModel
 
 import android.util.Patterns
 import androidx.lifecycle.ViewModel
+import com.google.firebase.auth.FirebaseUser
+import com.uisrael.worknow.Model.Data.CategoriasData
 import com.uisrael.worknow.Model.Data.CredencialesData
 import com.uisrael.worknow.Model.Data.ProfesionalData
 import com.uisrael.worknow.Model.Data.UsuariosData
+import com.uisrael.worknow.Model.FirebaseAuthRepository
+import com.uisrael.worknow.Model.FirebaseModelsRepository
 import com.uisrael.worknow.ViewModel.ValidatorRespuestas.Respuesta
 import com.wajahatkarim3.easyvalidation.core.Validator
 import kotlinx.coroutines.flow.Flow
@@ -12,6 +16,10 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
 
 class ProfessionalViewModel : ViewModel() {
+
+    private var modelsFirebaseRepository: FirebaseModelsRepository = FirebaseModelsRepository()
+    private var authFirebaseRepository: FirebaseAuthRepository = FirebaseAuthRepository()
+
     private val _nombreProf = MutableStateFlow("")
     private val _apellidoProf = MutableStateFlow("")
     private val _ciudadProf = MutableStateFlow("")
@@ -30,6 +38,23 @@ class ProfessionalViewModel : ViewModel() {
     private val _usuarioDatosOK = MutableStateFlow(false)
     private val _usuarioCredencialesOK = MutableStateFlow(false)
     private val _usuarioProfesionalOK = MutableStateFlow(false)
+
+    suspend fun registerViewProf(): FirebaseUser? {
+        return authFirebaseRepository.registerUser(_usuarioCredentials.value.correo,_usuarioCredentials.value.password)?.user
+    }
+
+    fun registeViewProfDataUsuario(uid: String): Any? {
+        _usuarioDatos.value.rol = "Profesional"
+        _usuarioDatos.value.datosProf = _usuarioProfesional.value
+        return modelsFirebaseRepository.registerUser(_usuarioDatos.value, uid)
+    }
+    fun registeViewProfCredenciales(uid: String): Any? {
+        return modelsFirebaseRepository.registerCredenciales(_usuarioCredentials.value, uid)
+    }
+
+    fun getViewCategorias (): Flow<List<CategoriasData>> {
+        return modelsFirebaseRepository.getCategorias
+    }
 
     fun setNombreProf (nombre: String){
         _nombreProf.value = nombre
@@ -257,7 +282,12 @@ class ProfessionalViewModel : ViewModel() {
     val isPasswordProfOK: Flow<Respuesta> = combine(_passwordProf) { password ->
         val respuesta = Respuesta()
         val validatorPassword = Validator(password[0])
-        if(!validatorPassword.nonEmpty().check()){
+        if(validatorPassword.nonEmpty().check()){
+            if(!validatorPassword.minLength(6).check()){
+                respuesta.respuesta = 2
+                respuesta.mensaje = "La contraseña debe ser de 6 o más caracteres."
+            }
+        }else{
             respuesta.respuesta = 1
             respuesta.mensaje = "Complete el campo de contraseña"
         }
@@ -270,5 +300,7 @@ class ProfessionalViewModel : ViewModel() {
 
         return@combine respuesta
     }
+
+
 
 }

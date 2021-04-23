@@ -46,23 +46,6 @@ class RegisterFragment : Fragment() {
 
         tablayoutRegister.setupWithViewPager(viewPagerRegister)
 
-        /*var usuario =
-            UsuariosData(
-            "1",
-            "Henry",
-            "Rojas",
-            "Quito",
-            "3442054",
-                "",
-            "Cliente")
-
-        btnGuardar.setOnClickListener {
-            viewModel.viewModelScope.launch {
-                val result = viewModel.registerViewUser(usuario)
-                Toast.makeText(activity, "Result: $result", Toast.LENGTH_SHORT).show()
-            }
-        }*/
-
         backBtn.setOnClickListener{
             view?.findNavController()?.navigate(R.id.action_registerFragment_to_loginFragment)
         }

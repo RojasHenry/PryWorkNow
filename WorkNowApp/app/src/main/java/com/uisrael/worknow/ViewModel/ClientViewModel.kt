@@ -3,8 +3,11 @@ package com.uisrael.worknow.ViewModel
 import android.service.autofill.UserData
 import android.util.Patterns
 import androidx.lifecycle.ViewModel
+import com.google.firebase.auth.FirebaseUser
 import com.uisrael.worknow.Model.Data.CredencialesData
 import com.uisrael.worknow.Model.Data.UsuariosData
+import com.uisrael.worknow.Model.FirebaseAuthRepository
+import com.uisrael.worknow.Model.FirebaseModelsRepository
 import com.uisrael.worknow.ViewModel.ValidatorRespuestas.Respuesta
 import com.wajahatkarim3.easyvalidation.core.Validator
 import kotlinx.coroutines.flow.Flow
@@ -13,6 +16,10 @@ import kotlinx.coroutines.flow.combine
 import java.util.regex.Pattern
 
 class ClientViewModel : ViewModel() {
+
+    private var modelsFirebaseRepository: FirebaseModelsRepository = FirebaseModelsRepository()
+    private var authFirebaseRepository: FirebaseAuthRepository = FirebaseAuthRepository()
+
     private val _nombreCli = MutableStateFlow("")
     private val _apellidoCli = MutableStateFlow("")
     private val _ciudadCli = MutableStateFlow("")
@@ -23,6 +30,19 @@ class ClientViewModel : ViewModel() {
     private val _usuarioCredentials = MutableStateFlow(CredencialesData())
     private val _usuarioDatosOK = MutableStateFlow(false)
     private val _usuarioCredencialesOK = MutableStateFlow(false)
+
+    suspend fun registerViewCli(): FirebaseUser? {
+        return authFirebaseRepository.registerUser(_usuarioCredentials.value.correo,_usuarioCredentials.value.password)?.user
+    }
+
+    fun registeViewCliDataUsuario(uid: String): Any? {
+        _usuarioDatos.value.rol = "Cliente"
+        return modelsFirebaseRepository.registerUser(_usuarioDatos.value, uid)
+    }
+
+    fun registeViewCliCredenciales(uid: String): Any? {
+        return modelsFirebaseRepository.registerCredenciales(_usuarioCredentials.value, uid)
+    }
 
     fun setNombreCli (nombre: String){
         _nombreCli.value = nombre
@@ -181,7 +201,13 @@ class ClientViewModel : ViewModel() {
     val isPasswordCliOK: Flow<Respuesta> = combine(_passwordCli) { password ->
         val respuesta = Respuesta()
         val validatorPassword = Validator(password[0])
-        if(!validatorPassword.nonEmpty().check()){
+
+        if(validatorPassword.nonEmpty().check()){
+            if(!validatorPassword.minLength(6).check()){
+                respuesta.respuesta = 2
+                respuesta.mensaje = "La contraseña debe ser de 6 o más caracteres."
+            }
+        }else{
             respuesta.respuesta = 1
             respuesta.mensaje = "Complete el campo de contraseña"
         }
