@@ -1,5 +1,6 @@
 package com.uisrael.worknow.Views
 
+import android.content.Intent
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -57,7 +58,11 @@ class LoginFragment : Fragment() {
             viewModel.validateViewUserLogged().observe(viewLifecycleOwner, {
                 if (it) {
                     viewModel.getViewUserLogged().observe(viewLifecycleOwner, {
-                        Toast.makeText(context, "Usuario ya logueado ${it.uid}", Toast.LENGTH_SHORT).show()
+                        lifecycleScope.launch {
+                            viewModel.getCurrentUser(it.uid).collect {
+                                goToMenuPrincipal(it.rol)
+                            }
+                        }
                     })
                 }
             })
@@ -139,7 +144,10 @@ class LoginFragment : Fragment() {
                         passwordTxt.text.toString()
                     )
                     if (user != null) {
-                        Toast.makeText(activity, "Usuario actual ${user.uid}", Toast.LENGTH_SHORT).show()
+                        viewModel.getCurrentUser(user.uid).collect {
+                            goToMenuPrincipal(it.rol)
+                        }
+
                     }
                 }
             } else {
@@ -150,6 +158,13 @@ class LoginFragment : Fragment() {
         linkRegistro.setOnClickListener {
             view?.findNavController()?.navigate(R.id.action_loginFragment_to_registerFragment)
         }
+    }
+
+    private fun goToMenuPrincipal (rol:String ){
+        val intent = Intent(context,TabUsersActivity::class.java).apply {
+            putExtra("rolUser",rol)
+        }
+        startActivity(intent)
     }
 
 }

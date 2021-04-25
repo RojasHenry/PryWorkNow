@@ -3,7 +3,9 @@ package com.uisrael.worknow.ViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.google.firebase.auth.FirebaseUser
+import com.uisrael.worknow.Model.Data.UsuariosData
 import com.uisrael.worknow.Model.FirebaseAuthRepository
+import com.uisrael.worknow.Model.FirebaseModelsRepository
 import com.uisrael.worknow.ViewModel.ValidatorRespuestas.Respuesta
 import com.wajahatkarim3.easyvalidation.core.Validator
 import kotlinx.coroutines.flow.Flow
@@ -16,6 +18,7 @@ class LoginViewModel : ViewModel() {
     private val _password = MutableStateFlow("")
 
     private var authFirebaseRepository: FirebaseAuthRepository = FirebaseAuthRepository()
+    private var modelFirebaseRepository: FirebaseModelsRepository = FirebaseModelsRepository()
 
     suspend fun loginViewUser(email: String, password: String): FirebaseUser?{
         return authFirebaseRepository.loginUser(email, password)?.user
@@ -27,6 +30,10 @@ class LoginViewModel : ViewModel() {
 
     fun getViewUserLogged(): MutableLiveData<FirebaseUser> {
         return authFirebaseRepository.getUserLogged()
+    }
+
+    fun getCurrentUser(uid:String ): Flow<UsuariosData> {
+        return modelFirebaseRepository.getCurrentUser(uid)
     }
 
     fun setCorreo (correo: String){

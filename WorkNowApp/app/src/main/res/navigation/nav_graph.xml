@@ -9,7 +9,8 @@
         android:id="@+id/loginFragment"
         android:name="com.uisrael.worknow.Views.LoginFragment"
         android:label="login_fragment"
-        tools:layout="@layout/login_fragment" >
+        tools:layout="@layout/login_fragment"
+        app:startDestination="@id/action_loginFragment_to_registerFragment">
         <action
             android:id="@+id/action_loginFragment_to_registerFragment"
             app:destination="@id/registerFragment" />
@@ -21,6 +22,6 @@
         tools:layout="@layout/register_fragment" >
         <action
             android:id="@+id/action_registerFragment_to_loginFragment"
-            app:destination="@id/loginFragment" />
+            app:popUpTo="@id/loginFragment" />
     </fragment>
 </navigation>
