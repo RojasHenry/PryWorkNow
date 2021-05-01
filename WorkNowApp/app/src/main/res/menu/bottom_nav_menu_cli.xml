@@ -8,12 +8,12 @@
 
     <item
         android:id="@+id/navigation_offersregister_cli"
-        android:icon="@drawable/ic_home_black_24dp"
+        android:icon="@drawable/ic_offer_add_24"
         android:title="@string/title_registeroffers" />
 
     <item
-        android:id="@+id/navigation_inprogress_cli"
-        android:icon="@drawable/ic_notifications_black_24dp"
+        android:id="@+id/navigation_in_progress_cli"
+        android:icon="@drawable/ic_offers_pending_24"
         android:title="@string/title_onprogress" />
 
 </menu>

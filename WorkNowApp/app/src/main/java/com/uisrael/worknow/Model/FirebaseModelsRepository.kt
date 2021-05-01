@@ -4,9 +4,7 @@ import android.util.Log
 import com.google.firebase.database.*
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
-import com.uisrael.worknow.Model.Data.CategoriasData
-import com.uisrael.worknow.Model.Data.CredencialesData
-import com.uisrael.worknow.Model.Data.UsuariosData
+import com.uisrael.worknow.Model.Data.*
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.channels.sendBlocking
 import kotlinx.coroutines.flow.Flow
@@ -22,6 +20,8 @@ class FirebaseModelsRepository {
         const val REF_USUARIOS = "Usuarios"
         const val REF_CREDENCIALES = "Credenciales"
         const val REF_CATEGORIAS = "Categorias"
+        const val REF_PUBLICACION = "Publicacion"
+        const val REF_FOTOS = "FotosPublicacion"
 
     }
 
@@ -89,6 +89,32 @@ class FirebaseModelsRepository {
             awaitClose{
                 databaseReference.removeEventListener(eventListener)
             }
+        }
+    }
+
+    fun registerOffer(value: PublicationsData): Any? {
+        return try {
+            val userDatabase = database.getReference(REF_PUBLICACION)
+            val uid = userDatabase.push().key
+            return if (uid != null) {
+                userDatabase.child(uid).setValue(value)
+                uid
+            }else{
+                ""
+            }
+        }catch (e: Exception){
+            Log.i("Error", e.message)
+            null
+        }
+    }
+
+    fun registerPicturesOffer(value: FotosPublicacionData, uidOffer:String): Any? {
+        return try {
+            val userDatabase = database.getReference(REF_FOTOS)
+            return  userDatabase.child(uidOffer).setValue(value)
+        }catch (e: Exception){
+            Log.i("Error", e.message)
+            null
         }
     }
 

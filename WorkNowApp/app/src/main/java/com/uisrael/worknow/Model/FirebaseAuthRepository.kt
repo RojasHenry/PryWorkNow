@@ -17,11 +17,13 @@ class FirebaseAuthRepository {
     private var firebaseAuth: FirebaseAuth = FirebaseAuth.getInstance()
     private var userLiveData: MutableLiveData<FirebaseUser> = MutableLiveData()
     private var loggedOutLiveData:MutableLiveData<Boolean> = MutableLiveData()
+    private var uidUserCurrent:MutableLiveData<String> = MutableLiveData()
 
     init {
         if (firebaseAuth.currentUser != null){
             userLiveData.postValue(firebaseAuth.currentUser)
             loggedOutLiveData.postValue(true)
+            uidUserCurrent.postValue(firebaseAuth.currentUser.uid)
         }
     }
 
@@ -31,6 +33,10 @@ class FirebaseAuthRepository {
 
     fun getUserLogged(): MutableLiveData<FirebaseUser> {
         return userLiveData
+    }
+
+    fun getUserUid(): String? {
+        return uidUserCurrent.value
     }
 
     suspend fun registerUser (email: String, password: String): AuthResult?{
@@ -52,6 +58,7 @@ class FirebaseAuthRepository {
 
     fun loginOutUser(){
         loggedOutLiveData.postValue(false)
+        uidUserCurrent.postValue("")
         firebaseAuth.signOut()
     }
 

@@ -3,7 +3,7 @@
     <string name="title_activity_tab_users">MainActivity</string>
     <string name="title_dashboard">Dashboard</string>
     <string name="title_onprogress">En Progreso</string>
-    <string name="title_registeroffers">Registro</string>
+    <string name="title_registeroffers">Registro de Solicitud</string>
     <string name="title_publications">Publicaciones</string>
     <string name="title_profile">Mi Perfil</string>
     <string name="title_history_offers">Historial de Solicitudes</string>

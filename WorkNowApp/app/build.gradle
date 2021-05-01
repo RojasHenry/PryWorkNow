@@ -49,8 +49,8 @@ dependencies {
     implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.3.1'
     implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.3.1'
     implementation 'androidx.vectordrawable:vectordrawable:1.1.0'
-    implementation 'androidx.navigation:navigation-fragment:2.3.5'
-    implementation 'androidx.navigation:navigation-ui:2.3.5'
+    implementation 'androidx.navigation:navigation-fragment-ktx:2.3.5'
+    implementation 'androidx.navigation:navigation-ui-ktx:2.3.5'
 
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
@@ -75,6 +75,10 @@ dependencies {
     // Declare the dependency for the Realtime Database library
     implementation 'com.google.firebase:firebase-database-ktx'
 
+    // Picasso (images) library
+    implementation 'com.squareup.picasso:picasso:2.71828'
 
-
+    // Image Compressor library
+    implementation 'id.zelory:compressor:3.0.1'
+    
 }

@@ -37,9 +37,7 @@ class ProfessionalRegisterFragment : Fragment() {
 
     var categoriasViewRepository: MutableList<CategoriasData> = ArrayList()
     var categoriasRepository: Array<String> = emptyArray()
-
     lateinit var selectecCategoria: BooleanArray
-
     var categoriasList = arrayListOf<Int>()
 
     companion object {
@@ -79,7 +77,7 @@ class ProfessionalRegisterFragment : Fragment() {
                             errorNombreProf.text = value.mensaje
                             rltNombreProf.background = context?.let { ContextCompat.getDrawable(it,R.drawable.fieldsbackground) }
                         }
-                        1 -> {
+                        else -> {
                             errorNombreProf.isVisible = true
                             errorNombreProf.text = value.mensaje
                             rltNombreProf.background = context?.let { ContextCompat.getDrawable(it,R.drawable.fieldsbackgrounderror) }
@@ -98,7 +96,7 @@ class ProfessionalRegisterFragment : Fragment() {
                             errorApellidoProf.text = value.mensaje
                             rltApellidoProf.background = context?.let { ContextCompat.getDrawable(it,R.drawable.fieldsbackground) }
                         }
-                        1 -> {
+                        else -> {
                             errorApellidoProf.isVisible = true
                             errorApellidoProf.text = value.mensaje
                             rltApellidoProf.background = context?.let { ContextCompat.getDrawable(it,R.drawable.fieldsbackgrounderror) }
@@ -117,7 +115,7 @@ class ProfessionalRegisterFragment : Fragment() {
                             errorCiudadProf.text = value.mensaje
                             rltCiudadProf.background = context?.let { ContextCompat.getDrawable(it,R.drawable.fieldsbackground) }
                         }
-                        1 -> {
+                        else -> {
                             errorCiudadProf.isVisible = true
                             errorCiudadProf.text = value.mensaje
                             rltCiudadProf.background = context?.let { ContextCompat.getDrawable(it,R.drawable.fieldsbackgrounderror) }
@@ -136,7 +134,7 @@ class ProfessionalRegisterFragment : Fragment() {
                             errorTelefonoProf.text = value.mensaje
                             rltTelefonoProf.background = context?.let { ContextCompat.getDrawable(it,R.drawable.fieldsbackground) }
                         }
-                        1, 2, 3, -> {
+                        else -> {
                             errorTelefonoProf.isVisible = true
                             errorTelefonoProf.text = value.mensaje
                             rltTelefonoProf.background = context?.let { ContextCompat.getDrawable(it,R.drawable.fieldsbackgrounderror) }
@@ -155,7 +153,7 @@ class ProfessionalRegisterFragment : Fragment() {
                             errorCategoriaProf.text = value.mensaje
                             rltCategoriasProf.background = context?.let { ContextCompat.getDrawable(it,R.drawable.fieldsbackground) }
                         }
-                        1,2 -> {
+                        else -> {
                             errorCategoriaProf.isVisible = true
                             errorCategoriaProf.text = value.mensaje
                             rltCategoriasProf.background = context?.let { ContextCompat.getDrawable(it,R.drawable.fieldsbackgrounderror) }
@@ -174,7 +172,7 @@ class ProfessionalRegisterFragment : Fragment() {
                             errorDescripcionProf.text = value.mensaje
                             rltDescripcionProf.background = context?.let { ContextCompat.getDrawable(it,R.drawable.fieldsbackground) }
                         }
-                        1,2 -> {
+                        else -> {
                             errorDescripcionProf.isVisible = true
                             errorDescripcionProf.text = value.mensaje
                             rltDescripcionProf.background = context?.let { ContextCompat.getDrawable(it,R.drawable.fieldsbackgrounderror) }
@@ -193,7 +191,7 @@ class ProfessionalRegisterFragment : Fragment() {
                             errorCorreoProf.text = value.mensaje
                             rltCorreoProf.background = context?.let { ContextCompat.getDrawable(it,R.drawable.fieldsbackground) }
                         }
-                        1, 2 -> {
+                        else -> {
                             errorCorreoProf.isVisible = true
                             errorCorreoProf.text = value.mensaje
                             rltCorreoProf.background = context?.let { ContextCompat.getDrawable(it,R.drawable.fieldsbackgrounderror) }
@@ -212,7 +210,7 @@ class ProfessionalRegisterFragment : Fragment() {
                             errorPasswordProf.text = value.mensaje
                             rltPasswordProf.background = context?.let { ContextCompat.getDrawable(it,R.drawable.fieldsbackground) }
                         }
-                        1,2 -> {
+                        else -> {
                             errorPasswordProf.isVisible = true
                             errorPasswordProf.text = value.mensaje
                             rltPasswordProf.background = context?.let { ContextCompat.getDrawable(it,R.drawable.fieldsbackgrounderror) }
@@ -348,16 +346,22 @@ class ProfessionalRegisterFragment : Fragment() {
             builder.setNegativeButton("Cancelar") { dialog, which ->
                 dialog.dismiss()
 
+                var categoriasUis = arrayListOf<String>()
+
+                categoriasList.map { i ->
+                    categoriasUis.add(categoriasViewRepository[i].uid)
+                }
+
                 if(!isCategoriaTypedProf){
                     isCategoriaTypedProf = true
                     if(spinnerCategoriasProf.text.toString().isNotEmpty()){
-                        viewModel.viewModelScope.launch { viewModel.setCategoriasProf(spinnerCategoriasProf.text.toString()) }
+                        viewModel.viewModelScope.launch { viewModel.setCategoriasProf(categoriasUis.joinToString()) }
                     }else{
                         viewModel.viewModelScope.launch { viewModel.setCategoriasProf("C") }
                     }
                 }else{
                     if(spinnerCategoriasProf.text.toString().isNotEmpty()){
-                        viewModel.viewModelScope.launch { viewModel.setCategoriasProf(spinnerCategoriasProf.text.toString()) }
+                        viewModel.viewModelScope.launch { viewModel.setCategoriasProf(categoriasUis.joinToString()) }
                     }else{
                         viewModel.viewModelScope.launch { viewModel.setCategoriasProf("C") }
                     }

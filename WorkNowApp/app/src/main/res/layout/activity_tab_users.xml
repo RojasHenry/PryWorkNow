@@ -6,11 +6,8 @@
     android:layout_height="match_parent">
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/container"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-
-
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
@@ -31,7 +28,7 @@
                     android:layout_height="50dp"
                     android:layout_marginStart="16dp"
                     android:layout_marginTop="16dp"
-                    android:src="@drawable/ic_back"
+                    android:src="@drawable/ic_menu_24"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     android:elevation="10dp"/>
@@ -44,7 +41,7 @@
                     android:layout_marginEnd="16dp"
                     android:layout_marginBottom="16dp"
                     android:fontFamily="@font/nunitosansbold"
-                    android:text="@string/title_history_offers"
+                    android:text="@string/title_dashboard"
                     android:textAlignment="textEnd"
                     android:textColor="#FFFFFF"
                     android:textSize="24sp"
@@ -55,17 +52,15 @@
             </androidx.constraintlayout.widget.ConstraintLayout>
         </com.google.android.material.appbar.MaterialToolbar>
 
-        <fragment
-            android:id="@+id/nav_host_fragment"
-            android:name="androidx.navigation.fragment.NavHostFragment"
+        <com.uisrael.worknow.Views.Utilities.CustomViewPager
+            android:id="@+id/viewpager_fragments"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            app:defaultNavHost="true"
             app:layout_constraintBottom_toTopOf="@+id/nav_bottom_view"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/toolbar"
-            app:navGraph="@navigation/nav_navigationtabs_cli" />
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
 
         <com.google.android.material.bottomnavigation.BottomNavigationView
             android:id="@+id/nav_bottom_view"

@@ -39,6 +39,9 @@ class ProfessionalViewModel : ViewModel() {
     private val _usuarioCredencialesOK = MutableStateFlow(false)
     private val _usuarioProfesionalOK = MutableStateFlow(false)
 
+    val caracteres = 20
+    val numLengthTelefono = 7
+
     suspend fun registerViewProf(): FirebaseUser? {
         return authFirebaseRepository.registerUser(_usuarioCredentials.value.correo,_usuarioCredentials.value.password)?.user
     }
@@ -117,8 +120,8 @@ class ProfessionalViewModel : ViewModel() {
         val isNombreValid = validatorNombre.nonEmpty().check()
         val isApellidoValid = validatorApellido.nonEmpty().check()
         val isCiudadValid = validatorCiudad.nonEmpty().check()
-        val isTelefonoValid = (validatorTelefono.nonEmpty().check() and Patterns.PHONE.matcher(validatorTelefono.text).matches() and validatorTelefono.minLength(7).check())
-        val isDescripcionValid = validatorDescripcion.nonEmpty().check()
+        val isTelefonoValid = (validatorTelefono.nonEmpty().check() and Patterns.PHONE.matcher(validatorTelefono.text).matches() and validatorTelefono.minLength(numLengthTelefono).check())
+        val isDescripcionValid = validatorDescripcion.nonEmpty().minLength(caracteres).check()
         val isCategoriasValid = validatorCategorias.nonEmpty().check() and (validatorCategorias.text != "A") and (validatorCategorias.text != "N") and (validatorCategorias.text != "C") and (validatorCategorias.text != "Escoja su categoria")
         val isCorreoValid = validatorCorreo.nonEmpty().validEmail().check()
         val isPasswordValid = validatorPassword.nonEmpty().check()
@@ -188,7 +191,7 @@ class ProfessionalViewModel : ViewModel() {
         val respuesta = Respuesta()
         val validatorTelefono = Validator(telefono[0])
         if(validatorTelefono.nonEmpty().check()){
-            if(validatorTelefono.validNumber().check() and validatorTelefono.minLength(7).check()){
+            if(validatorTelefono.validNumber().check() and validatorTelefono.minLength(numLengthTelefono).check()){
                 if(!Patterns.PHONE.matcher(validatorTelefono.text).matches()){
                     respuesta.respuesta = 1
                     respuesta.mensaje = "Teléfono inválido"
@@ -235,7 +238,6 @@ class ProfessionalViewModel : ViewModel() {
     }
 
     val isDescripcionProOk: Flow<Respuesta> = combine(_descripcionProf) { descripcion ->
-        val caracteres = 20
         val respuesta = Respuesta()
         val validatorDescripcion = Validator(descripcion[0])
         if(validatorDescripcion.nonEmpty().check()){

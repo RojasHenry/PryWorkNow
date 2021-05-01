@@ -155,6 +155,7 @@
                         android:paddingLeft="10dp"
                         android:paddingRight="10dp"
                         android:singleLine="true"
+                        android:drawableEnd="@drawable/ic_ubication_24"
                         android:textColor="#6c6d70"
                         android:textSize="15dp" />
                 </RelativeLayout>
@@ -282,20 +283,22 @@
                 android:layout_below="@id/errorCategoriaProf"
                 android:background="@drawable/fieldsbackground"
                 android:orientation="horizontal">
+
                 <EditText
                     android:id="@+id/descripcionTxtProf"
                     android:layout_width="match_parent"
-                    android:background="@null"
                     android:layout_height="wrap_content"
+                    android:background="@null"
                     android:ems="10"
-                    android:singleLine="false"
-                    android:padding="10dp"
-                    android:maxLines="4"
-                    android:lines="4"
-                    android:hint="Descripción de su actividad laboral"
                     android:fontFamily="@font/nunitosansregular"
                     android:gravity="start|top"
-                    android:inputType="textMultiLine" />
+                    android:hint="Descripción de su actividad laboral"
+                    android:inputType="textMultiLine"
+                    android:lines="4"
+                    android:maxLines="4"
+                    android:padding="10dp"
+                    android:singleLine="false"
+                    android:textSize="14sp" />
             </RelativeLayout>
 
             <TextView
@@ -458,7 +461,7 @@
             android:paddingVertical="10dp">
 
             <TextView
-                android:id="@+id/registerTextoProf"
+                android:id="@+id/registerTextoOffer"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
@@ -466,7 +469,7 @@
                 android:fontFamily="@font/nunitosansregular"
                 android:gravity="center"
                 android:paddingRight="5dp"
-                android:text="Registrar Profesional"
+                android:text="Registrar Solicitud"
                 android:textColor="#FFFFFF"
                 android:textSize="13sp" />
         </RelativeLayout>

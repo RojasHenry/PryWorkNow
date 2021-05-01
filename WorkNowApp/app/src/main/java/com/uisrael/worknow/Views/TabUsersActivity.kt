@@ -3,36 +3,33 @@ package com.uisrael.worknow.Views
 import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
-import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.ActivityNavigator
-import androidx.navigation.NavController
-import androidx.navigation.findNavController
-import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.setupActionBarWithNavController
-import androidx.navigation.ui.setupWithNavController
+import androidx.viewpager.widget.ViewPager.OnPageChangeListener
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.navigation.NavigationView
 import com.uisrael.worknow.R
 import com.uisrael.worknow.ViewModel.TabUsersViewModel
+import com.uisrael.worknow.Views.Adapters.SectionsPagerAdapter
 import kotlinx.android.synthetic.main.activity_tab_users.*
 import kotlinx.coroutines.launch
+
 
 class TabUsersActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
 
     private lateinit var drawerLayout: DrawerLayout
     private var isProf = false
-    private lateinit var navController:NavController
     private lateinit var navView: BottomNavigationView
     private lateinit var viewModel: TabUsersViewModel
     private lateinit var toggle: ActionBarDrawerToggle
+
+    private lateinit var pagerAdapter: SectionsPagerAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,59 +41,40 @@ class TabUsersActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
         navView = findViewById(R.id.nav_bottom_view)
         val navDrawableLayout: NavigationView = findViewById(R.id.nav_view)
 
+
+        setSupportActionBar(toolbar)
         isProf = intent.getStringExtra("rolUser")?.equals("Profesional") == true
 
-        navController = findNavController(R.id.nav_host_fragment)
 
-        val appBarConfiguration: AppBarConfiguration
-
-        if(isProf){
+        pagerAdapter = if(isProf){
             navView.menu.clear()
             navView.inflateMenu(R.menu.bottom_nav_menu_prof)
 
-            navController.graph.clear()
-            navController.setGraph(R.navigation.nav_navigationtabs_prof)
-
             navDrawableLayout.menu.clear()
             navDrawableLayout.inflateMenu(R.menu.left_nav_menu_prof)
-
-            appBarConfiguration = AppBarConfiguration(
-                setOf(
-                    R.id.navigation_dashboard_prof, R.id.navigation_publications_prof,
-                    R.id.navigation_inprogress_prof, R.id.navigation_profile
-                )
-            )
+            SectionsPagerAdapter(supportFragmentManager, arrayListOf("Dashboard", "Register", "InProgress","Perfil"), isProf)
         }else{
-            appBarConfiguration = AppBarConfiguration(
-                setOf(
-                    R.id.navigation_dashboard_cli,
-                    R.id.navigation_offersregister_cli,
-                    R.id.navigation_inprogress_cli,
-                    R.id.navigation_history_offer_cli,
-                    R.id.navigation_profile
-                )
-            )
+            SectionsPagerAdapter(supportFragmentManager, arrayListOf("Dashboard", "Register", "InProgress","Perfil","Historial"), isProf)
         }
 
-        setSupportActionBar(toolbar)
+        viewpager_fragments.adapter = pagerAdapter
+        viewpager_fragments.isPagingEnabled = false
+        viewpager_fragments.offscreenPageLimit = 3
 
-        setupActionBarWithNavController(navController, appBarConfiguration)
-
-        navView.setupWithNavController(navController)
-        navDrawableLayout.setupWithNavController(navController)
 
         toggle = ActionBarDrawerToggle(
-            this,
-            drawerLayout,
-            null,
-            R.string.navigation_drawer_open,
-            R.string.navigation_drawer_close
+                this,
+                drawerLayout,
+                null,
+                R.string.navigation_drawer_open,
+                R.string.navigation_drawer_close
         )
         drawerLayout.addDrawerListener(toggle)
         toggle.syncState()
 
         navDrawableLayout.setNavigationItemSelectedListener(this)
-        navController.addOnDestinationChangedListener{ _, destination, _ ->
+
+        /*navController.addOnDestinationChangedListener{ _, destination, _ ->
             titleToolbar.text = destination.label
             // hide bottonnavview
             when (destination.id){
@@ -117,7 +95,48 @@ class TabUsersActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
                 }
 
             }
+        }*/
+
+        changeToolbarFuncions(false)
+
+        navView.setOnNavigationItemSelectedListener {
+            titleToolbar.text = it.toString()
+            when(it.itemId){
+                R.id.navigation_dashboard_cli, R.id.navigation_dashboard_prof -> {
+                    unlockDrawer()
+                    showBottomNav()
+                    changeToolbarFuncions(false)
+                    viewpager_fragments.currentItem = 0
+                }
+                R.id.navigation_publications_prof, R.id.navigation_offersregister_cli -> {
+                    unlockDrawer()
+                    showBottomNav()
+                    changeToolbarFuncions(false)
+
+                    viewpager_fragments.currentItem = 1
+                }
+                R.id.navigation_in_progress_cli, R.id.navigation_in_progress_prof -> {
+                    unlockDrawer()
+                    showBottomNav()
+                    changeToolbarFuncions(false)
+                    viewpager_fragments.currentItem = 2
+                }
+            }
+            return@setOnNavigationItemSelectedListener true
         }
+
+        viewpager_fragments.addOnPageChangeListener(object : OnPageChangeListener {
+            override fun onPageSelected(arg0: Int) {
+                if(arg0 < navView.menu.size())
+                    navView.menu.getItem(arg0).isChecked = true
+            }
+
+            override fun onPageScrolled(arg0: Int, arg1: Float, arg2: Int) {
+            }
+
+            override fun onPageScrollStateChanged(arg0: Int) {
+            }
+        })
     }
 
     private fun changeToolbarFuncions(isBack: Boolean){
@@ -159,7 +178,15 @@ class TabUsersActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
         if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
             drawerLayout.closeDrawer(GravityCompat.START)
         } else {
-            super.onBackPressed()
+            if(viewpager_fragments.currentItem == 0){
+                super.onBackPressed()
+            }else{
+                titleToolbar.text =  getString(R.string.title_dashboard)
+                unlockDrawer()
+                showBottomNav()
+                changeToolbarFuncions(false)
+                viewpager_fragments.currentItem = 0
+            }
         }
     }
 
@@ -172,11 +199,19 @@ class TabUsersActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
                 }
             }
             R.id.navigation_profile -> {
-                navController.navigate(R.id.navigation_profile)
+                titleToolbar.text = item.toString()
+                hideBottomNav()
+                lockDrawer()
+                changeToolbarFuncions(true)
+                viewpager_fragments.currentItem = 3
             }
 
             R.id.navigation_history_offer_cli -> {
-                navController.navigate(R.id.navigation_history_offer_cli)
+                titleToolbar.text = item.toString()
+                hideBottomNav()
+                lockDrawer()
+                changeToolbarFuncions(true)
+                viewpager_fragments.currentItem = 4
             }
         }
         drawerLayout.closeDrawers();

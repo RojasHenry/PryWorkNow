@@ -1,22 +1,457 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.core.widget.NestedScrollView  xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".Views.TabsFragments.OffersRegisterFragment">
 
-    <TextView
-        android:id="@+id/text_home"
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:textAlignment="center"
-        android:textSize="20sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-</androidx.constraintlayout.widget.ConstraintLayout>
+        android:padding="20dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/titleDatosSolicitudOffer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:fontFamily="@font/nunitosansbold"
+            android:text="Datos de Solicitud" />
+
+        <RelativeLayout
+            android:id="@+id/rltCategoriasOffer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_below="@+id/titleDatosSolicitudOffer"
+            android:background="@drawable/fieldsbackground"
+            android:orientation="horizontal">
+            <TextView
+                android:id="@+id/spinnerCategoriasOffer"
+                android:layout_width="match_parent"
+                android:fontFamily="@font/nunitosansregular"
+                android:gravity="start|top"
+                android:padding="10dp"
+                android:layout_gravity="center"
+                android:text="Escoja una categoria"
+                android:singleLine="true"
+                android:textColor="#9E9FA1"
+                android:layout_height="40sp"
+                app:drawableRightCompat="@drawable/ic_arrowdrop" />
+        </RelativeLayout>
+
+        <TextView
+            android:id="@+id/errorCategoriasOffer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/rltCategoriasOffer"
+            android:layout_marginHorizontal="20dp"
+            android:textColor="@color/rederror"
+            android:layout_marginTop="5dp"
+            android:fontFamily="@font/nunitosanslight"
+            android:text="Complete el campo de correo"
+            android:visibility="gone"/>
+
+        <RelativeLayout
+            android:id="@+id/rltDatosSolicitudOffer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/errorCategoriasOffer"
+            android:visibility="gone">
+
+            <LinearLayout
+                android:id="@+id/lytFechasOffer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:weightSum="2"
+                android:orientation="horizontal">
+                <RelativeLayout
+                    android:id="@+id/rltFechaInOffer"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_weight="1"
+                    android:layout_marginEnd="5dp"
+                    android:background="@drawable/fieldsbackground"
+                    android:orientation="horizontal">
+                    <EditText
+                        android:id="@+id/fechaInOffer"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="#00FFFFFF"
+                        android:ems="10"
+                        android:fontFamily="@font/nunitosansregular"
+                        android:layout_centerVertical="true"
+                        android:layout_gravity="center"
+                        android:paddingLeft="10dp"
+                        android:paddingRight="10dp"
+                        android:hint="Fecha Inicio"
+                        android:focusable="false"
+                        android:inputType="none"
+                        android:singleLine="true"
+                        android:drawableRight="@drawable/ic_calendar_24"
+                        android:textColor="#6c6d70"
+                        android:textSize="15dp" />
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/rltFechaFinOffer"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_weight="1"
+                    android:layout_marginStart="5dp"
+                    android:background="@drawable/fieldsbackground"
+                    android:orientation="horizontal">
+                    <EditText
+                        android:id="@+id/fechaFinOffer"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="#00FFFFFF"
+                        android:ems="10"
+                        android:fontFamily="@font/nunitosansregular"
+                        android:layout_centerVertical="true"
+                        android:layout_gravity="center"
+                        android:paddingLeft="10dp"
+                        android:paddingRight="10dp"
+                        android:hint="Fecha Fin"
+                        android:focusable="false"
+                        android:inputType="none"
+                        android:singleLine="true"
+                        android:drawableRight="@drawable/ic_calendar_24"
+                        android:textColor="#6c6d70"
+                        android:textSize="15dp" />
+
+                </RelativeLayout>
+            </LinearLayout>
+
+
+            <TextView
+                android:id="@+id/errorFechasOffer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/lytFechasOffer"
+                android:layout_marginHorizontal="20dp"
+                android:textColor="@color/rederror"
+                android:layout_marginTop="5dp"
+                android:fontFamily="@font/nunitosanslight"
+                android:text="Complete el campo de correo"
+                android:visibility="gone"/>
+
+            <RelativeLayout
+                android:id="@+id/rltInmediatoOffer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/errorFechasOffer"
+                android:orientation="horizontal">
+                <CheckBox
+                    android:id="@+id/checkDeInmediato"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:fontFamily="@font/nunitosansregular"
+                    android:textColor="#6c6d70"
+                    android:textSize="15sp"
+                    android:text="De Inmediato" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/rltDescripcionOffer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/rltInmediatoOffer"
+                android:background="@drawable/fieldsbackground"
+                android:orientation="horizontal">
+
+                <EditText
+                    android:id="@+id/descripcionTxtOffer"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@null"
+                    android:ems="10"
+                    android:fontFamily="@font/nunitosansregular"
+                    android:gravity="start|top"
+                    android:hint="Descripción de solicitud"
+                    android:inputType="textMultiLine"
+                    android:lines="4"
+                    android:maxLines="4"
+                    android:padding="10dp"
+                    android:singleLine="false"
+                    android:textSize="14sp" />
+            </RelativeLayout>
+
+            <TextView
+                android:id="@+id/errorDescripcionOffer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/rltDescripcionOffer"
+                android:layout_marginHorizontal="20dp"
+                android:textColor="@color/rederror"
+                android:layout_marginTop="5dp"
+                android:fontFamily="@font/nunitosanslight"
+                android:text="Complete el campo de correo"
+                android:visibility="gone"/>
+
+            <LinearLayout
+                android:id="@+id/lytCantidadOffer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:weightSum="2"
+                android:layout_marginTop="10dp"
+                android:gravity="center"
+                android:layout_below="@id/errorDescripcionOffer"
+                android:orientation="horizontal">
+
+                <CheckBox
+                    android:id="@+id/checkSoloPersona"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:fontFamily="@font/nunitosansregular"
+                    android:textColor="#6c6d70"
+                    android:textSize="15sp"
+                    android:layout_alignParentLeft="true"
+                    android:text="Solo una persona"  />
+
+                <RelativeLayout
+                    android:id="@+id/rltCantidadOffer"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:layout_weight="1"
+                    android:layout_toRightOf="@id/checkSoloPersona"
+                    android:background="@drawable/fieldsbackground"
+                    android:orientation="horizontal">
+                    <EditText
+                        android:id="@+id/cantidadTxtOffer"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="#00FFFFFF"
+                        android:ems="10"
+                        android:fontFamily="@font/nunitosansregular"
+                        android:layout_centerVertical="true"
+                        android:layout_gravity="center"
+                        android:paddingLeft="10dp"
+                        android:paddingRight="10dp"
+                        android:textSize="15dp"
+                        android:hint="Cantidad de personas"
+                        android:inputType="number" />
+                </RelativeLayout>
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/errorCantidadOffer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/lytCantidadOffer"
+                android:layout_marginHorizontal="20dp"
+                android:textColor="@color/rederror"
+                android:layout_marginTop="5dp"
+                android:fontFamily="@font/nunitosanslight"
+                android:text="Complete el campo de correo"
+                android:visibility="gone"/>
+
+        </RelativeLayout>
+
+        <TextView
+            android:id="@+id/titleDetallesOffer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:fontFamily="@font/nunitosansbold"
+            android:layout_below="@+id/rltDatosSolicitudOffer"
+            android:text="Detalle de Solicitud"
+            android:visibility="gone"/>
+
+        <RelativeLayout
+            android:id="@+id/rltDetallesOffer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/titleDetallesOffer"
+            android:visibility="gone">
+
+            <RelativeLayout
+                android:id="@+id/rltUbicacionOffer"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/fieldsbackground">
+
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true">
+
+                    <EditText
+                        android:id="@+id/ubicacionTxtOffer"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_centerVertical="true"
+                        android:layout_gravity="center"
+                        android:background="#00FFFFFF"
+                        android:ems="10"
+                        android:fontFamily="@font/nunitosansregular"
+                        android:gravity="center|left"
+                        android:hint="Ubicación"
+                        android:imeOptions="actionNext"
+                        android:inputType="textPersonName"
+                        android:paddingLeft="10dp"
+                        android:paddingRight="10dp"
+                        android:singleLine="true"
+                        android:drawableEnd="@drawable/ic_ubication_24"
+                        android:textColor="#6c6d70"
+                        android:textSize="15sp" />
+                </RelativeLayout>
+            </RelativeLayout>
+
+            <TextView
+                android:id="@+id/errorUbicacionOffer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/rltUbicacionOffer"
+                android:layout_marginHorizontal="20dp"
+                android:textColor="@color/rederror"
+                android:layout_marginTop="5dp"
+                android:fontFamily="@font/nunitosanslight"
+                android:text="Complete el campo de correo"
+                android:visibility="gone"/>
+
+            <RelativeLayout
+                android:id="@+id/rltFografiasRespOffer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_below="@+id/errorUbicacionOffer">
+
+                <RelativeLayout
+                    android:id="@+id/rltMainFografiasRespOffer"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/fieldsbackground">
+                    <RelativeLayout
+                        android:id="@+id/rltTituloFografiasRespOffer"
+                        android:layout_width="match_parent"
+                        android:padding="10dp"
+                        android:background="@drawable/backgroundltitulofotos"
+                        android:layout_height="wrap_content">
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/white"
+                            android:fontFamily="@font/nunitosansbold"
+                            android:text="Adjuntar Fotos (máximo 5)"
+                            android:drawableRight="@drawable/ic_photo_library_24"/>
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:id="@+id/rltGridFografiasRespOffer"
+                        android:layout_width="match_parent"
+                        android:layout_height="200sp"
+                        android:layout_below="@id/rltTituloFografiasRespOffer">
+                        <GridView
+                            android:id="@+id/gridFografiasRespOffer"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:numColumns="3"
+                            android:stretchMode="columnWidth"
+                            android:scrollbarStyle="outsideInset" />
+                    </RelativeLayout>
+                </RelativeLayout>
+
+                <TextView
+                    android:id="@+id/errorFografiasRespOffer"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/rltMainFografiasRespOffer"
+                    android:layout_marginHorizontal="20dp"
+                    android:textColor="@color/rederror"
+                    android:layout_marginTop="5dp"
+                    android:fontFamily="@font/nunitosanslight"
+                    android:text="Complete el campo de correo"
+                    android:visibility="gone"/>
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/rltTelefonoOffer"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_below="@id/rltFografiasRespOffer"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/fieldsbackground"
+                android:orientation="horizontal">
+
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true">
+
+                    <EditText
+                        android:id="@+id/telefonoTxtOffer"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_centerVertical="true"
+                        android:layout_gravity="center"
+                        android:layout_marginLeft="10dp"
+                        android:background="#00FFFFFF"
+                        android:ems="10"
+                        android:inputType="phone"
+                        android:fontFamily="@font/nunitosansregular"
+                        android:gravity="center|left"
+                        android:hint="Teléfono (opcional)"
+                        android:imeOptions="actionNext"
+                        android:paddingLeft="10dp"
+                        android:paddingRight="10dp"
+                        android:singleLine="true"
+                        android:textColor="#6c6d70"
+                        android:textSize="15dp" />
+                </RelativeLayout>
+
+            </RelativeLayout>
+
+            <TextView
+                android:id="@+id/errorTelefonoOffer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/rltTelefonoOffer"
+                android:layout_marginHorizontal="20dp"
+                android:textColor="@color/rederror"
+                android:layout_marginTop="5dp"
+                android:fontFamily="@font/nunitosanslight"
+                android:text="Complete el campo de correo"
+                android:visibility="gone"/>
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/btnRegisterOffer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/rltDetallesOffer"
+            android:layout_alignParentLeft="false"
+            android:layout_centerVertical="false"
+            android:layout_marginHorizontal="40dp"
+            android:layout_marginTop="40dp"
+            android:background="@drawable/buttonbackgroundlogin"
+            android:gravity="center"
+            android:padding="10dp"
+            android:paddingVertical="10dp"
+            android:visibility="gone">
+
+            <TextView
+                android:id="@+id/registerTextoOffer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="15dp"
+                android:fontFamily="@font/nunitosansregular"
+                android:gravity="center"
+                android:paddingRight="5dp"
+                android:text="Registrar Solicitud"
+                android:textColor="#FFFFFF"
+                android:textSize="13sp" />
+        </RelativeLayout>
+    </RelativeLayout>
+
+</androidx.core.widget.NestedScrollView >
