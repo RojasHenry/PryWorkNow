@@ -13,7 +13,7 @@ const routes: Routes = [
     { path: 'solicitudeslist', component: SolicitudesListComponent},
     { path: 'usuarioslist', component: UsuariosListComponent},
     { path: 'categorias', component: CategoriasComponent},
-    { path: '', redirectTo:'usuarioslist', pathMatch:"full" }
+    { path: '', redirectTo:'solicitudeslist', pathMatch:"full" }
   ]},
 ];
 

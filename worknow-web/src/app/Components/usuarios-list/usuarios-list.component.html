@@ -1,24 +1,113 @@
 <div class="grid-container">
-  <h1 class="mat-h1">Dashboard</h1>
-  <mat-grid-list cols="2" rowHeight="350px">
-    <mat-grid-tile *ngFor="let card of cards | async" [colspan]="card.cols" [rowspan]="card.rows">
-      <mat-card class="dashboard-card">
+  <h1 class="mat-h1">Usuarios</h1>
+  <div fxLayout="row wrap" fxLayoutGap="16px grid">
+    <div *ngFor="let usuario of listUsuarios" fxFlex="33%" fxFlex.xs="100%" fxFlex.sm="50%" >
+      <mat-card class="mat-elevation-z4">
         <mat-card-header>
-          <mat-card-title>
-            {{card.title}}
-            <button mat-icon-button class="more-button" [matMenuTriggerFor]="menu" aria-label="Toggle menu">
-              <mat-icon>more_vert</mat-icon>
+          <button mat-icon-button class="more-button" [matMenuTriggerFor]="menu" aria-label="Toggle menu">
+            <mat-icon>more_vert</mat-icon>
+          </button>
+          <mat-menu #menu="matMenu" xPosition="before">
+            <button mat-menu-item *ngIf="getStatusUsuario(usuario.key)" (click)="deshabilitarUsuario(usuario, false)">
+              <mat-icon>unpublished</mat-icon>
+              <span>Deshabilitar</span>
             </button>
-            <mat-menu #menu="matMenu" xPosition="before">
-              <button mat-menu-item>Expand</button>
-              <button mat-menu-item>Remove</button>
-            </mat-menu>
-          </mat-card-title>
+  
+            <button mat-menu-item *ngIf="!getStatusUsuario(usuario.key)" (click)="deshabilitarUsuario(usuario, true)">
+              <mat-icon>check_circle</mat-icon>
+              <span>Habilitar</span>
+            </button>
+          </mat-menu>
         </mat-card-header>
         <mat-card-content class="dashboard-card-content">
-          <div>Card Content Here</div>
+
+          <div mat-card-avatar class="circle" [ngStyle]="{'background-color':  circleColor }">
+            <img *ngIf="usuario.foto" src="{{'data:image/jpg;base64,' + usuario.foto}}">
+
+            <div *ngIf="!usuario.foto" class="initials">
+              {{getInitials(usuario)}}
+            </div>
+            
+          </div>
+          <mat-card-title>{{usuario.nombre}}  {{usuario.apellido}}</mat-card-title>
+          <div class="flex-container subtitle">
+            <mat-card-subtitle>{{usuario.rol}} </mat-card-subtitle>
+            <p class="dot">·</p>
+            <mat-card-subtitle [ngClass]="'statushabilitado'" *ngIf="getStatusUsuario(usuario.key)">Habilitado</mat-card-subtitle>
+            <mat-card-subtitle [ngClass]="'statusdeshabilitado'" *ngIf="!getStatusUsuario(usuario.key)">Deshabilitado</mat-card-subtitle>
+          </div>
+
+
+          <h3>Datos Personales:</h3>
+          <mat-divider></mat-divider>
+
+          <div class="flex-container">
+            <h3 class="container-element">
+              Correo: 
+            </h3>
+            <p class="container-element">
+              {{getUsuarioCorreo(usuario.key)}}
+            </p>
+          </div>
+
+          <div class="flex-container" *ngIf="getFromSocNetwork(usuario.key)">
+            <h3 class="container-element">
+              Red Social: 
+            </h3>
+            <div class="container-element">
+              <img  width="25px" height="25px" src="../../../assets/img/iconsgoogle.png">
+            </div>
+          </div>
+
+          <div class="flex-container">
+            <h3 class="container-element">
+              Ciudad: 
+            </h3>
+            <p class="container-element">
+              {{usuario.ciudad}}
+            </p>
+          </div>
+
+          <div class="flex-container">
+            <h3 class="container-element">
+              Teléfono: 
+            </h3>
+            <p class="container-element">
+              {{usuario.telefono}}
+            </p>
+          </div>
+
+          <h3 *ngIf="usuario.datosProf.descripcion">Datos Profesional:</h3>
+          <mat-divider *ngIf="usuario.datosProf.descripcion"></mat-divider>
+
+
+          <div class="flex-container" *ngIf="usuario.datosProf.descripcion">
+            <h3 class="container-element">
+              Descripción: 
+            </h3>
+            <p class="container-element">
+              {{usuario.datosProf.descripcion}}
+            </p>
+          </div>
+
+          <div class="flex-container" *ngIf="usuario.datosProf.categorias">
+            <h3 class="container-element">
+              Categorias:
+            </h3>
+            <div class="container-element" *ngFor="let categoria of usuario.datosProf.categorias" >
+              {{getNombreCategoria(categoria)}}
+            </div>
+          </div>
+
+          <div *ngIf="usuario.datosProf.categorias">
+            <h2 style="font-weight: bold; font-size: 50px; margin-top: 20px;" *ngIf="usuario.datosProf.categorias">2.5</h2>
+            <div *ngIf="usuario.rol == 'Profesional'" class="center-stars">
+              <ngx-stars [readonly]="true" [size]="1" [color]="'#ffcc00'"  [maxStars]="5" [initialStars]="2.5" class="inner-element" ></ngx-stars>
+            </div>
+          </div>
+         
         </mat-card-content>
       </mat-card>
-    </mat-grid-tile>
-  </mat-grid-list>
+    </div>
+  </div>
 </div>

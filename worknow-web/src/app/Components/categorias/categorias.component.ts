@@ -43,7 +43,6 @@ export class CategoriasComponent implements OnInit {
     )
     .subscribe(data =>{
       this.listCategorias = data
-      console.log(data)
       this.dataSource.data = this.listCategorias;
     })
   }
@@ -133,10 +132,16 @@ export class CategoriasComponent implements OnInit {
         element.estado = newEstado
         this.dbService.updateCategoria(key,element)
         .then((success)=>{
-          alert("Actualizado correctamente. ")
+          this.dialog.open(DialogComponent,{
+            disableClose: true,
+            data: {title: "Aviso", message: ` La categoria ${element.nombre} fue ${ newEstado ? 'habilitada' : 'deshabilitada'} exitosamente.`,twoButtons:false}
+          });
         })
         .catch((error)=>{
-          console.log(error);
+          this.dialog.open(DialogComponent,{
+            disableClose: true,
+            data: {title: "Error", message: ` Error: ${error}`,twoButtons:false}
+          });
         })
       }
       

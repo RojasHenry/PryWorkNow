@@ -7,7 +7,10 @@
   top: 15px;
   left: 15px;
   right: 15px;
-  bottom: 15px;
+}
+
+.grid-container  > .mat-card {
+  width: 300px;
 }
 
 .more-button {
@@ -18,4 +21,92 @@
 
 .dashboard-card-content {
   text-align: center;
+}
+
+.dashboard-card-content p{
+  text-align: left;
+}
+.circle {
+  border-radius   : 50%;
+    width           : 60px;
+    height          : 60px;
+    display         : flex;
+    justify-content : center;
+    align-items     : center;
+
+    img{
+        border-radius: 50%;
+        width        : 60px;
+        height       : 60px;
+    }
+
+    .initials {
+        color         : #FFFFFF;
+        font-size     : 20px;
+        line-height   : 19px;
+        letter-spacing: 0.2625px;
+    }
+}
+
+.center-stars{
+  display: flex;        
+
+  justify-content : center;
+  align-items: center;
+}
+
+.inner-element{
+  width: min-content;
+}
+
+.mat-grid-tile {
+  overflow: unset;
+}
+
+.flex-container{
+  display: -webkit-box;  /* OLD - iOS 6-, Safari 3.1-6, BB7 */
+  display: -ms-flexbox;  /* TWEENER - IE 10 */
+  display: -webkit-flex; /* NEW - Safari 6.1+. iOS 7.1+, BB10 */
+  display: flex;         /* NEW, Spec - Firefox, Chrome, Opera */
+  
+  justify-content: center;
+  align-items: center;
+}
+
+.subtitle{
+  margin-bottom: 16px;
+}
+
+.container-element{
+  width: 100%;
+  text-align: center !important;
+}
+
+.mat-divider{
+  margin: 0 0 10px 0;
+  position: unset;
+}
+
+h3{
+  margin: 0;
+}
+
+.mat-card-title:not(:first-child), .mat-card-subtitle:not(:first-child) {
+  margin-top: 0px;
+}
+
+.dot{
+  margin: 0 10px;
+}
+
+.mat-card-subtitle {
+  margin-bottom: 0px;
+}
+
+.statushabilitado{
+  color: green !important;
+}
+
+.statusdeshabilitado{
+  color: red !important;
 }

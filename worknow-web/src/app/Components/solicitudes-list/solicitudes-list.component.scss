@@ -7,7 +7,6 @@
   top: 15px;
   left: 15px;
   right: 15px;
-  bottom: 15px;
 }
 
 .more-button {
@@ -18,4 +17,69 @@
 
 .dashboard-card-content {
   text-align: center;
+}
+
+.flex-container{
+  display: -webkit-box;  /* OLD - iOS 6-, Safari 3.1-6, BB7 */
+  display: -ms-flexbox;  /* TWEENER - IE 10 */
+  display: -webkit-flex; /* NEW - Safari 6.1+. iOS 7.1+, BB10 */
+  display: flex;         /* NEW, Spec - Firefox, Chrome, Opera */
+  
+  justify-content: center;
+  align-items: center;
+}
+
+.container-element-select{
+  width: 50%;
+  text-align: center !important;
+}
+
+.container-element{
+  width: 100%;
+  text-align: center !important;
+}
+
+.noimage{
+  font-size: 80px;
+
+  height: 80px;
+  width: 80px;
+}
+
+.mat-divider{
+  margin: 0 0 10px 0;
+  position: unset;
+}
+
+h3{
+  margin: 0;
+}
+
+.mat-card-title:not(:first-child), .mat-card-subtitle:not(:first-child) {
+  margin-top: 0px;
+}
+
+.estadotext{
+  margin-top: 20px;
+  font-size: 25px;
+  font-style: oblique;
+}
+
+.publicado{
+  color: green;
+}
+
+.enprogreso{
+  color: #ffab40;
+}
+
+.cancelado{
+  color: red;
+}
+
+.center-image{
+  display: grid;        
+
+  justify-content : center;
+  align-items: center;
 }

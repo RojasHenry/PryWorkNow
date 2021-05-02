@@ -1,24 +1,154 @@
 <div class="grid-container">
-  <h1 class="mat-h1">Dashboard</h1>
-  <mat-grid-list cols="2" rowHeight="350px">
-    <mat-grid-tile *ngFor="let card of cards | async" [colspan]="card.cols" [rowspan]="card.rows">
-      <mat-card class="dashboard-card">
+  <div class="flex-container">
+    <mat-form-field appearance="fill" class="container-element-select">
+      <mat-label>Seleccione una categoria:</mat-label>
+      <mat-select [(value)]="selectedCategoria" (selectionChange)="onChange($event)">
+        <mat-option *ngFor="let categoria of listCategorias" [value]="categoria.key">{{categoria.nombre}}</mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+
+  <div fxLayout="row wrap" fxLayoutGap="16px grid" *ngIf="listPublicaciones.length > 0; else noData">
+    <div *ngFor="let publicacion of listPublicaciones; let i = index" fxFlex="33%" fxFlex.xs="100%" fxFlex.sm="50%"  >
+      <mat-card class="mat-elevation-z4" >
         <mat-card-header>
           <mat-card-title>
-            {{card.title}}
-            <button mat-icon-button class="more-button" [matMenuTriggerFor]="menu" aria-label="Toggle menu">
+            Solicitud {{i+1}}
+            <button mat-icon-button class="more-button" [matMenuTriggerFor]="menu" aria-label="Toggle menu" *ngIf="publicacion.estado == 'Publicado'" >
               <mat-icon>more_vert</mat-icon>
             </button>
             <mat-menu #menu="matMenu" xPosition="before">
-              <button mat-menu-item>Expand</button>
-              <button mat-menu-item>Remove</button>
+              <button mat-menu-item *ngIf="publicacion.estado == 'Publicado'" (click)="procesarSolicitud(publicacion)">
+                <mat-icon>cancel</mat-icon>
+                <span>Cancelar Solicitud</span>
+              </button>
             </mat-menu>
           </mat-card-title>
         </mat-card-header>
         <mat-card-content class="dashboard-card-content">
-          <div>Card Content Here</div>
+          <h3>Datos del Solicitante:</h3>
+            <mat-divider></mat-divider>
+
+            <div class="flex-container">
+              <h3 class="container-element">
+                Nombre completo: 
+              </h3>
+              <p class="container-element">
+                {{getSolicitanteNombre(publicacion.idUsuarioCli)}}
+              </p>
+            </div>
+
+            <div class="flex-container">
+              <h3 class="container-element">
+                Ciudad: 
+              </h3>
+              <p class="container-element">
+                {{getSolicitanteCiudad(publicacion.idUsuarioCli)}}
+              </p>
+            </div>
+
+
+            <h3>Detalle de Solicitud:</h3>
+            <mat-divider></mat-divider>
+
+            <div class="flex-container">
+              <div class="container-element">
+                <div class="center-image" *ngIf="publicacion.tieneFotos">
+                  <mat-icon class="noimage" aria-hidden="false">collections</mat-icon>
+                  <button mat-button color="primary" (click)="abrirDialogo(publicacion.key)" >Ver Fotografías</button>
+                </div>
+                <mat-icon class="noimage" aria-hidden="false" *ngIf="!publicacion.tieneFotos">image_not_supported</mat-icon>
+              </div>
+              <div class="container-element">
+                <h3 class="container-element">
+                  Descripción: 
+                </h3>
+                <p class="container-element">
+                  {{publicacion.descripcion}}
+                </p>
+              </div>
+            </div>
+
+          <div class="flex-container">
+            <h3 class="container-element">
+              Ubicación: 
+            </h3>
+            <p class="container-element">
+              {{publicacion.ubicacion}}
+            </p>
+          </div>
+
+          <div class="flex-container" *ngIf="!publicacion.fechaFin">
+            <h3 class="container-element" >
+              Fecha de solicitud: 
+            </h3>
+
+            <p class="container-element" >
+              {{publicacion.fechaIni}}
+            </p>
+
+          </div>
+
+          <div class="flex-container" *ngIf="publicacion.fechaFin">
+            <h3 class="container-element" >
+              Período de solicitud: 
+            </h3>
+
+            <p class="container-element" >
+              {{publicacion.fechaIni}} - {{publicacion.fechaFin}}
+            </p>
+          </div>
+
+          <div class="flex-container">
+            <h3 class="container-element">
+              Solicitud Inmediata: 
+            </h3>
+            <p class="container-element" *ngIf="publicacion.inmediato">
+              SI
+            </p>
+
+            <p class="container-element" *ngIf="!publicacion.inmediato">
+              NO
+            </p>
+          </div>
+
+          <div class="flex-container">
+            <h3 class="container-element">
+              Personal necesario: 
+            </h3>
+            <p class="container-element" *ngIf="publicacion.soloUnaPersona">
+              Una Persona
+            </p>
+
+            <p class="container-element" *ngIf="!publicacion.soloUnaPersona">
+              {{publicacion.cantidad}} personas
+            </p>
+          </div>
+
+
+          <div class="flex-container" *ngIf="publicacion.telefono">
+            <h3 class="container-element">
+              Teléfono adicional: 
+            </h3>
+            <p class="container-element">
+              {{publicacion.telefono}}
+            </p>
+          </div>
+
+          <div class="flex-container estadotext" [ngClass]="publicacion.estado == 'Publicado' ? 'publicado': 
+                                                            publicacion.estado == 'EnProgreso' ? 'enprogreso' : 
+                                                            publicacion.estado == 'Terminado' ? 'publicado' :'cancelado'" >
+              "{{publicacion.estado}}"
+          </div>
+
         </mat-card-content>
       </mat-card>
-    </mat-grid-tile>
-  </mat-grid-list>
+    </div>
+  </div>
+
+  <ng-template #noData>
+    <div class="flex-container" *ngIf="firstime">
+      <h2>No se encontraron solicitudes en la categoría consultada.</h2>
+    </div>
+  </ng-template>
 </div>

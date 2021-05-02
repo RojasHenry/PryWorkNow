@@ -28,13 +28,16 @@ import { DataBaseConnService } from './Services/data-base-conn.service';
 import { MatTableModule } from '@angular/material/table';
 import { DialogComponent } from './Components/dialog/dialog.component';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-
+import { NgxStarsModule } from 'ngx-stars';
+import { DialogPicturesComponent } from './Components/dialog-pictures/dialog-pictures.component';
+import { MatCarouselModule } from '@ngmodule/material-carousel';
 
 @NgModule({
   declarations: [
     AppComponent,
     routingComponents,
     DialogComponent,
+    DialogPicturesComponent,
   ],
   imports: [
     BrowserModule,
@@ -60,7 +63,9 @@ import { MatDialog, MatDialogModule } from '@angular/material/dialog';
     FlexLayoutModule,
     AngularFireModule.initializeApp(environment.firebase),
     AngularFireAuthModule,
-    AngularFirestoreModule
+    AngularFirestoreModule,
+    NgxStarsModule,
+    MatCarouselModule.forRoot()
   ],
   providers: [AuthService, DataBaseConnService],
   bootstrap: [AppComponent]

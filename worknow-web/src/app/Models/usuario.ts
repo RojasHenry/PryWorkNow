@@ -1,7 +1,11 @@
+import { Profesional } from "./profesional";
+
 export interface Usuario {
-   uid: string;
-   email: string;
-   displayName: string;
-   photoURL: string;
-   emailVerified: boolean;
+   foto: string
+   nombre: string
+   apellido: string
+   ciudad: string
+   rol: string
+   telefono: string
+   datosProf: Profesional
 }

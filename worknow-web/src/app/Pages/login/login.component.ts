@@ -1,6 +1,8 @@
 import { Component } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
+import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
+import { DialogComponent } from 'src/app/Components/dialog/dialog.component';
 import { AuthService } from 'src/app/Services/auth.service';
 
 @Component({
@@ -20,7 +22,7 @@ export class LoginComponent {
 
   hide = true;
 
-  constructor(private fb: FormBuilder, private router:Router, private authservice: AuthService) {
+  constructor(private fb: FormBuilder, private router:Router, private authservice: AuthService, public dialog: MatDialog) {
     this.authservice.isUserLog().subscribe(user => {
       localStorage.setItem('user', JSON.stringify(user));
       const usuario = JSON.parse(localStorage.getItem('user')|| '{}');
@@ -37,10 +39,16 @@ export class LoginComponent {
         this.router.navigate(['/menuprincipal'])
       })
       .catch((error)=>{
-        alert("Error: "+ error)
+        this.dialog.open(DialogComponent,{
+          disableClose: true,
+          data: {title: "Error", message: `Error: ${error}`,twoButtons:false}
+        });
       })
     }else{
-      alert("Complete los campos del formulario.")
+      this.dialog.open(DialogComponent,{
+        disableClose: true,
+        data: {title: "Error", message: `Complete los campos del formulario.`,twoButtons:false}
+      });
     }
   }
 

@@ -1,0 +1,16 @@
+<h2 mat-dialog-title>Respaldo Fotográfico</h2>
+<mat-dialog-content class="mat-typography">
+    <div fxLayout="row wrap" fxLayoutGap="10px grid">
+        <div fxFlex="25%" fxFlex.xs="100%" fxFlex.sm="50%" *ngFor="let pic of listFotos; let i = index">
+            <mat-card class="mat-elevation-z4" >
+                <mat-card-header>
+                    <mat-card-title>Imagen {{i+1}}</mat-card-title>
+                </mat-card-header>
+                <img mat-card-image mat-card-image src="{{'data:image/jpg;base64,'+pic}}">
+            </mat-card>
+        </div>
+    </div>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+    <button mat-button (click)="onNoClick()">Cerrar</button>
+</mat-dialog-actions>
