@@ -1,22 +1,35 @@
 package com.uisrael.worknow.Views
 
+import android.content.Context
+import android.content.ContextWrapper
+import android.graphics.BitmapFactory
+import android.media.Image
 import android.os.Bundle
+import android.service.autofill.UserData
+import android.util.Base64
 import android.view.MenuItem
 import android.view.View
+import android.widget.ImageView
+import android.widget.TextView
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
+import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.viewModelScope
 import androidx.navigation.ActivityNavigator
 import androidx.viewpager.widget.ViewPager.OnPageChangeListener
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.navigation.NavigationView
+import com.uisrael.worknow.Model.Data.UsuariosData
 import com.uisrael.worknow.R
 import com.uisrael.worknow.ViewModel.TabUsersViewModel
 import com.uisrael.worknow.Views.Adapters.SectionsPagerAdapter
 import kotlinx.android.synthetic.main.activity_tab_users.*
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 
@@ -28,8 +41,9 @@ class TabUsersActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
     private lateinit var navView: BottomNavigationView
     private lateinit var viewModel: TabUsersViewModel
     private lateinit var toggle: ActionBarDrawerToggle
-
+    private lateinit var uidUsuario: String
     private lateinit var pagerAdapter: SectionsPagerAdapter
+    private lateinit var navDrawableLayout: NavigationView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,11 +53,12 @@ class TabUsersActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
 
         drawerLayout = findViewById(R.id.drawer_layout)
         navView = findViewById(R.id.nav_bottom_view)
-        val navDrawableLayout: NavigationView = findViewById(R.id.nav_view)
+        navDrawableLayout = findViewById(R.id.nav_view)
 
 
         setSupportActionBar(toolbar)
         isProf = intent.getStringExtra("rolUser")?.equals("Profesional") == true
+        uidUsuario = intent.getStringExtra("uid")
 
 
         pagerAdapter = if(isProf){
@@ -73,29 +88,6 @@ class TabUsersActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
         toggle.syncState()
 
         navDrawableLayout.setNavigationItemSelectedListener(this)
-
-        /*navController.addOnDestinationChangedListener{ _, destination, _ ->
-            titleToolbar.text = destination.label
-            // hide bottonnavview
-            when (destination.id){
-                R.id.navigation_offersregister_cli, R.id.navigation_publications_prof, R.id.navigation_inprogress_prof, R.id.navigation_inprogress_cli -> {
-                    unlockDrawer()
-                    showBottomNav()
-                    changeToolbarFuncions(false)
-                }
-                R.id.navigation_profile, R.id.navigation_history_offer_cli -> {
-                    hideBottomNav()
-                    lockDrawer()
-                    changeToolbarFuncions(true)
-                }
-                else -> {
-                    unlockDrawer()
-                    showBottomNav()
-                    changeToolbarFuncions(false)
-                }
-
-            }
-        }*/
 
         changeToolbarFuncions(false)
 
@@ -137,6 +129,56 @@ class TabUsersActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
             override fun onPageScrollStateChanged(arg0: Int) {
             }
         })
+
+        getCurrentUser();
+    }
+
+    private fun getCurrentUser() {
+        viewModel.viewModelScope.launch {
+            viewModel.getCurrentUser(uidUsuario).collect {
+                var cabeceraView = navDrawableLayout.getHeaderView(0)
+                var nombreUsuarioActual = cabeceraView.findViewById<TextView>(R.id.nombreUsuarioActual)
+                if (it != null) {
+                    nombreUsuarioActual.text = "${it.nombre} ${it.apellido}"
+                }
+                var iconUsuarioActual = cabeceraView.findViewById<TextView>(R.id.iconUsuarioActual)
+                if (it != null) {
+                    if (it.foto.isNotBlank()){
+                        var imageUsuarioActual = cabeceraView.findViewById<ImageView>(R.id.imageUsuarioActual)
+                        val imageBytes = Base64.decode(it?.foto, Base64.DEFAULT)
+                        val decodedImage = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.size)
+                        imageUsuarioActual.setImageBitmap(decodedImage)
+                        iconUsuarioActual.visibility = View.GONE
+                    }else{
+                        iconUsuarioActual.text = "${it.nombre.get(0)}${it.apellido.get(0)}"
+                    }
+                }
+            }
+        }
+
+        viewModel.viewModelScope.launch {
+            var cabeceraView = navDrawableLayout.getHeaderView(0)
+            var emailUsuarioActual = cabeceraView.findViewById<TextView>(R.id.emailUsuarioActual)
+            lifecycleOwner()?.let {
+                viewModel.getUserLogged().observe(it,{ user->
+                    emailUsuarioActual.text = user.email
+                })
+            }
+
+        }
+    }
+
+    fun Context.lifecycleOwner(): LifecycleOwner? {
+        var curContext = this
+        var maxDepth = 20
+        while (maxDepth-- > 0 && curContext !is LifecycleOwner) {
+            curContext = (curContext as ContextWrapper).baseContext
+        }
+        return if (curContext is LifecycleOwner) {
+            curContext
+        } else {
+            null
+        }
     }
 
     private fun changeToolbarFuncions(isBack: Boolean){

@@ -11,7 +11,7 @@
         android:layout_alignParentTop="true"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/backgroundlogin"
+        android:background="@drawable/background_login"
         android:paddingVertical="15dp"
         android:paddingRight="20dp"
         android:paddingLeft="10dp">
@@ -52,7 +52,7 @@
 
         <com.google.android.material.tabs.TabLayout
             android:id="@+id/tablayoutRegister"
-            app:tabBackground="@drawable/tablayoutitem"
+            app:tabBackground="@drawable/tab_layout_item"
             app:tabMode="fixed"
             app:tabTextColor="#989898"
             app:tabSelectedTextColor="#FBAC45"

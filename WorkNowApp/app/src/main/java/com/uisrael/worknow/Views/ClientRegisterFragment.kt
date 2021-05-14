@@ -1,6 +1,5 @@
 package com.uisrael.worknow.Views
 
-import android.content.Context
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -13,14 +12,9 @@ import androidx.core.view.isVisible
 import androidx.core.widget.addTextChangedListener
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewModelScope
-import com.uisrael.worknow.Model.Data.CredencialesData
-import com.uisrael.worknow.Model.Data.UsuariosData
-import com.uisrael.worknow.Model.FirebaseAuthRepository
-import com.uisrael.worknow.Model.FirebaseModelsRepository
 import com.uisrael.worknow.R
 import com.uisrael.worknow.ViewModel.ClientViewModel
 import kotlinx.android.synthetic.main.client_fragment.*
-import kotlinx.android.synthetic.main.login_fragment.*
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
@@ -65,12 +59,12 @@ class ClientRegisterFragment : Fragment() {
                         0 -> {
                             errorNombreCli.isVisible = false
                             errorNombreCli.text = value.mensaje
-                            rltNombreCli.background = context?.let { ContextCompat.getDrawable(it,R.drawable.fieldsbackground) }
+                            rltNombreCli.background = context?.let { ContextCompat.getDrawable(it,R.drawable.background_fields) }
                         }
                         else -> {
                             errorNombreCli.isVisible = true
                             errorNombreCli.text = value.mensaje
-                            rltNombreCli.background = context?.let { ContextCompat.getDrawable(it,R.drawable.fieldsbackgrounderror) }
+                            rltNombreCli.background = context?.let { ContextCompat.getDrawable(it,R.drawable.background_fields_error) }
                         }
                     }
                 }
@@ -84,12 +78,12 @@ class ClientRegisterFragment : Fragment() {
                         0 -> {
                             errorApellidoCli.isVisible = false
                             errorApellidoCli.text = value.mensaje
-                            rltApellidoCli.background = context?.let { ContextCompat.getDrawable(it,R.drawable.fieldsbackground) }
+                            rltApellidoCli.background = context?.let { ContextCompat.getDrawable(it,R.drawable.background_fields) }
                         }
                         else -> {
                             errorApellidoCli.isVisible = true
                             errorApellidoCli.text = value.mensaje
-                            rltApellidoCli.background = context?.let { ContextCompat.getDrawable(it,R.drawable.fieldsbackgrounderror) }
+                            rltApellidoCli.background = context?.let { ContextCompat.getDrawable(it,R.drawable.background_fields_error) }
                         }
                     }
                 }
@@ -103,12 +97,12 @@ class ClientRegisterFragment : Fragment() {
                         0 -> {
                             errorCiudadCli.isVisible = false
                             errorCiudadCli.text = value.mensaje
-                            rltCiudadCli.background = context?.let { ContextCompat.getDrawable(it,R.drawable.fieldsbackground) }
+                            rltCiudadCli.background = context?.let { ContextCompat.getDrawable(it,R.drawable.background_fields) }
                         }
                         else -> {
                             errorCiudadCli.isVisible = true
                             errorCiudadCli.text = value.mensaje
-                            rltCiudadCli.background = context?.let { ContextCompat.getDrawable(it,R.drawable.fieldsbackgrounderror) }
+                            rltCiudadCli.background = context?.let { ContextCompat.getDrawable(it,R.drawable.background_fields_error) }
                         }
                     }
                 }
@@ -122,12 +116,12 @@ class ClientRegisterFragment : Fragment() {
                         0 -> {
                             errorTelefonoCli.isVisible = false
                             errorTelefonoCli.text = value.mensaje
-                            rltTelefonoCli.background = context?.let { ContextCompat.getDrawable(it,R.drawable.fieldsbackground) }
+                            rltTelefonoCli.background = context?.let { ContextCompat.getDrawable(it,R.drawable.background_fields) }
                         }
                         else -> {
                             errorTelefonoCli.isVisible = true
                             errorTelefonoCli.text = value.mensaje
-                            rltTelefonoCli.background = context?.let { ContextCompat.getDrawable(it,R.drawable.fieldsbackgrounderror) }
+                            rltTelefonoCli.background = context?.let { ContextCompat.getDrawable(it,R.drawable.background_fields_error) }
                         }
                     }
                 }
@@ -141,12 +135,12 @@ class ClientRegisterFragment : Fragment() {
                         0 -> {
                             errorCorreoCli.isVisible = false
                             errorCorreoCli.text = value.mensaje
-                            rltCorreoCli.background = context?.let { ContextCompat.getDrawable(it,R.drawable.fieldsbackground) }
+                            rltCorreoCli.background = context?.let { ContextCompat.getDrawable(it,R.drawable.background_fields) }
                         }
                         else -> {
                             errorCorreoCli.isVisible = true
                             errorCorreoCli.text = value.mensaje
-                            rltCorreoCli.background = context?.let { ContextCompat.getDrawable(it,R.drawable.fieldsbackgrounderror) }
+                            rltCorreoCli.background = context?.let { ContextCompat.getDrawable(it,R.drawable.background_fields_error) }
                         }
                     }
                 }
@@ -160,12 +154,12 @@ class ClientRegisterFragment : Fragment() {
                         0 -> {
                             errorPasswordCli.isVisible = false
                             errorPasswordCli.text = value.mensaje
-                            rltPasswordCli.background = context?.let { ContextCompat.getDrawable(it,R.drawable.fieldsbackground) }
+                            rltPasswordCli.background = context?.let { ContextCompat.getDrawable(it,R.drawable.background_fields) }
                         }
                         else -> {
                             errorPasswordCli.isVisible = true
                             errorPasswordCli.text = value.mensaje
-                            rltPasswordCli.background = context?.let { ContextCompat.getDrawable(it,R.drawable.fieldsbackgrounderror) }
+                            rltPasswordCli.background = context?.let { ContextCompat.getDrawable(it,R.drawable.background_fields_error) }
                         }
                     }
                 }

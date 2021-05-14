@@ -3,11 +3,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Views.TabsFragments.PublicationsFragment">
-
-    <TextView
+    tools:context=".Views.TabsFragments.PublicationsFragment"
+    android:layout_margin="10dp">
+    <ListView
+        android:id="@+id/ofertasListaPublicacion"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="Hello 1" />
-
+        android:layout_height="match_parent" />
 </FrameLayout>

@@ -32,8 +32,8 @@ class LoginViewModel : ViewModel() {
         return authFirebaseRepository.getUserLogged()
     }
 
-    fun getCurrentUser(uid:String ): Flow<UsuariosData> {
-        return modelFirebaseRepository.getCurrentUser(uid)
+    fun getCurrentUser(uid:String ): Flow<UsuariosData?> {
+        return modelFirebaseRepository.getCurrentUser(uid, true)
     }
 
     fun setCorreo (correo: String){

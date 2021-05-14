@@ -632,7 +632,7 @@ class OffersRegisterFragment : Fragment() {
                             rltCategoriasOffer.background = context?.let {
                                 ContextCompat.getDrawable(
                                     it,
-                                    R.drawable.fieldsbackground
+                                    R.drawable.background_fields
                                 )
                             }
                         }
@@ -641,7 +641,7 @@ class OffersRegisterFragment : Fragment() {
                             errorCategoriasOffer.text = value.mensaje
                             rltCategoriasOffer.background = context?.let { ContextCompat.getDrawable(
                                 it,
-                                R.drawable.fieldsbackgrounderror
+                                R.drawable.background_fields_error
                             ) }
                         }
                     }
@@ -659,7 +659,7 @@ class OffersRegisterFragment : Fragment() {
                             rltFechaInOffer.background = context?.let {
                                 ContextCompat.getDrawable(
                                     it,
-                                    R.drawable.fieldsbackground
+                                    R.drawable.background_fields
                                 )
                             }
                         }
@@ -670,7 +670,7 @@ class OffersRegisterFragment : Fragment() {
                             fechaInOffer.text = Editable.Factory.getInstance().newEditable("")
                             rltFechaInOffer.background = context?.let { ContextCompat.getDrawable(
                                 it,
-                                R.drawable.fieldsbackgrounderror
+                                R.drawable.background_fields_error
                             ) }
                         }
                     }
@@ -688,7 +688,7 @@ class OffersRegisterFragment : Fragment() {
                             rltFechaFinOffer.background = context?.let {
                                 ContextCompat.getDrawable(
                                     it,
-                                    R.drawable.fieldsbackground
+                                    R.drawable.background_fields
                                 )
                             }
                         }
@@ -699,7 +699,7 @@ class OffersRegisterFragment : Fragment() {
                             fechaFinOffer.text = Editable.Factory.getInstance().newEditable("")
                             rltFechaFinOffer.background = context?.let { ContextCompat.getDrawable(
                                 it,
-                                R.drawable.fieldsbackgrounderror
+                                R.drawable.background_fields_error
                             ) }
                         }
                     }
@@ -717,7 +717,7 @@ class OffersRegisterFragment : Fragment() {
                             rltDescripcionOffer.background = context?.let {
                                 ContextCompat.getDrawable(
                                     it,
-                                    R.drawable.fieldsbackground
+                                    R.drawable.background_fields
                                 )
                             }
                         }
@@ -726,7 +726,7 @@ class OffersRegisterFragment : Fragment() {
                             errorDescripcionOffer.text = value.mensaje
                             rltDescripcionOffer.background = context?.let { ContextCompat.getDrawable(
                                 it,
-                                R.drawable.fieldsbackgrounderror
+                                R.drawable.background_fields_error
                             ) }
                         }
                     }
@@ -744,7 +744,7 @@ class OffersRegisterFragment : Fragment() {
                             rltCantidadOffer.background = context?.let {
                                 ContextCompat.getDrawable(
                                     it,
-                                    R.drawable.fieldsbackground
+                                    R.drawable.background_fields
                                 )
                             }
                         }
@@ -753,7 +753,7 @@ class OffersRegisterFragment : Fragment() {
                             errorCantidadOffer.text = value.mensaje
                             rltCantidadOffer.background = context?.let { ContextCompat.getDrawable(
                                 it,
-                                R.drawable.fieldsbackgrounderror
+                                R.drawable.background_fields_error
                             ) }
                         }
                     }
@@ -771,7 +771,7 @@ class OffersRegisterFragment : Fragment() {
                             rltUbicacionOffer.background = context?.let {
                                 ContextCompat.getDrawable(
                                     it,
-                                    R.drawable.fieldsbackground
+                                    R.drawable.background_fields
                                 )
                             }
                         }
@@ -780,7 +780,7 @@ class OffersRegisterFragment : Fragment() {
                             errorUbicacionOffer.text = value.mensaje
                             rltUbicacionOffer.background = context?.let { ContextCompat.getDrawable(
                                 it,
-                                R.drawable.fieldsbackgrounderror
+                                R.drawable.background_fields_error
                             ) }
                         }
                     }
@@ -812,7 +812,7 @@ class OffersRegisterFragment : Fragment() {
                         rltTelefonoOffer.background = context?.let {
                             ContextCompat.getDrawable(
                                 it,
-                                R.drawable.fieldsbackground
+                                R.drawable.background_fields
                             )
                         }
                     }
@@ -821,7 +821,7 @@ class OffersRegisterFragment : Fragment() {
                         errorTelefonoOffer.text = value.mensaje
                         rltTelefonoOffer.background = context?.let { ContextCompat.getDrawable(
                             it,
-                            R.drawable.fieldsbackgrounderror
+                            R.drawable.background_fields_error
                         ) }
                     }
                 }

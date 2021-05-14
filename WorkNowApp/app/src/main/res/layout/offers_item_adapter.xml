@@ -1,0 +1,261 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content" android:padding="5dp">
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/background_fields">
+            <RelativeLayout
+                android:id="@+id/rltTituloNumeroOffer"
+                android:layout_width="match_parent"
+                android:padding="10dp"
+                android:background="@drawable/background_offerta"
+                android:layout_height="wrap_content">
+                <TextView
+                    android:id="@+id/tituloTxtNumeroOffer"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/white"
+                    android:fontFamily="@font/nunitosansbold"
+                    android:text="Solicitud" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/rltContenidoOffer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/rltTituloNumeroOffer"
+                android:padding="15dp">
+
+                <RelativeLayout
+                    android:id="@+id/rltfechasOfferList"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:id="@+id/fechasTituloOfferList"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/nunitosansbold"
+                        android:text="Período de trabajo:"
+                        android:textSize="14sp" />
+
+                    <LinearLayout
+                        android:id="@+id/lytFechasOfferList"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/fechasTituloOfferList"
+                        android:orientation="horizontal"
+                        android:weightSum="2">
+
+                        <RelativeLayout
+                            android:id="@+id/rltFechaInOfferList"
+                            android:layout_width="match_parent"
+                            android:layout_height="40dp"
+                            android:layout_marginTop="5dp"
+                            android:layout_marginEnd="5dp"
+                            android:layout_weight="1"
+                            android:background="@drawable/background_fields"
+                            android:orientation="horizontal">
+
+                            <EditText
+                                android:id="@+id/fechaInOfferList"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_centerVertical="true"
+                                android:layout_gravity="center"
+                                android:background="#00FFFFFF"
+                                android:drawableRight="@drawable/ic_calendar_24"
+                                android:ems="10"
+                                android:focusable="false"
+                                android:fontFamily="@font/nunitosansregular"
+                                android:hint="Fecha Inicio"
+                                android:inputType="none"
+                                android:paddingLeft="10dp"
+                                android:paddingRight="10dp"
+                                android:singleLine="true"
+                                android:textColor="#6c6d70"
+                                android:textSize="15dp" />
+
+                        </RelativeLayout>
+
+                        <RelativeLayout
+                            android:id="@+id/rltFechaFinOfferList"
+                            android:layout_width="match_parent"
+                            android:layout_height="40dp"
+                            android:layout_marginStart="5dp"
+                            android:layout_marginTop="5dp"
+                            android:layout_weight="1"
+                            android:background="@drawable/background_fields"
+                            android:orientation="horizontal">
+
+                            <EditText
+                                android:id="@+id/fechaFinOfferList"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_centerVertical="true"
+                                android:layout_gravity="center"
+                                android:background="#00FFFFFF"
+                                android:drawableRight="@drawable/ic_calendar_24"
+                                android:ems="10"
+                                android:focusable="false"
+                                android:fontFamily="@font/nunitosansregular"
+                                android:hint="Fecha Fin"
+                                android:inputType="none"
+                                android:paddingLeft="10dp"
+                                android:paddingRight="10dp"
+                                android:singleLine="true"
+                                android:textColor="#6c6d70"
+                                android:textSize="15dp" />
+
+                        </RelativeLayout>
+                    </LinearLayout>
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/rltDescripcionOfferList"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10sp"
+                    android:layout_below="@id/rltfechasOfferList">
+
+                    <TextView
+                        android:id="@+id/descripcionTituloOfferList"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/nunitosansbold"
+                        android:text="Descripción:"
+                        android:textSize="14sp" />
+
+                    <TextView
+                        android:id="@+id/descripcionTxtOfferList"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/descripcionTituloOfferList"
+                        android:background="@drawable/background_fields"
+                        android:fontFamily="@font/nunitosansregular"
+                        android:lines="3"
+                        android:padding="10dp"
+                        android:text="" />
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/rltUbicacionOfferList"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/rltDescripcionOfferList"
+                    android:layout_marginTop="10sp">
+
+                    <TextView
+                        android:id="@+id/ubicacionTituloOfferList"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/nunitosansbold"
+                        android:text="Ubicación: "
+                        android:textSize="14sp" />
+
+                    <TextView
+                        android:id="@+id/ubicacionTxtOfferList"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_toRightOf="@id/ubicacionTituloOfferList"
+                        android:fontFamily="@font/nunitosansregular"
+                        android:text="Quito" />
+
+                </RelativeLayout>
+
+
+                <RelativeLayout
+                    android:id="@+id/rltPersonasInmediatoOfferList"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10sp"
+                    android:layout_below="@id/rltUbicacionOfferList">
+                    <LinearLayout
+                        android:id="@+id/lytPersonasInmediatoOfferList"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:weightSum="2">
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1">
+
+                            <TextView
+                                android:id="@+id/inmediatoTituloOfferList"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:fontFamily="@font/nunitosansbold"
+                                android:text="Inmediato: "
+                                android:textSize="14sp" />
+
+                            <TextView
+                                android:id="@+id/inmediatoTxtOfferList"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_toRightOf="@id/inmediatoTituloOfferList"
+                                android:fontFamily="@font/nunitosansregular"
+                                android:text="Si" />
+                        </RelativeLayout>
+
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1">
+
+                            <TextView
+                                android:id="@+id/cantidadTituloOfferList"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:fontFamily="@font/nunitosansbold"
+                                android:text="Nº de Personas: "
+                                android:textSize="14sp" />
+
+                            <TextView
+                                android:id="@+id/cantidadTxtOfferList"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_toRightOf="@id/cantidadTituloOfferList"
+                                android:fontFamily="@font/nunitosansregular"
+                                android:text="Solo una" />
+                        </RelativeLayout>
+                    </LinearLayout>
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10sp"
+                    android:layout_below="@+id/rltPersonasInmediatoOfferList">
+
+                    <TextView
+                        android:id="@+id/btnVermasOfferList"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:paddingVertical="10dp"
+                        android:paddingRight="15dp"
+                        android:fontFamily="@font/nunitosansblack"
+                        android:text="Ver más" />
+
+
+                </RelativeLayout>
+
+            </RelativeLayout>
+
+        </RelativeLayout>
+    </androidx.cardview.widget.CardView>
+</androidx.constraintlayout.widget.ConstraintLayout>

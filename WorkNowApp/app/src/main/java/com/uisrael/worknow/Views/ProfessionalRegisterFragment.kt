@@ -17,10 +17,8 @@ import androidx.lifecycle.viewModelScope
 import com.uisrael.worknow.Model.Data.CategoriasData
 import com.uisrael.worknow.R
 import com.uisrael.worknow.ViewModel.ProfessionalViewModel
-import kotlinx.android.synthetic.main.login_fragment.*
 import kotlinx.android.synthetic.main.professional_fragment.*
 import kotlinx.coroutines.cancel
-import kotlinx.coroutines.flow.cancellable
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
@@ -75,12 +73,12 @@ class ProfessionalRegisterFragment : Fragment() {
                         0 -> {
                             errorNombreProf.isVisible = false
                             errorNombreProf.text = value.mensaje
-                            rltNombreProf.background = context?.let { ContextCompat.getDrawable(it,R.drawable.fieldsbackground) }
+                            rltNombreProf.background = context?.let { ContextCompat.getDrawable(it,R.drawable.background_fields) }
                         }
                         else -> {
                             errorNombreProf.isVisible = true
                             errorNombreProf.text = value.mensaje
-                            rltNombreProf.background = context?.let { ContextCompat.getDrawable(it,R.drawable.fieldsbackgrounderror) }
+                            rltNombreProf.background = context?.let { ContextCompat.getDrawable(it,R.drawable.background_fields_error) }
                         }
                     }
                 }
@@ -94,12 +92,12 @@ class ProfessionalRegisterFragment : Fragment() {
                         0 -> {
                             errorApellidoProf.isVisible = false
                             errorApellidoProf.text = value.mensaje
-                            rltApellidoProf.background = context?.let { ContextCompat.getDrawable(it,R.drawable.fieldsbackground) }
+                            rltApellidoProf.background = context?.let { ContextCompat.getDrawable(it,R.drawable.background_fields) }
                         }
                         else -> {
                             errorApellidoProf.isVisible = true
                             errorApellidoProf.text = value.mensaje
-                            rltApellidoProf.background = context?.let { ContextCompat.getDrawable(it,R.drawable.fieldsbackgrounderror) }
+                            rltApellidoProf.background = context?.let { ContextCompat.getDrawable(it,R.drawable.background_fields_error) }
                         }
                     }
                 }
@@ -113,12 +111,12 @@ class ProfessionalRegisterFragment : Fragment() {
                         0 -> {
                             errorCiudadProf.isVisible = false
                             errorCiudadProf.text = value.mensaje
-                            rltCiudadProf.background = context?.let { ContextCompat.getDrawable(it,R.drawable.fieldsbackground) }
+                            rltCiudadProf.background = context?.let { ContextCompat.getDrawable(it,R.drawable.background_fields) }
                         }
                         else -> {
                             errorCiudadProf.isVisible = true
                             errorCiudadProf.text = value.mensaje
-                            rltCiudadProf.background = context?.let { ContextCompat.getDrawable(it,R.drawable.fieldsbackgrounderror) }
+                            rltCiudadProf.background = context?.let { ContextCompat.getDrawable(it,R.drawable.background_fields_error) }
                         }
                     }
                 }
@@ -132,12 +130,12 @@ class ProfessionalRegisterFragment : Fragment() {
                         0 -> {
                             errorTelefonoProf.isVisible = false
                             errorTelefonoProf.text = value.mensaje
-                            rltTelefonoProf.background = context?.let { ContextCompat.getDrawable(it,R.drawable.fieldsbackground) }
+                            rltTelefonoProf.background = context?.let { ContextCompat.getDrawable(it,R.drawable.background_fields) }
                         }
                         else -> {
                             errorTelefonoProf.isVisible = true
                             errorTelefonoProf.text = value.mensaje
-                            rltTelefonoProf.background = context?.let { ContextCompat.getDrawable(it,R.drawable.fieldsbackgrounderror) }
+                            rltTelefonoProf.background = context?.let { ContextCompat.getDrawable(it,R.drawable.background_fields_error) }
                         }
                     }
                 }
@@ -151,12 +149,12 @@ class ProfessionalRegisterFragment : Fragment() {
                         0 -> {
                             errorCategoriaProf.isVisible = false
                             errorCategoriaProf.text = value.mensaje
-                            rltCategoriasProf.background = context?.let { ContextCompat.getDrawable(it,R.drawable.fieldsbackground) }
+                            rltCategoriasProf.background = context?.let { ContextCompat.getDrawable(it,R.drawable.background_fields) }
                         }
                         else -> {
                             errorCategoriaProf.isVisible = true
                             errorCategoriaProf.text = value.mensaje
-                            rltCategoriasProf.background = context?.let { ContextCompat.getDrawable(it,R.drawable.fieldsbackgrounderror) }
+                            rltCategoriasProf.background = context?.let { ContextCompat.getDrawable(it,R.drawable.background_fields_error) }
                         }
                     }
                 }
@@ -170,12 +168,12 @@ class ProfessionalRegisterFragment : Fragment() {
                         0 -> {
                             errorDescripcionProf.isVisible = false
                             errorDescripcionProf.text = value.mensaje
-                            rltDescripcionProf.background = context?.let { ContextCompat.getDrawable(it,R.drawable.fieldsbackground) }
+                            rltDescripcionProf.background = context?.let { ContextCompat.getDrawable(it,R.drawable.background_fields) }
                         }
                         else -> {
                             errorDescripcionProf.isVisible = true
                             errorDescripcionProf.text = value.mensaje
-                            rltDescripcionProf.background = context?.let { ContextCompat.getDrawable(it,R.drawable.fieldsbackgrounderror) }
+                            rltDescripcionProf.background = context?.let { ContextCompat.getDrawable(it,R.drawable.background_fields_error) }
                         }
                     }
                 }
@@ -189,12 +187,12 @@ class ProfessionalRegisterFragment : Fragment() {
                         0 -> {
                             errorCorreoProf.isVisible = false
                             errorCorreoProf.text = value.mensaje
-                            rltCorreoProf.background = context?.let { ContextCompat.getDrawable(it,R.drawable.fieldsbackground) }
+                            rltCorreoProf.background = context?.let { ContextCompat.getDrawable(it,R.drawable.background_fields) }
                         }
                         else -> {
                             errorCorreoProf.isVisible = true
                             errorCorreoProf.text = value.mensaje
-                            rltCorreoProf.background = context?.let { ContextCompat.getDrawable(it,R.drawable.fieldsbackgrounderror) }
+                            rltCorreoProf.background = context?.let { ContextCompat.getDrawable(it,R.drawable.background_fields_error) }
                         }
                     }
                 }
@@ -208,12 +206,12 @@ class ProfessionalRegisterFragment : Fragment() {
                         0 -> {
                             errorPasswordProf.isVisible = false
                             errorPasswordProf.text = value.mensaje
-                            rltPasswordProf.background = context?.let { ContextCompat.getDrawable(it,R.drawable.fieldsbackground) }
+                            rltPasswordProf.background = context?.let { ContextCompat.getDrawable(it,R.drawable.background_fields) }
                         }
                         else -> {
                             errorPasswordProf.isVisible = true
                             errorPasswordProf.text = value.mensaje
-                            rltPasswordProf.background = context?.let { ContextCompat.getDrawable(it,R.drawable.fieldsbackgrounderror) }
+                            rltPasswordProf.background = context?.let { ContextCompat.getDrawable(it,R.drawable.background_fields_error) }
                         }
                     }
                 }

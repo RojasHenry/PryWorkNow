@@ -13,6 +13,16 @@ import java.io.IOException
 
 class Utilitity {
 
+
+    companion object {
+        const val ESTADO_PUBLICADO = "Publicado"
+        const val ESTADO_ACEPTADO = "Aceptado"
+        const val ESTADO_SOL_TERMINADO = "Concluido"
+        const val ESTADO_PRO_TERMINADO = "Terminado"
+        const val ESTADO_CANCELADO = "Cancelado"
+
+    }
+
     fun compressImage(imageUri: String, ctx: Context): String? {
         val filePath = imageUri
         var scaledBitmap: Bitmap? = null
@@ -143,5 +153,25 @@ class Utilitity {
             inSampleSize++
         }
         return inSampleSize
+    }
+
+    fun getRoundedCornerBitmap(bitmap: Bitmap): Bitmap? {
+        val output = Bitmap.createBitmap(
+            bitmap.width,
+            bitmap.height, Bitmap.Config.ARGB_8888
+        )
+        val canvas = Canvas(output)
+        val color = -0xbdbdbe
+        val paint = Paint()
+        val rect = Rect(0, 0, bitmap.width, bitmap.height)
+        val rectF = RectF(rect)
+        val roundPx = 12f
+        paint.isAntiAlias = true
+        canvas.drawARGB(0, 0, 0, 0)
+        paint.color = color
+        canvas.drawRoundRect(rectF, roundPx, roundPx, paint)
+        paint.xfermode = PorterDuffXfermode(PorterDuff.Mode.SRC_IN)
+        canvas.drawBitmap(bitmap, rect, rect, paint)
+        return output
     }
 }

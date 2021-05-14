@@ -26,7 +26,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:layout_below="@+id/titleDatosSolicitudOffer"
-            android:background="@drawable/fieldsbackground"
+            android:background="@drawable/background_fields"
             android:orientation="horizontal">
             <TextView
                 android:id="@+id/spinnerCategoriasOffer"
@@ -74,7 +74,7 @@
                     android:layout_marginTop="10dp"
                     android:layout_weight="1"
                     android:layout_marginEnd="5dp"
-                    android:background="@drawable/fieldsbackground"
+                    android:background="@drawable/background_fields"
                     android:orientation="horizontal">
                     <EditText
                         android:id="@+id/fechaInOffer"
@@ -104,7 +104,7 @@
                     android:layout_marginTop="10dp"
                     android:layout_weight="1"
                     android:layout_marginStart="5dp"
-                    android:background="@drawable/fieldsbackground"
+                    android:background="@drawable/background_fields"
                     android:orientation="horizontal">
                     <EditText
                         android:id="@+id/fechaFinOffer"
@@ -163,7 +163,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/rltInmediatoOffer"
-                android:background="@drawable/fieldsbackground"
+                android:background="@drawable/background_fields"
                 android:orientation="horizontal">
 
                 <EditText
@@ -222,7 +222,7 @@
                     android:layout_height="40dp"
                     android:layout_weight="1"
                     android:layout_toRightOf="@id/checkSoloPersona"
-                    android:background="@drawable/fieldsbackground"
+                    android:background="@drawable/background_fields"
                     android:orientation="horizontal">
                     <EditText
                         android:id="@+id/cantidadTxtOffer"
@@ -277,7 +277,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
                 android:layout_marginTop="10dp"
-                android:background="@drawable/fieldsbackground">
+                android:background="@drawable/background_fields">
 
                 <RelativeLayout
                     android:layout_width="wrap_content"
@@ -329,12 +329,12 @@
                     android:id="@+id/rltMainFografiasRespOffer"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:background="@drawable/fieldsbackground">
+                    android:background="@drawable/background_fields">
                     <RelativeLayout
                         android:id="@+id/rltTituloFografiasRespOffer"
                         android:layout_width="match_parent"
                         android:padding="10dp"
-                        android:background="@drawable/backgroundltitulofotos"
+                        android:background="@drawable/background_titulo_fotos"
                         android:layout_height="wrap_content">
                         <TextView
                             android:layout_width="match_parent"
@@ -379,7 +379,7 @@
                 android:layout_height="40dp"
                 android:layout_below="@id/rltFografiasRespOffer"
                 android:layout_marginTop="10dp"
-                android:background="@drawable/fieldsbackground"
+                android:background="@drawable/background_fields"
                 android:orientation="horizontal">
 
                 <RelativeLayout
@@ -433,7 +433,7 @@
             android:layout_centerVertical="false"
             android:layout_marginHorizontal="40dp"
             android:layout_marginTop="40dp"
-            android:background="@drawable/buttonbackgroundlogin"
+            android:background="@drawable/background_button_login"
             android:gravity="center"
             android:padding="10dp"
             android:paddingVertical="10dp"

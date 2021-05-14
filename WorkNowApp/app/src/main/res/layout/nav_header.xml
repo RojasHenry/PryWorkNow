@@ -3,30 +3,69 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:background="@drawable/backgroundnavview"
-    android:layout_height="match_parent">
+    android:layout_height="160sp" >
 
-    <TextView
-        android:id="@+id/header_title"
+    <RelativeLayout
+        android:id="@+id/relativeLayout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/activity_horizontal_margin"
-        android:layout_marginTop="@dimen/activity_horizontal_margin"
-        android:drawablePadding="12dp"
-        android:gravity="center_vertical"
-        android:text="nombreapellido"
-        android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium.Inverse"
-        app:drawableStartCompat="@mipmap/ic_launcher"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:paddingTop="@dimen/activity_vertical_margin"
-        android:paddingBottom="@dimen/activity_vertical_margin"
-        android:text="email"
-        android:textAppearance="@style/Base.TextAppearance.AppCompat.Small.Inverse"
-        app:layout_constraintEnd_toEndOf="@+id/header_title"
-        app:layout_constraintStart_toStartOf="@+id/header_title"
-        app:layout_constraintTop_toBottomOf="@+id/header_title" />
+        android:background="@drawable/background_titulo_fotos"
+        android:scaleY="-1"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:padding="15dp">
+        <RelativeLayout
+            android:id="@+id/iconContenedor"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:scaleX="1">
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/imageUsuarioActual"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/background_circle" />
+
+            <TextView
+                android:id="@+id/iconUsuarioActual"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:fontFamily="@font/nunitosansblack"
+                android:text="IN"
+                android:textColor="@android:color/white"
+                android:textSize="24sp" />
+        </RelativeLayout>
+
+        <TextView
+            android:id="@+id/nombreUsuarioActual"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/iconContenedor"
+            android:layout_marginTop="10dp"
+            android:fontFamily="@font/nunitosansbold"
+            android:gravity="center_vertical"
+            android:text="nombre apellido"
+            android:textColor="@android:color/white"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/emailUsuarioActual"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/nombreUsuarioActual"
+            android:fontFamily="@font/nunitosansregular"
+            android:text="email@email.com"
+            android:textColor="@color/white"
+            android:textSize="15sp" />
+    </RelativeLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

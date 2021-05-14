@@ -15,6 +15,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewModelScope
@@ -132,10 +133,13 @@ class LoginFragment : Fragment() {
         lifecycleScope.launch {
             viewModel.validateViewUserLogged().observe(viewLifecycleOwner, {
                 if (it) {
-                    viewModel.getViewUserLogged().observe(viewLifecycleOwner, {
+                    viewModel.getViewUserLogged().observe(viewLifecycleOwner, Observer {userFire ->
                         lifecycleScope.launch {
-                            viewModel.getCurrentUser(it.uid).collect {
-                                goToMenuPrincipal(it.rol)
+                            val uid = userFire.uid
+                            viewModel.getCurrentUser(uid).collect {
+                                if (it != null) {
+                                    goToMenuPrincipal(it.rol, uid)
+                                }
                             }
                         }
                     })
@@ -156,12 +160,12 @@ class LoginFragment : Fragment() {
                         0 -> {
                             errorCorreo.isVisible = false
                             errorCorreo.text = value.mensaje
-                            rltCorreo.background = context?.let { ContextCompat.getDrawable(it, R.drawable.fieldsbackground) }
+                            rltCorreo.background = context?.let { ContextCompat.getDrawable(it, R.drawable.background_fields) }
                         }
                         else -> {
                             errorCorreo.isVisible = true
                             errorCorreo.text = value.mensaje
-                            rltCorreo.background = context?.let { ContextCompat.getDrawable(it, R.drawable.fieldsbackgrounderror) }
+                            rltCorreo.background = context?.let { ContextCompat.getDrawable(it, R.drawable.background_fields_error) }
                         }
                     }
                 }
@@ -175,12 +179,12 @@ class LoginFragment : Fragment() {
                         0 -> {
                             errorPassword.isVisible = false
                             errorPassword.text = value.mensaje
-                            rltPassword.background = context?.let { ContextCompat.getDrawable(it, R.drawable.fieldsbackground) }
+                            rltPassword.background = context?.let { ContextCompat.getDrawable(it, R.drawable.background_fields) }
                         }
                         else -> {
                             errorPassword.isVisible = true
                             errorPassword.text = value.mensaje
-                            rltPassword.background = context?.let { ContextCompat.getDrawable(it, R.drawable.fieldsbackgrounderror) }
+                            rltPassword.background = context?.let { ContextCompat.getDrawable(it, R.drawable.background_fields_error) }
                         }
                     }
                 }
@@ -220,7 +224,9 @@ class LoginFragment : Fragment() {
                     )
                     if (user != null) {
                         viewModel.getCurrentUser(user.uid).collect {
-                            goToMenuPrincipal(it.rol)
+                            if (it != null) {
+                                goToMenuPrincipal(it.rol,user.uid)
+                            }
                         }
 
                     }
@@ -235,9 +241,10 @@ class LoginFragment : Fragment() {
         }
     }
 
-    private fun goToMenuPrincipal(rol: String){
+    private fun goToMenuPrincipal(rol: String, uid: String){
         val intent = Intent(context, TabUsersActivity::class.java).apply {
             putExtra("rolUser", rol)
+            putExtra("uid", uid)
         }
         startActivity(intent)
     }

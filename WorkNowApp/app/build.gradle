@@ -80,5 +80,7 @@ dependencies {
 
     // Image Compressor library
     implementation 'id.zelory:compressor:3.0.1'
-    
+
+    // Circular Image Library
+    implementation 'de.hdodenhof:circleimageview:3.1.0'
 }

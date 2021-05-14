@@ -1,8 +1,10 @@
 package com.uisrael.worknow.Model.Data
 
+import com.google.firebase.database.Exclude
 import com.google.firebase.database.PropertyName
 
 class PublicationsData(
+        @Exclude var uid: String = "",
         @PropertyName("fechaIni") var fechaIni: String = "",
         @PropertyName("fechaFin") var fechaFin: String = "",
         @PropertyName("inmediato") var inmediato: Boolean = false,

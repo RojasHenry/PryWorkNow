@@ -5,6 +5,7 @@ import com.google.firebase.database.*
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import com.uisrael.worknow.Model.Data.*
+import com.uisrael.worknow.Views.Utilities.Utilitity
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.channels.sendBlocking
 import kotlinx.coroutines.flow.Flow
@@ -15,7 +16,7 @@ class FirebaseModelsRepository {
 
     private var database = Firebase.database
 
-    companion  object{
+    companion object{
 
         const val REF_USUARIOS = "Usuarios"
         const val REF_CREDENCIALES = "Credenciales"
@@ -70,7 +71,7 @@ class FirebaseModelsRepository {
          }
      }
 
-    fun getCurrentUser (uid: String): Flow<UsuariosData> {
+    fun getCurrentUser (uid: String, finish:Boolean): Flow<UsuariosData?> {
         return callbackFlow {
             val databaseReference = database.getReference(REF_USUARIOS).child(uid)
             val eventListener = databaseReference.addValueEventListener(object : ValueEventListener {
@@ -78,19 +79,25 @@ class FirebaseModelsRepository {
                     snapshot.let {
 
                         var currentUser: UsuariosData? = snapshot.getValue(UsuariosData::class.java)
-                        
+
+                        if(finish)
+                            databaseReference.removeEventListener(this)
+
                         this@callbackFlow.sendBlocking(currentUser)
+
                     }
                 }
                 override fun onCancelled(error: DatabaseError) {
                     this@callbackFlow.close(error?.toException())
                 }
             })
+
             awaitClose{
                 databaseReference.removeEventListener(eventListener)
             }
         }
     }
+
 
     fun registerOffer(value: PublicationsData): Any? {
         return try {
@@ -118,5 +125,98 @@ class FirebaseModelsRepository {
         }
     }
 
+    fun getOffersPorCategoria(categorias:List<String>): Flow<MutableList<PublicationsData>> {
+        return callbackFlow {
+            val databaseReference = database.getReference(REF_PUBLICACION)
+            val eventListener = databaseReference.addValueEventListener(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                        snapshot.let {
+                            var listaPublicationsData: MutableList<PublicationsData> = ArrayList()
+                            for (child in snapshot.children) {
+                                var publicacionData: PublicationsData? = child.getValue(PublicationsData::class.java)
+                                if (publicacionData != null) {
+                                    publicacionData.uid = child.key!!
+                                    listaPublicationsData.add(publicacionData)
+                                }
+                            }
+                            var filterPublicacionesData: MutableList<PublicationsData> = listaPublicationsData.filter { publicationsData -> categorias.any { s ->  publicationsData.idCategoria == s } } as MutableList<PublicationsData>
+                            this@callbackFlow.sendBlocking(filterPublicacionesData)
+                        }
+                    }
+                    override fun onCancelled(error: DatabaseError) {
+                        this@callbackFlow.close(error?.toException())
+                    }
+                })
+
+            awaitClose{
+                databaseReference.removeEventListener(eventListener)
+            }
+        }
+    }
+
+    fun getOffersRespFoto(uidPub: String): Flow<FotosPublicacionData?> {
+        return callbackFlow {
+            val databaseReference = database.getReference(REF_FOTOS).child(uidPub)
+            val eventListener = databaseReference.addValueEventListener(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    snapshot.let {
+                        var fotosPublicacionData = snapshot.getValue(FotosPublicacionData::class.java)
+                        this@callbackFlow.sendBlocking(fotosPublicacionData)
+                        databaseReference.removeEventListener(this)
+                    }
+                }
+                override fun onCancelled(error: DatabaseError) {
+                    this@callbackFlow.close(error?.toException())
+                }
+            })
+
+            awaitClose{
+                databaseReference.removeEventListener(eventListener)
+            }
+        }
+    }
+
+    fun getCategoriaOfferName(uidCat: String): Flow<CategoriasData?> {
+        return callbackFlow {
+            val databaseReference = database.getReference(REF_CATEGORIAS).child(uidCat)
+            val eventListener = databaseReference.addValueEventListener(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    snapshot.let {
+                        var categoriaData = snapshot.getValue(CategoriasData::class.java)
+                        this@callbackFlow.sendBlocking(categoriaData)
+                        databaseReference.removeEventListener(this)
+                    }
+                }
+                override fun onCancelled(error: DatabaseError) {
+                    this@callbackFlow.close(error?.toException())
+                }
+            })
+
+            awaitClose{
+                databaseReference.removeEventListener(eventListener)
+            }
+        }
+    }
+    fun getEstadoCurrentOffer(uidPub: String): Flow<PublicationsData?> {
+        return callbackFlow {
+            val databaseReference = database.getReference(REF_PUBLICACION).child(uidPub)
+            val eventListener = databaseReference.addValueEventListener(object : ValueEventListener {
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        snapshot.let {
+                            var publicacionData = snapshot.getValue(PublicationsData::class.java)
+                            sendBlocking(publicacionData)
+                        }
+                    }
+
+                    override fun onCancelled(error: DatabaseError) {
+                        close(error.toException())
+                    }
+                })
+
+            awaitClose {
+                databaseReference.removeEventListener(eventListener)
+            }
+        }
+    }
 
 }

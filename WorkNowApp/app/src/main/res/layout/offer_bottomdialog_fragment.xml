@@ -1,0 +1,439 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ScrollView
+        android:id="@+id/scrollViewOffer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <RelativeLayout
+                android:id="@+id/rltTituloNumeroOfferDialog"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/background_offerta_dialog"
+                android:padding="10dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <ImageView
+                    android:id="@+id/minimizeicon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:scaleY="-1"
+                    android:src="@drawable/ic_minimize_24" />
+
+                <TextView
+                    android:id="@+id/tituloTxtNumeroOffer"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/minimizeicon"
+                    android:fontFamily="@font/nunitosansbold"
+                    android:text="Solicitud"
+                    android:textAlignment="center"
+                    android:textColor="@color/white" />
+            </RelativeLayout>
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/rltClientOfferDataDialog"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/rltTituloNumeroOfferDialog">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="10dp">
+
+                    <RelativeLayout
+                        android:id="@+id/iconContenedorDialog"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="10dp"
+                        android:scaleX="1">
+
+                        <de.hdodenhof.circleimageview.CircleImageView
+                            android:id="@+id/imageClientOfferDialog"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:src="@drawable/background_circle"/>
+
+                        <TextView
+                            android:id="@+id/iconClientOfferDialog"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerInParent="true"
+                            android:fontFamily="@font/nunitosansblack"
+                            android:text="IN"
+                            android:textColor="@android:color/white"
+                            android:textSize="24sp" />
+                    </RelativeLayout>
+
+                    <TextView
+                        android:id="@+id/nombreClientOfferDialog"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginTop="10dp"
+                        android:layout_toRightOf="@id/iconContenedorDialog"
+                        android:fontFamily="@font/nunitosansbold"
+                        android:text="Solicitante: nombre apellido"
+                        android:textColor="#6c6d70"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+
+                </RelativeLayout>
+            </androidx.cardview.widget.CardView>
+
+            <RelativeLayout
+                android:id="@+id/rltContenidoOfferDialog"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/cardview_light_background"
+                android:padding="10dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/rltClientOfferDataDialog">
+
+                <RelativeLayout
+                    android:id="@+id/rltfechasOfferListDialog"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:id="@+id/fechasTituloOfferListDialog"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/nunitosansbold"
+                        android:text="Período de trabajo:"
+                        android:textSize="14sp" />
+
+                    <LinearLayout
+                        android:id="@+id/lytFechasOfferListDialog"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/fechasTituloOfferListDialog"
+                        android:orientation="horizontal"
+                        android:weightSum="2">
+
+                        <RelativeLayout
+                            android:id="@+id/rltFechaInOfferListDialog"
+                            android:layout_width="match_parent"
+                            android:layout_height="40dp"
+                            android:layout_marginTop="5dp"
+                            android:layout_marginEnd="5dp"
+                            android:layout_weight="1"
+                            android:background="@drawable/background_fields"
+                            android:orientation="horizontal">
+
+                            <EditText
+                                android:id="@+id/fechaInOfferListDialog"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_centerVertical="true"
+                                android:layout_gravity="center"
+                                android:background="#00FFFFFF"
+                                android:drawableRight="@drawable/ic_calendar_24"
+                                android:ems="10"
+                                android:focusable="false"
+                                android:fontFamily="@font/nunitosansregular"
+                                android:hint="Fecha Inicio"
+                                android:inputType="none"
+                                android:paddingLeft="10dp"
+                                android:paddingRight="10dp"
+                                android:singleLine="true"
+                                android:textColor="#6c6d70"
+                                android:textSize="15dp" />
+
+                        </RelativeLayout>
+
+                        <RelativeLayout
+                            android:id="@+id/rltFechaFinOfferListDialog"
+                            android:layout_width="match_parent"
+                            android:layout_height="40dp"
+                            android:layout_marginStart="5dp"
+                            android:layout_marginTop="5dp"
+                            android:layout_weight="1"
+                            android:background="@drawable/background_fields"
+                            android:orientation="horizontal">
+
+                            <EditText
+                                android:id="@+id/fechaFinOfferListDialog"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_centerVertical="true"
+                                android:layout_gravity="center"
+                                android:background="#00FFFFFF"
+                                android:drawableRight="@drawable/ic_calendar_24"
+                                android:ems="10"
+                                android:focusable="false"
+                                android:fontFamily="@font/nunitosansregular"
+                                android:hint="Fecha Fin"
+                                android:inputType="none"
+                                android:paddingLeft="10dp"
+                                android:paddingRight="10dp"
+                                android:singleLine="true"
+                                android:textColor="#6c6d70"
+                                android:textSize="15dp" />
+
+                        </RelativeLayout>
+                    </LinearLayout>
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/rltDescripcionOfferList"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/rltfechasOfferListDialog"
+                    android:layout_marginTop="10sp">
+
+                    <TextView
+                        android:id="@+id/descripcionTituloOfferListDialog"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/nunitosansbold"
+                        android:text="Descripción:"
+                        android:textSize="14sp" />
+
+                    <TextView
+                        android:id="@+id/descripcionTxtOfferListDialog"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/descripcionTituloOfferListDialog"
+                        android:background="@drawable/background_fields"
+                        android:fontFamily="@font/nunitosansregular"
+                        android:lines="3"
+                        android:padding="10dp"
+                        android:text="" />
+
+                </RelativeLayout>
+
+
+                <RelativeLayout
+                    android:id="@+id/rltUbicacionOfferListDialog"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/rltDescripcionOfferList"
+                    android:layout_marginTop="10sp">
+
+                    <LinearLayout
+                        android:id="@+id/lytUbicacionOfferListDialog"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:weightSum="2">
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1">
+                            <TextView
+                                android:id="@+id/ubicacionTituloOfferListDialog"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:fontFamily="@font/nunitosansbold"
+                                android:text="Ubicación: "
+                                android:textSize="14sp" />
+
+                            <TextView
+                                android:id="@+id/ubicacionTxtOfferListDialog"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_toRightOf="@id/ubicacionTituloOfferListDialog"
+                                android:fontFamily="@font/nunitosansregular"
+                                android:text="Quito" />
+                        </RelativeLayout>
+
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1">
+                            <TextView
+                                android:id="@+id/categoriaTituloOfferListDialog"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:fontFamily="@font/nunitosansbold"
+                                android:text="Categoría: "
+                                android:textSize="14sp" />
+
+                            <TextView
+                                android:id="@+id/categoriaTxtOfferListDialog"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_toRightOf="@id/categoriaTituloOfferListDialog"
+                                android:fontFamily="@font/nunitosansregular"
+                                android:text="" />
+                        </RelativeLayout>
+                    </LinearLayout>
+                </RelativeLayout>
+
+
+                <RelativeLayout
+                    android:id="@+id/rltPersonasInmediatoOfferListDialog"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/rltUbicacionOfferListDialog"
+                    android:layout_marginTop="10sp">
+
+                    <LinearLayout
+                        android:id="@+id/lytPersonasInmediatoOfferListDialog"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:weightSum="2">
+
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1">
+
+                            <TextView
+                                android:id="@+id/inmediatoTituloOfferListDialog"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:fontFamily="@font/nunitosansbold"
+                                android:text="Inmediato: "
+                                android:textSize="14sp" />
+
+                            <TextView
+                                android:id="@+id/inmediatoTxtOfferListDialog"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_toRightOf="@id/inmediatoTituloOfferListDialog"
+                                android:fontFamily="@font/nunitosansregular"
+                                android:text="Si" />
+                        </RelativeLayout>
+
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1">
+
+                            <TextView
+                                android:id="@+id/cantidadTituloOfferListDialog"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:fontFamily="@font/nunitosansbold"
+                                android:text="Nº de Personas: "
+                                android:textSize="14sp" />
+
+                            <TextView
+                                android:id="@+id/cantidadTxtOfferListDialog"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_toRightOf="@id/cantidadTituloOfferListDialog"
+                                android:fontFamily="@font/nunitosansregular"
+                                android:text="Solo una" />
+                        </RelativeLayout>
+                    </LinearLayout>
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/rltRespFotografOfferListDialog"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/rltPersonasInmediatoOfferListDialog"
+                    android:layout_marginTop="10sp">
+
+                    <TextView
+                        android:id="@+id/respFotografOfferListDialog"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/nunitosansbold"
+                        android:text="Respaldo Fotográfico:"
+                        android:textSize="14sp" />
+
+                    <HorizontalScrollView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/respFotografOfferListDialog">
+
+                        <LinearLayout
+                            android:id="@+id/respFotografImagesOfferListDialog"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal" />
+                    </HorizontalScrollView>
+                </RelativeLayout>
+
+            </RelativeLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/scrollViewOffer">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:weightSum="2"
+            android:layout_marginTop="10dp"
+            android:orientation="horizontal">
+            <RelativeLayout
+                android:id="@+id/btnAceptarOfferDialog"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/background_button_login"
+                android:padding="10dp"
+                android:layout_margin="10dp"
+                android:layout_weight="1"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/rltOptionsPicture">
+
+                <TextView
+                    android:id="@+id/aceptarOfferTxtDialog"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:layout_centerHorizontal="true"
+                    android:fontFamily="@font/nunitosansregular"
+                    android:gravity="center"
+                    android:text="Aceptar Solicitud"
+                    android:textColor="#FFFFFF"
+                    android:textSize="15sp" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/btnCancelOfferDialog"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/background_button_cancel"
+                android:padding="10dp"
+                android:layout_margin="10dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/rltOptionsPicture">
+
+                <TextView
+                    android:id="@+id/cancelOfferTxtDialog"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:layout_centerHorizontal="true"
+                    android:fontFamily="@font/nunitosansregular"
+                    android:gravity="center"
+                    android:text="Cancelar"
+                    android:textColor="#FFFFFF"
+                    android:textSize="15sp" />
+            </RelativeLayout>
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
