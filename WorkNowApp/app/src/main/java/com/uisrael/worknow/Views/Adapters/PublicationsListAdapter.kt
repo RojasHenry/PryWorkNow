@@ -47,7 +47,11 @@ class PublicationsListAdapter(
             convertView.cantidadTxtOfferList.text = if(publicaciones[position].soloUnaPersona) "Una sola persona" else "${publicaciones[position].cantidad} personas"
 
             convertView.btnVermasOfferList.setOnClickListener {
-                val offerBottomSheetFragment = OfferBottomSheetFragment(c, publicaciones[position])
+                val offerBottomSheetFragment = OfferBottomSheetFragment(
+                    c,
+                    publicaciones[position],
+                    fromDashboard = false, fromPubAccept = false
+                )
                 offerBottomSheetFragment.show(supportFragmentManager, "ModalBottomOffer")
             }
         }

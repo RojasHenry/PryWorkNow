@@ -11,7 +11,6 @@ import android.util.Base64
 import android.view.*
 import android.widget.ImageView
 import android.widget.LinearLayout
-import androidx.core.view.drawToBitmap
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
@@ -20,15 +19,18 @@ import com.uisrael.worknow.R
 import com.uisrael.worknow.ViewModel.OfferBottomSheetViewModel
 import com.uisrael.worknow.Views.Utilities.Utilitity
 import kotlinx.android.synthetic.main.image_fullscreen_preview.*
-import kotlinx.android.synthetic.main.offer_bottomdialog_fragment.*
 import kotlinx.android.synthetic.main.offer_bottomdialog_fragment.view.*
-import kotlinx.coroutines.CompletableJob
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 
-class OfferBottomSheetFragment(var c: Context, var publicationsData: PublicationsData) : BottomSheetDialogFragment() {
+class OfferBottomSheetFragment(
+    var c: Context,
+    var publicationsData: PublicationsData,
+    var fromDashboard: Boolean,
+    var fromPubAccept: Boolean
+) : BottomSheetDialogFragment() {
 
     private lateinit var viewModel:OfferBottomSheetViewModel
     var jobForCancel : Job? = null
@@ -47,16 +49,20 @@ class OfferBottomSheetFragment(var c: Context, var publicationsData: Publication
     ): View? {
         val convertView: View? = LayoutInflater.from(c).inflate(R.layout.offer_bottomdialog_fragment, null)
         if (convertView != null) {
-            jobForCancel = viewModel.viewModelScope.launch {
-                viewModel.getEstadoViewCurrentOffer(publicationsData.uid).collect {
-                    if(it?.estado.equals(Utilitity.ESTADO_ACEPTADO)){
-                        if (isVisible){
-                            dismiss()
+
+            if (fromDashboard){
+                convertView.rltClientOfferDataDialog.visibility = View.GONE
+            }else{
+                jobForCancel = viewModel.viewModelScope.launch {
+                    viewModel.getEstadoViewCurrentOffer(publicationsData.uid).collect {
+                        if(it?.estado.equals(Utilitity.ESTADO_ACEPTADO)){
+                            if (isVisible){
+                                dismiss()
+                            }
                         }
                     }
                 }
             }
-
             viewModel.viewModelScope.launch {
                 viewModel.getCurrentViewUser(publicationsData.idUsuarioCli).collect {
                     if(it != null){
@@ -73,6 +79,7 @@ class OfferBottomSheetFragment(var c: Context, var publicationsData: Publication
                     }
                 }
             }
+
             convertView.descripcionTxtOfferListDialog.text = publicationsData.descripcion
             convertView.fechaInOfferListDialog.text = Editable.Factory.getInstance().newEditable(publicationsData.fechaIni)
             if(publicationsData.fechaFin.isNotBlank()){
@@ -129,12 +136,21 @@ class OfferBottomSheetFragment(var c: Context, var publicationsData: Publication
                 }
             }
 
-            convertView.btnAceptarOfferDialog.setOnClickListener {
-                dismiss()
-            }
 
-            convertView.btnCancelOfferDialog.setOnClickListener {
-                dismiss()
+            if(fromPubAccept){
+                convertView.cardViewButtonsOfferDialog.visibility = View.GONE
+            }else{
+                convertView.cardViewButtonsOfferDialog.visibility = if (fromDashboard) View.GONE else View.VISIBLE
+
+                if(!fromDashboard){
+                    convertView.btnAceptarOfferDialog.setOnClickListener {
+                        dismiss()
+                    }
+
+                    convertView.btnCancelOfferDialog.setOnClickListener {
+                        dismiss()
+                    }
+                }
             }
 
         }
@@ -147,7 +163,9 @@ class OfferBottomSheetFragment(var c: Context, var publicationsData: Publication
     }
 
     override fun dismiss() {
-        jobForCancel?.cancel()
+        if (!fromDashboard){
+            jobForCancel?.cancel()
+        }
         super.dismiss()
     }
 }

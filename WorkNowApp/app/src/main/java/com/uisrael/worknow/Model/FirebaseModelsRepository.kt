@@ -88,7 +88,7 @@ class FirebaseModelsRepository {
                     }
                 }
                 override fun onCancelled(error: DatabaseError) {
-                    this@callbackFlow.close(error?.toException())
+                    this@callbackFlow.close(error.toException())
                 }
             })
 
@@ -214,6 +214,146 @@ class FirebaseModelsRepository {
                 })
 
             awaitClose {
+                databaseReference.removeEventListener(eventListener)
+            }
+        }
+    }
+
+    fun getOffersPorStatusAndCli(uidUser:String, estado:String): Flow<MutableList<PublicationsData>> {
+        return callbackFlow {
+            val databaseReference = database.getReference(REF_PUBLICACION).orderByChild("idUsuarioCli").equalTo(uidUser)
+            val eventListener = databaseReference.addValueEventListener(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    var listaPublicationsData: MutableList<PublicationsData> = ArrayList()
+                    for (child in snapshot.children) {
+                        var publicacionData: PublicationsData? = child.getValue(PublicationsData::class.java)
+                        if (publicacionData != null) {
+                            if(publicacionData.estado == estado){
+                                publicacionData.uid = child.key!!
+                                listaPublicationsData.add(publicacionData)
+                            }
+                        }
+                    }
+                    this@callbackFlow.sendBlocking(listaPublicationsData)
+                }
+                override fun onCancelled(error: DatabaseError) {
+                    this@callbackFlow.close(error?.toException())
+                }
+            })
+
+            awaitClose{
+                databaseReference.removeEventListener(eventListener)
+            }
+        }
+    }
+
+    fun getOffersNoCalifCli(uidUser:String, estado:String): Flow<MutableList<PublicationsData>> {
+        return callbackFlow {
+            val databaseReference = database.getReference(REF_PUBLICACION).orderByChild("idUsuarioCli").equalTo(uidUser)
+            val eventListener = databaseReference.addValueEventListener(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    var listaPublicationsData: MutableList<PublicationsData> = ArrayList()
+                    for (child in snapshot.children) {
+                        var publicacionData: PublicationsData? = child.getValue(PublicationsData::class.java)
+                        if (publicacionData != null) {
+                            if(publicacionData.estado == estado && publicacionData.calificacion == 0.0){
+                                publicacionData.uid = child.key!!
+                                listaPublicationsData.add(publicacionData)
+                            }
+                        }
+                    }
+                    this@callbackFlow.sendBlocking(listaPublicationsData)
+                }
+                override fun onCancelled(error: DatabaseError) {
+                    this@callbackFlow.close(error?.toException())
+                }
+            })
+
+            awaitClose{
+                databaseReference.removeEventListener(eventListener)
+            }
+        }
+    }
+
+    fun getOfferViewAccepted(uidProf: String, estado: String): Flow<MutableList<PublicationsData>> {
+        return callbackFlow {
+            val databaseReference = database.getReference(REF_PUBLICACION).orderByChild("idAceptadoProf").equalTo(uidProf)
+            val eventListener = databaseReference.addValueEventListener(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    var listaPublicationsData: MutableList<PublicationsData> = ArrayList()
+                    for (child in snapshot.children) {
+                        var publicacionData: PublicationsData? = child.getValue(PublicationsData::class.java)
+                        if (publicacionData != null) {
+                            if(publicacionData.estado == estado){
+                                publicacionData.uid = child.key!!
+                                listaPublicationsData.add(publicacionData)
+                            }
+                        }
+                    }
+                    this@callbackFlow.sendBlocking(listaPublicationsData)
+                }
+                override fun onCancelled(error: DatabaseError) {
+                    this@callbackFlow.close(error?.toException())
+                }
+            })
+
+            awaitClose{
+                databaseReference.removeEventListener(eventListener)
+            }
+        }
+    }
+
+    fun getOffersCliAceptedOnProgress(uidCli: String): Flow<MutableList<PublicationsData>> {
+        return callbackFlow {
+            val databaseReference = database.getReference(REF_PUBLICACION).orderByChild("idUsuarioCli").equalTo(uidCli)
+            val eventListener = databaseReference.addValueEventListener(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    var listaPublicationsData: MutableList<PublicationsData> = ArrayList()
+                    for (child in snapshot.children) {
+                        var publicacionData: PublicationsData? = child.getValue(PublicationsData::class.java)
+                        if (publicacionData != null) {
+                            if(publicacionData.estado != Utilitity.ESTADO_SOL_TERMINADO && publicacionData.estado != Utilitity.ESTADO_PUBLICADO){
+                                publicacionData.uid = child.key!!
+                                listaPublicationsData.add(publicacionData)
+                            }
+                        }
+                    }
+                    this@callbackFlow.sendBlocking(listaPublicationsData)
+                }
+                override fun onCancelled(error: DatabaseError) {
+                    this@callbackFlow.close(error?.toException())
+                }
+            })
+
+            awaitClose{
+                databaseReference.removeEventListener(eventListener)
+            }
+        }
+    }
+
+    fun getOffersProfAceptedOnProgress(uidProf: String): Flow<MutableList<PublicationsData>> {
+        return callbackFlow {
+            val databaseReference = database.getReference(REF_PUBLICACION).orderByChild("idAceptadoProf").equalTo(uidProf)
+            val eventListener = databaseReference.addValueEventListener(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    var listaPublicationsData: MutableList<PublicationsData> = ArrayList()
+                    for (child in snapshot.children) {
+                        var publicacionData: PublicationsData? = child.getValue(PublicationsData::class.java)
+                        if (publicacionData != null) {
+                            if(publicacionData.estado != Utilitity.ESTADO_SOL_TERMINADO && publicacionData.estado != Utilitity.ESTADO_PUBLICADO){
+                                publicacionData.uid = child.key!!
+                                listaPublicationsData.add(publicacionData)
+                            }
+                        }
+                    }
+                    this@callbackFlow.sendBlocking(listaPublicationsData)
+                }
+                override fun onCancelled(error: DatabaseError) {
+                    this@callbackFlow.close(error?.toException())
+                }
+            })
+
+            awaitClose{
                 databaseReference.removeEventListener(eventListener)
             }
         }

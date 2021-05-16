@@ -5,18 +5,139 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".Views.TabsFragments.DashboardFragment">
-
-    <TextView
-        android:id="@+id/text_dashboard"
+    <RelativeLayout
+        android:id="@+id/rltDaschboardCli"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:textAlignment="center"
-        android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        android:padding="10dp">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fillViewport="true"
+            android:orientation="vertical"
+            android:weightSum="3">
+            <RelativeLayout
+                android:id="@+id/rltOffersPublicList"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@drawable/background_fields">
+                <RelativeLayout
+                    android:id="@+id/rltTituloTxtOfferPublic"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/background_offerta"
+                    android:padding="10dp">
+                    <TextView
+                        android:id="@+id/tituloTxtOfferPublic"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/nunitosansbold"
+                        android:text="Publicaciones Realizadas"
+                        android:textColor="@color/white" />
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/rltOffersPublicListView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/rltTituloTxtOfferPublic"
+                    android:padding="5dp">
+                    <ListView
+                        android:id="@+id/listOffersPublic"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"/>
+                </RelativeLayout>
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/background_fields"
+                android:layout_below="@id/rltOffersPublicList"
+                android:layout_marginTop="10dp"
+                android:layout_weight="2">
+
+                <RelativeLayout
+                    android:id="@+id/rltTituloOffersNoCalif"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/background_offerta"
+                    android:padding="10dp">
+
+                    <TextView
+                        android:id="@+id/tituloTxtOffersNoCalif"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/nunitosansbold"
+                        android:text="Trabajos Sin Calificación"
+                        android:textColor="@color/white" />
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/rltOffersNoCalifList"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/rltTituloOffersNoCalif"
+                    android:padding="5dp">
+                    <ListView
+                        android:id="@+id/listOffersNoCalif"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"/>
+                </RelativeLayout>
+
+            </RelativeLayout>
+        </LinearLayout>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/rltDaschboardProf"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_margin="20dp"
+        android:visibility="gone">
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/background_fields">
+                <RelativeLayout
+                    android:id="@+id/rltTituloAcceptOffer"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/background_offerta"
+                    android:padding="10dp">
+
+                    <TextView
+                        android:id="@+id/tituloTxtAcceptOffer"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/nunitosansbold"
+                        android:text="Publicación Aceptada"
+                        android:textColor="@color/white" />
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/rltOffersAcceptList"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/rltTituloAcceptOffer"
+                    android:padding="15dp">
+                    <ListView
+                        android:id="@+id/listOffersAccept"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"/>
+                </RelativeLayout>
+
+            </RelativeLayout>
+    </RelativeLayout>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

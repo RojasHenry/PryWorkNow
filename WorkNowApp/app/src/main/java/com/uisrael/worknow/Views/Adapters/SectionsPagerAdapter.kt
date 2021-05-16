@@ -21,16 +21,16 @@ class SectionsPagerAdapter (fragmentManager: FragmentManager, private  val tabs:
     override fun getItem(position: Int): Fragment {
         if(isProf){
             when (position){
-                0 ->  return DashboardFragment.newInstance()
+                0 ->  return DashboardFragment.newInstance(isProf)
                 1 ->  return PublicationsFragment.newInstance()
-                2 ->  return InProgressFragment.newInstance()
+                2 ->  return InProgressFragment.newInstance(isProf)
                 3 ->  return ProfileUserFragment.newInstance()
             }
         }else{
             when (position){
-                0 ->  return DashboardFragment.newInstance()
+                0 ->  return DashboardFragment.newInstance(isProf)
                 1 ->  return OffersRegisterFragment.newInstance()
-                2 ->  return InProgressFragment.newInstance()
+                2 ->  return InProgressFragment.newInstance(isProf)
                 3 ->  return ProfileUserFragment.newInstance()
                 4 ->  return HistoryOffersFragment.newInstance()
             }

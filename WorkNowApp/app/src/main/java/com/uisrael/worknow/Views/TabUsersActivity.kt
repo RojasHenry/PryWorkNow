@@ -76,7 +76,6 @@ class TabUsersActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
         viewpager_fragments.isPagingEnabled = false
         viewpager_fragments.offscreenPageLimit = 3
 
-
         toggle = ActionBarDrawerToggle(
                 this,
                 drawerLayout,
