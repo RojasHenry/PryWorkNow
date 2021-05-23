@@ -3,9 +3,7 @@ package com.uisrael.worknow.Views
 import android.content.Context
 import android.content.ContextWrapper
 import android.graphics.BitmapFactory
-import android.media.Image
 import android.os.Bundle
-import android.service.autofill.UserData
 import android.util.Base64
 import android.view.MenuItem
 import android.view.View
@@ -23,12 +21,10 @@ import androidx.navigation.ActivityNavigator
 import androidx.viewpager.widget.ViewPager.OnPageChangeListener
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.navigation.NavigationView
-import com.uisrael.worknow.Model.Data.UsuariosData
 import com.uisrael.worknow.R
 import com.uisrael.worknow.ViewModel.TabUsersViewModel
 import com.uisrael.worknow.Views.Adapters.SectionsPagerAdapter
 import kotlinx.android.synthetic.main.activity_tab_users.*
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
@@ -67,9 +63,9 @@ class TabUsersActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
 
             navDrawableLayout.menu.clear()
             navDrawableLayout.inflateMenu(R.menu.left_nav_menu_prof)
-            SectionsPagerAdapter(supportFragmentManager, arrayListOf("Dashboard", "Register", "InProgress","Perfil"), isProf)
+            SectionsPagerAdapter(supportFragmentManager, arrayListOf("Dashboard", "Register", "InProgress","Perfil"), isProf, this)
         }else{
-            SectionsPagerAdapter(supportFragmentManager, arrayListOf("Dashboard", "Register", "InProgress","Perfil","Historial"), isProf)
+            SectionsPagerAdapter(supportFragmentManager, arrayListOf("Dashboard", "Register", "InProgress","Perfil","Historial"), isProf, this)
         }
 
         viewpager_fragments.adapter = pagerAdapter
@@ -97,20 +93,19 @@ class TabUsersActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
                     unlockDrawer()
                     showBottomNav()
                     changeToolbarFuncions(false)
-                    viewpager_fragments.currentItem = 0
+                    moveTabViewpagerFragment(0)
                 }
                 R.id.navigation_publications_prof, R.id.navigation_offersregister_cli -> {
                     unlockDrawer()
                     showBottomNav()
                     changeToolbarFuncions(false)
-
-                    viewpager_fragments.currentItem = 1
+                    moveTabViewpagerFragment(1)
                 }
                 R.id.navigation_in_progress_cli, R.id.navigation_in_progress_prof -> {
                     unlockDrawer()
                     showBottomNav()
                     changeToolbarFuncions(false)
-                    viewpager_fragments.currentItem = 2
+                    moveTabViewpagerFragment(2)
                 }
             }
             return@setOnNavigationItemSelectedListener true
@@ -226,7 +221,7 @@ class TabUsersActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
                 unlockDrawer()
                 showBottomNav()
                 changeToolbarFuncions(false)
-                viewpager_fragments.currentItem = 0
+                moveTabViewpagerFragment(0)
             }
         }
     }
@@ -244,7 +239,7 @@ class TabUsersActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
                 hideBottomNav()
                 lockDrawer()
                 changeToolbarFuncions(true)
-                viewpager_fragments.currentItem = 3
+                moveTabViewpagerFragment(3)
             }
 
             R.id.navigation_history_offer_cli -> {
@@ -252,11 +247,20 @@ class TabUsersActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
                 hideBottomNav()
                 lockDrawer()
                 changeToolbarFuncions(true)
-                viewpager_fragments.currentItem = 4
+                moveTabViewpagerFragment(4)
             }
         }
         drawerLayout.closeDrawers();
         return true
+    }
+
+    fun moveTabViewpagerFragment(numTab:Int) {
+        if(numTab != viewpager_fragments.currentItem){
+            viewpager_fragments.currentItem = numTab
+        }
+    }
+    fun disableViewpagerFragment(numTab:Int, status:Boolean) {
+        navView.menu.getItem(numTab).isVisible = status
     }
 
     override fun finish() {
@@ -264,4 +268,6 @@ class TabUsersActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
         ActivityNavigator.applyPopAnimationsToPendingTransition(this)
 
     }
+
+
 }

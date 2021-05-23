@@ -42,7 +42,7 @@ class InProgressFragment(var isProf: Boolean) : Fragment() {
     }
 
     private fun inicializateComponents() {
-        adapterProgress = context?.let { activity?.let { it1 -> OfferProgressListAdapter(it, listAdapter, it1.supportFragmentManager,isProf) } }!!
+        adapterProgress = context?.let { activity?.let { it1 -> OfferProgressListAdapter(inProgressViewModel, it, listAdapter, it1.supportFragmentManager,isProf) } }!!
         offerListOnProgress.adapter = adapterProgress
     }
 
@@ -62,7 +62,7 @@ class InProgressFragment(var isProf: Boolean) : Fragment() {
             inProgressViewModel.viewModelScope.launch {
                 inProgressViewModel.getUserViewLogged().observe(viewLifecycleOwner,{
                     inProgressViewModel.viewModelScope.launch {
-                        inProgressViewModel.getOffersViewCliAceptedOnProgress(it.uid).collect {
+                        inProgressViewModel.getOffersViewCliAcceptedOnProgress(it.uid).collect {
                             adapterProgress.publicaciones = it as ArrayList<PublicationsData>
                             adapterProgress.notifyDataSetChanged()
                         }

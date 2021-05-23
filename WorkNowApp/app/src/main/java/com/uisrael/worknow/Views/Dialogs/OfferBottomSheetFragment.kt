@@ -11,6 +11,7 @@ import android.util.Base64
 import android.view.*
 import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
@@ -29,7 +30,8 @@ class OfferBottomSheetFragment(
     var c: Context,
     var publicationsData: PublicationsData,
     var fromDashboard: Boolean,
-    var fromPubAccept: Boolean
+    var fromPubAccept: Boolean,
+    var fromPubCli: Boolean
 ) : BottomSheetDialogFragment() {
 
     private lateinit var viewModel:OfferBottomSheetViewModel
@@ -136,12 +138,29 @@ class OfferBottomSheetFragment(
                 }
             }
 
+            if(publicationsData.estado == Utilitity.ESTADO_PUBLICADO){
+                convertView.cardViewButtonCancelOfferDialog.visibility = if (fromPubCli) View.VISIBLE else View.GONE
+                convertView.btnCancelOffer.setOnClickListener {
+                    viewModel.getUidProfesional().observe(viewLifecycleOwner, {
+                        viewModel.viewModelScope.launch {
+                            val response = viewModel.setOfferViewUpdateEstado(publicationsData.uid,Utilitity.ESTADO_CANCELADO)
+                            if (response != null){
+                                dismiss()
+                                Toast.makeText(activity, "Solicitud cancelada", Toast.LENGTH_SHORT).show()
+                            }else{
+                                Toast.makeText(activity, "Error al cancelar la solicitud", Toast.LENGTH_SHORT).show()
+                            }
+                        }
+
+                    })
+                }
+            }
+
 
             if(fromPubAccept){
                 convertView.cardViewButtonsOfferDialog.visibility = View.GONE
             }else{
                 convertView.cardViewButtonsOfferDialog.visibility = if (fromDashboard) View.GONE else View.VISIBLE
-
                 if(!fromDashboard){
                     convertView.btnAceptarOfferDialog.setOnClickListener {
                         dismiss()
@@ -151,6 +170,20 @@ class OfferBottomSheetFragment(
                         dismiss()
                     }
                 }
+            }
+
+            convertView.btnAceptarOfferDialog.setOnClickListener {
+                viewModel.getUidProfesional().observe(viewLifecycleOwner, {
+                    viewModel.viewModelScope.launch {
+                        val response = viewModel.setOfferViewAcceptProf(it.uid,publicationsData.uid,Utilitity.ESTADO_ACEPTADO)
+                        if (response != null){
+                            dismiss()
+                        }else{
+                            Toast.makeText(activity, "Error al aceptar la solicitud actual", Toast.LENGTH_SHORT).show()
+                        }
+                    }
+
+                })
             }
 
         }

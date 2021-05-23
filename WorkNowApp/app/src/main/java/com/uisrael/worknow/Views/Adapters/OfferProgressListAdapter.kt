@@ -6,19 +6,25 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
+import android.widget.Toast
 import androidx.fragment.app.FragmentManager
+import androidx.lifecycle.viewModelScope
 import com.uisrael.worknow.Model.Data.PublicationsData
 import com.uisrael.worknow.R
+import com.uisrael.worknow.ViewModel.TabsFragViewModel.InProgressViewModel
 import com.uisrael.worknow.Views.Dialogs.OfferBottomSheetFragment
+import com.uisrael.worknow.Views.Dialogs.QualificationFragment
 import com.uisrael.worknow.Views.Utilities.Utilitity
 import kotlinx.android.synthetic.main.offers_item_progress_adapter.view.*
+import kotlinx.coroutines.launch
 
-class OfferProgressListAdapter (
+class OfferProgressListAdapter(
+    var inProgressViewModel: InProgressViewModel,
     private var c: Context,
     var publicaciones: ArrayList<PublicationsData>,
     var supportFragmentManager: FragmentManager,
     var isProf: Boolean
-    ) : BaseAdapter() {
+) : BaseAdapter() {
 
     override fun getCount(): Int {
         return publicaciones.size
@@ -68,11 +74,25 @@ class OfferProgressListAdapter (
                 }
 
                 convertView.btnDeshacerProgressOfferList.setOnClickListener {
-
+                    inProgressViewModel.viewModelScope.launch {
+                        val response = inProgressViewModel.setOfferViewProfUpdateEstado(publicaciones[position].uid,Utilitity.ESTADO_ACEPTADO)
+                        if (response != null){
+                            Toast.makeText(c, "Estado de solicitud actualizado exitosamente", Toast.LENGTH_SHORT).show()
+                        }else{
+                            Toast.makeText(c, "Error al deshacer terminar en la solicitud actual", Toast.LENGTH_SHORT).show()
+                        }
+                    }
                 }
 
                 convertView.btnTerminarProgressOfferList.setOnClickListener {
-
+                    inProgressViewModel.viewModelScope.launch {
+                        val response = inProgressViewModel.setOfferViewProfUpdateEstado(publicaciones[position].uid,Utilitity.ESTADO_PRO_TERMINADO)
+                        if (response != null){
+                            Toast.makeText(c, "Solicitud terminada exitosamente.", Toast.LENGTH_SHORT).show()
+                        }else{
+                            Toast.makeText(c, "Error al terminar la solicitud actual", Toast.LENGTH_SHORT).show()
+                        }
+                    }
                 }
             }else{
                 when (publicaciones[position].estado){
@@ -87,21 +107,34 @@ class OfferProgressListAdapter (
                 }
 
                 convertView.btnFinishProgressOfferList.setOnClickListener {
-
+                    inProgressViewModel.viewModelScope.launch {
+                        val response = inProgressViewModel.setOfferViewProfUpdateEstado(publicaciones[position].uid,Utilitity.ESTADO_SOL_TERMINADO)
+                        if (response != null){
+                            val dialogCalif = QualificationFragment(publicaciones[position].idAceptadoProf,publicaciones[position].uid)
+                            dialogCalif.show(supportFragmentManager,"dialogQualification")
+                            Toast.makeText(c, "Solicitud finalizada exitosamente.", Toast.LENGTH_SHORT).show()
+                        }else{
+                            Toast.makeText(c, "Error al finalizar la solicitud", Toast.LENGTH_SHORT).show()
+                        }
+                    }
                 }
 
-                convertView.btnVerCancelProgressOfferList.setOnClickListener {
-
+                convertView.btnCancelProgressOfferList.setOnClickListener {
+                    inProgressViewModel.viewModelScope.launch {
+                        val response = inProgressViewModel.setOfferViewProfUpdateEstado(publicaciones[position].uid,Utilitity.ESTADO_CANCELADO)
+                        if (response != null){
+                            Toast.makeText(c, "Solicitud cancelada", Toast.LENGTH_SHORT).show()
+                        }else{
+                            Toast.makeText(c, "Error al cancelar la solicitud", Toast.LENGTH_SHORT).show()
+                        }
+                    }
                 }
 
                 convertView.btnVermasProgressOfferList.setOnClickListener {
-                    val offerBottomSheetFragment = OfferBottomSheetFragment(c, publicaciones[position], fromDashboard = true,fromPubAccept = false)
+                    val offerBottomSheetFragment = OfferBottomSheetFragment(c, publicaciones[position], fromDashboard = true,fromPubAccept = false, fromPubCli = false)
                     offerBottomSheetFragment.show(supportFragmentManager, "ModalBottomOffer")
                 }
             }
-
-
-
 
         }
         return convertView

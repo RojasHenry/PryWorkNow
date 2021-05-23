@@ -50,7 +50,7 @@ class PublicationsListAdapter(
                 val offerBottomSheetFragment = OfferBottomSheetFragment(
                     c,
                     publicaciones[position],
-                    fromDashboard = false, fromPubAccept = false
+                    fromDashboard = false, fromPubAccept = false, fromPubCli = false
                 )
                 offerBottomSheetFragment.show(supportFragmentManager, "ModalBottomOffer")
             }

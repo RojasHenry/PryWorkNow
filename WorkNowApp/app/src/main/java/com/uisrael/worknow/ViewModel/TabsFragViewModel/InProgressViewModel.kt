@@ -1,6 +1,5 @@
 package com.uisrael.worknow.ViewModel.TabsFragViewModel
 
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.google.firebase.auth.FirebaseUser
@@ -17,11 +16,15 @@ class InProgressViewModel : ViewModel() {
         return authFirebaseRepository.getUserLogged()
     }
 
-    fun getOffersViewCliAceptedOnProgress (uidCli:String): Flow<MutableList<PublicationsData>> {
-        return modelFirebaseRepository.getOffersCliAceptedOnProgress(uidCli)
+    fun getOffersViewCliAcceptedOnProgress (uidCli:String): Flow<MutableList<PublicationsData>> {
+        return modelFirebaseRepository.getOffersCliAcceptedOnProgress(uidCli)
     }
 
     fun getOffersViewProfAceptedOnProgress (uidProf:String): Flow<MutableList<PublicationsData>> {
         return modelFirebaseRepository.getOffersProfAceptedOnProgress(uidProf)
+    }
+
+    fun setOfferViewProfUpdateEstado(uidPub:String, status:String): Any? {
+        return modelFirebaseRepository.setOfferProfUpdateEstado(uidPub, status)
     }
 }

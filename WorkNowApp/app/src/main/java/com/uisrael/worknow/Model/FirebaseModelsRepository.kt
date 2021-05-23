@@ -1,6 +1,7 @@
 package com.uisrael.worknow.Model
 
 import android.util.Log
+import com.google.android.gms.tasks.Task
 import com.google.firebase.database.*
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
@@ -135,8 +136,10 @@ class FirebaseModelsRepository {
                             for (child in snapshot.children) {
                                 var publicacionData: PublicationsData? = child.getValue(PublicationsData::class.java)
                                 if (publicacionData != null) {
-                                    publicacionData.uid = child.key!!
-                                    listaPublicationsData.add(publicacionData)
+                                    if(publicacionData.estado == Utilitity.ESTADO_PUBLICADO){
+                                        publicacionData.uid = child.key!!
+                                        listaPublicationsData.add(publicacionData)
+                                    }
                                 }
                             }
                             var filterPublicacionesData: MutableList<PublicationsData> = listaPublicationsData.filter { publicationsData -> categorias.any { s ->  publicationsData.idCategoria == s } } as MutableList<PublicationsData>
@@ -247,6 +250,34 @@ class FirebaseModelsRepository {
         }
     }
 
+    fun getOffersAcceptAndPublic(uidUser:String): Flow<MutableList<PublicationsData>> {
+        return callbackFlow {
+            val databaseReference = database.getReference(REF_PUBLICACION).orderByChild("idUsuarioCli").equalTo(uidUser)
+            val eventListener = databaseReference.addValueEventListener(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    var listaPublicationsData: MutableList<PublicationsData> = ArrayList()
+                    for (child in snapshot.children) {
+                        var publicacionData: PublicationsData? = child.getValue(PublicationsData::class.java)
+                        if (publicacionData != null) {
+                            if(publicacionData.estado == Utilitity.ESTADO_PUBLICADO || publicacionData.estado == Utilitity.ESTADO_ACEPTADO || publicacionData.estado == Utilitity.ESTADO_PRO_TERMINADO){
+                                publicacionData.uid = child.key!!
+                                listaPublicationsData.add(publicacionData)
+                            }
+                        }
+                    }
+                    this@callbackFlow.sendBlocking(listaPublicationsData)
+                }
+                override fun onCancelled(error: DatabaseError) {
+                    this@callbackFlow.close(error?.toException())
+                }
+            })
+
+            awaitClose{
+                databaseReference.removeEventListener(eventListener)
+            }
+        }
+    }
+
     fun getOffersNoCalifCli(uidUser:String, estado:String): Flow<MutableList<PublicationsData>> {
         return callbackFlow {
             val databaseReference = database.getReference(REF_PUBLICACION).orderByChild("idUsuarioCli").equalTo(uidUser)
@@ -275,7 +306,7 @@ class FirebaseModelsRepository {
         }
     }
 
-    fun getOfferViewAccepted(uidProf: String, estado: String): Flow<MutableList<PublicationsData>> {
+    fun getOfferViewAccepted(uidProf: String): Flow<MutableList<PublicationsData>> {
         return callbackFlow {
             val databaseReference = database.getReference(REF_PUBLICACION).orderByChild("idAceptadoProf").equalTo(uidProf)
             val eventListener = databaseReference.addValueEventListener(object : ValueEventListener {
@@ -284,7 +315,7 @@ class FirebaseModelsRepository {
                     for (child in snapshot.children) {
                         var publicacionData: PublicationsData? = child.getValue(PublicationsData::class.java)
                         if (publicacionData != null) {
-                            if(publicacionData.estado == estado){
+                            if(publicacionData.estado == Utilitity.ESTADO_ACEPTADO || publicacionData.estado == Utilitity.ESTADO_PRO_TERMINADO){
                                 publicacionData.uid = child.key!!
                                 listaPublicationsData.add(publicacionData)
                             }
@@ -303,7 +334,7 @@ class FirebaseModelsRepository {
         }
     }
 
-    fun getOffersCliAceptedOnProgress(uidCli: String): Flow<MutableList<PublicationsData>> {
+    fun getOffersCliAcceptedOnProgress(uidCli: String): Flow<MutableList<PublicationsData>> {
         return callbackFlow {
             val databaseReference = database.getReference(REF_PUBLICACION).orderByChild("idUsuarioCli").equalTo(uidCli)
             val eventListener = databaseReference.addValueEventListener(object : ValueEventListener {
@@ -312,7 +343,7 @@ class FirebaseModelsRepository {
                     for (child in snapshot.children) {
                         var publicacionData: PublicationsData? = child.getValue(PublicationsData::class.java)
                         if (publicacionData != null) {
-                            if(publicacionData.estado != Utilitity.ESTADO_SOL_TERMINADO && publicacionData.estado != Utilitity.ESTADO_PUBLICADO){
+                            if(publicacionData.estado != Utilitity.ESTADO_SOL_TERMINADO && publicacionData.estado != Utilitity.ESTADO_PUBLICADO && publicacionData.estado != Utilitity.ESTADO_CANCELADO){
                                 publicacionData.uid = child.key!!
                                 listaPublicationsData.add(publicacionData)
                             }
@@ -340,7 +371,7 @@ class FirebaseModelsRepository {
                     for (child in snapshot.children) {
                         var publicacionData: PublicationsData? = child.getValue(PublicationsData::class.java)
                         if (publicacionData != null) {
-                            if(publicacionData.estado != Utilitity.ESTADO_SOL_TERMINADO && publicacionData.estado != Utilitity.ESTADO_PUBLICADO){
+                            if(publicacionData.estado != Utilitity.ESTADO_SOL_TERMINADO && publicacionData.estado != Utilitity.ESTADO_PUBLICADO && publicacionData.estado != Utilitity.ESTADO_CANCELADO){
                                 publicacionData.uid = child.key!!
                                 listaPublicationsData.add(publicacionData)
                             }
@@ -356,6 +387,47 @@ class FirebaseModelsRepository {
             awaitClose{
                 databaseReference.removeEventListener(eventListener)
             }
+        }
+    }
+
+    fun setOfferAcceptProf(uidProf: String, uidPub: String, status: String): Any? {
+        return try {
+            val databaseReference = database.getReference(REF_PUBLICACION)
+            databaseReference.child(uidPub).child("estado").setValue(status)
+            databaseReference.child(uidPub).child("idAceptadoProf").setValue(uidProf)
+        }catch (e: Exception){
+            Log.i("Error", e.message)
+            null
+        }
+    }
+
+    fun setOfferProfUpdateEstado(uidPub: String, status: String): Any? {
+        return try {
+            val databaseReference = database.getReference(REF_PUBLICACION)
+            databaseReference.child(uidPub).child("estado").setValue(status)
+        }catch (e: Exception){
+            Log.i("Error", e.message)
+            null
+        }
+    }
+
+    fun setQualificationOffer(uidPub: String, qualif: Double): Any? {
+        return try {
+            val databaseReference = database.getReference(REF_PUBLICACION)
+            databaseReference.child(uidPub).child("calificacion").setValue(qualif)
+        }catch (e: Exception){
+            Log.i("Error", e.message)
+            null
+        }
+    }
+
+    fun setQualificationProf(uidProf: String, calificaciones: List<CalificacionData>): Any? {
+        return try {
+            val databaseReference = database.getReference(REF_USUARIOS)
+            databaseReference.child(uidProf).child("datosProf").child("calificaciones").setValue(calificaciones)
+        }catch (e: Exception){
+            Log.i("Error", e.message)
+            null
         }
     }
 

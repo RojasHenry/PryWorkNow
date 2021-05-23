@@ -9,6 +9,7 @@ import androidx.fragment.app.FragmentManager
 import com.uisrael.worknow.Model.Data.PublicationsData
 import com.uisrael.worknow.R
 import com.uisrael.worknow.Views.Dialogs.OfferBottomSheetFragment
+import com.uisrael.worknow.Views.Utilities.Utilitity
 import kotlinx.android.synthetic.main.offers_item_publish_nocalif_adapter.view.*
 
 class OfferPubNoCalifListAdapter (
@@ -41,12 +42,33 @@ class OfferPubNoCalifListAdapter (
             convertView.cantidadTxtOfferPubliNoCalif.text = if(publicaciones[position].soloUnaPersona) "Una sola persona" else "${publicaciones[position].cantidad} personas"
 
             if(isPubliOffer){
-                convertView.btnComentsOfferPubliNoCalif.setOnClickListener {
 
+                when (publicaciones[position].estado){
+                    Utilitity.ESTADO_ACEPTADO ->{
+                        convertView.btnComentsOfferPubliNoCalif.visibility = View.VISIBLE
+                        convertView.estadoRefOfferPubliNoCalif.visibility = View.GONE
+
+                        convertView.btnComentsOfferPubliNoCalif.setOnClickListener {
+
+                        }
+                    }
+
+                    Utilitity.ESTADO_PUBLICADO ->{
+                        convertView.btnComentsOfferPubliNoCalif.visibility = View.GONE
+                        convertView.estadoRefOfferPubliNoCalif.visibility = View.VISIBLE
+                        convertView.estadoRefOfferPubliNoCalif.text = "Oferta Sin Aceptar"
+                    }
+
+                    Utilitity.ESTADO_PRO_TERMINADO ->{
+                        convertView.btnComentsOfferPubliNoCalif.visibility = View.GONE
+                        convertView.estadoRefOfferPubliNoCalif.visibility = View.VISIBLE
+                        convertView.estadoRefOfferPubliNoCalif.text = "Por finalizar"
+                    }
                 }
 
                 convertView.btnVermasOfferPubliNoCalif.setOnClickListener {
-                    val offerBottomSheetFragment = OfferBottomSheetFragment(c, publicaciones[position], fromDashboard = true, fromPubAccept = false)
+                    val offerBottomSheetFragment = OfferBottomSheetFragment(c, publicaciones[position], fromDashboard = true,
+                        fromPubAccept = false, fromPubCli = true)
                     offerBottomSheetFragment.show(supportFragmentManager, "ModalBottomOffer")
                 }
 

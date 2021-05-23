@@ -16,14 +16,14 @@ class DashboardViewModel : ViewModel() {
         return authFirebaseRepository.getUserLogged()
     }
 
-    fun getOffersViewPorStatusAndCli(uidUser:String, estado:String): Flow<MutableList<PublicationsData>> {
-        return modelFirebaseRepository.getOffersPorStatusAndCli(uidUser,estado)
+    fun getOffersViewAcceptAndPublic(uidUser:String): Flow<MutableList<PublicationsData>> {
+        return modelFirebaseRepository.getOffersAcceptAndPublic(uidUser)
     }
     fun getOffersViewNoCalifCli(uidUser:String, estado:String): Flow<MutableList<PublicationsData>> {
         return modelFirebaseRepository.getOffersNoCalifCli(uidUser,estado)
     }
 
-    fun getOfferViewAccepted(uidProf: String, estado: String): Flow<MutableList<PublicationsData>> {
-        return modelFirebaseRepository.getOfferViewAccepted(uidProf,estado)
+    fun getOfferViewAccepted(uidProf: String): Flow<MutableList<PublicationsData>> {
+        return modelFirebaseRepository.getOfferViewAccepted(uidProf)
     }
 }

@@ -41,6 +41,13 @@
                         android:textColor="@color/white" />
                 </RelativeLayout>
 
+                <ProgressBar
+                    android:id="@+id/progressOffersPublic"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:indeterminate="true" />
+
                 <RelativeLayout
                     android:id="@+id/rltOffersPublicListView"
                     android:layout_width="match_parent"
@@ -79,6 +86,13 @@
                         android:textColor="@color/white" />
                 </RelativeLayout>
 
+                <ProgressBar
+                    android:id="@+id/progressOffersNoCalif"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:indeterminate="true" />
+
                 <RelativeLayout
                     android:id="@+id/rltOffersNoCalifList"
                     android:layout_width="match_parent"
@@ -98,16 +112,16 @@
     <RelativeLayout
         android:id="@+id/rltDaschboardProf"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="match_parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:layout_margin="20dp"
+        android:layout_margin="10dp"
         android:visibility="gone">
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:background="@drawable/background_fields">
                 <RelativeLayout
                     android:id="@+id/rltTituloAcceptOffer"
@@ -115,7 +129,6 @@
                     android:layout_height="wrap_content"
                     android:background="@drawable/background_offerta"
                     android:padding="10dp">
-
                     <TextView
                         android:id="@+id/tituloTxtAcceptOffer"
                         android:layout_width="match_parent"
@@ -125,12 +138,19 @@
                         android:textColor="@color/white" />
                 </RelativeLayout>
 
+                <ProgressBar
+                    android:id="@+id/progressAcceptOffer"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:indeterminate="true" />
+
                 <RelativeLayout
                     android:id="@+id/rltOffersAcceptList"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_below="@id/rltTituloAcceptOffer"
-                    android:padding="15dp">
+                    android:padding="5dp">
                     <ListView
                         android:id="@+id/listOffersAccept"
                         android:layout_width="match_parent"

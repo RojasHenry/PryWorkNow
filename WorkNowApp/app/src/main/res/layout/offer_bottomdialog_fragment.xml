@@ -383,7 +383,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:weightSum="2"
-            android:layout_marginTop="10dp"
             android:orientation="horizontal">
             <RelativeLayout
                 android:id="@+id/btnAceptarOfferDialog"
@@ -435,6 +434,39 @@
                     android:textSize="15sp" />
             </RelativeLayout>
         </LinearLayout>
+    </androidx.cardview.widget.CardView>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardViewButtonCancelOfferDialog"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/scrollViewOffer"
+        android:visibility="gone">
+        <RelativeLayout
+            android:id="@+id/btnCancelOffer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/background_button_cancel"
+            android:padding="10dp"
+            android:layout_marginVertical="10sp"
+            android:layout_marginHorizontal="30sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/rltOptionsPicture">
+            <TextView
+                android:id="@+id/cancelOfferTxt"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:layout_centerHorizontal="true"
+                android:fontFamily="@font/nunitosansregular"
+                android:gravity="center"
+                android:text="Cancelar Oferta"
+                android:textColor="#FFFFFF"
+                android:textSize="15sp" />
+        </RelativeLayout>
     </androidx.cardview.widget.CardView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

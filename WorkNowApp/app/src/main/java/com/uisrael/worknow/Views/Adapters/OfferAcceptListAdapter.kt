@@ -6,10 +6,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
+import androidx.core.view.isVisible
 import androidx.fragment.app.FragmentManager
 import com.uisrael.worknow.Model.Data.PublicationsData
 import com.uisrael.worknow.R
 import com.uisrael.worknow.Views.Dialogs.OfferBottomSheetFragment
+import com.uisrael.worknow.Views.Utilities.Utilitity
 import kotlinx.android.synthetic.main.offers_item_accept_adapter.view.*
 
 class OfferAcceptListAdapter (
@@ -49,12 +51,25 @@ class OfferAcceptListAdapter (
             convertView.inmediatoTxtAcceptOfferList.text = if(publicaciones[position].inmediato) "Si" else "No"
             convertView.cantidadTxtAcceptOfferList.text = if(publicaciones[position].soloUnaPersona) "Una sola persona" else "${publicaciones[position].cantidad} personas"
 
-            convertView.btnVerComentsAcceptOfferList.setOnClickListener {
 
+            when (publicaciones[position].estado){
+                Utilitity.ESTADO_ACEPTADO->{
+                    convertView.btnVerComentsAcceptOfferList.visibility = View.VISIBLE
+                    convertView.estadoRefAcceptOfferList.visibility = View.GONE
+                    convertView.btnVerComentsAcceptOfferList.setOnClickListener {
+
+                    }
+                }
+
+                Utilitity.ESTADO_PRO_TERMINADO->{
+                    convertView.btnVerComentsAcceptOfferList.visibility = View.GONE
+                    convertView.estadoRefAcceptOfferList.visibility = View.VISIBLE
+                    convertView.estadoRefAcceptOfferList.text = "En finalización"
+                }
             }
 
             convertView.btnVermasAcceptOfferList.setOnClickListener {
-                val offerBottomSheetFragment = OfferBottomSheetFragment(c, publicaciones[position], fromDashboard = false,fromPubAccept = true)
+                val offerBottomSheetFragment = OfferBottomSheetFragment(c, publicaciones[position], fromDashboard = false,fromPubAccept = true, fromPubCli = false)
                 offerBottomSheetFragment.show(supportFragmentManager, "ModalBottomOffer")
             }
 

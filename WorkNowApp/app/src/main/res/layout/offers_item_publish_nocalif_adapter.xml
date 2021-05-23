@@ -182,7 +182,19 @@
                     android:fontFamily="@font/nunitosansblack"
                     android:paddingHorizontal="20dp"
                     android:paddingVertical="10dp"
-                    android:text="Ver Comentarios" />
+                    android:text="Ver Comentarios"
+                    />
+
+                <TextView
+                    android:id="@+id/estadoRefOfferPubliNoCalif"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/nunitosansregular"
+                    android:paddingHorizontal="20dp"
+                    android:paddingVertical="10dp"
+                    android:textColor="@color/rederror"
+                    android:text=""
+                    android:visibility="gone"/>
 
                 <TextView
                     android:id="@+id/btnVermasOfferPubliNoCalif"
