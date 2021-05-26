@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.lifecycle.viewModelScope
 import com.uisrael.worknow.Model.Data.PublicationsData
 import com.uisrael.worknow.R
@@ -49,8 +50,16 @@ class PublicationsFragment : Fragment() {
                     viewModel.viewModelScope.launch {
                         if (it != null) {
                             viewModel.getOffersViewPorCategoria(it.datosProf.categorias).collect {
-                                adapter.publicaciones = it as ArrayList<PublicationsData>
-                                adapter.notifyDataSetChanged()
+                                progressListaPublicacion.isVisible = false
+                                if(it.size > 0){
+                                    adapter.publicaciones = it as ArrayList<PublicationsData>
+                                    adapter.notifyDataSetChanged()
+                                    rltErrorListaPublicacion.isVisible = false
+                                    ofertasListaPublicacion.isVisible = true
+                                }else{
+                                    rltErrorListaPublicacion.isVisible = true
+                                    ofertasListaPublicacion.isVisible = false
+                                }
                             }
                         }
                     }

@@ -9,6 +9,7 @@ import com.uisrael.worknow.Model.Data.UsuariosData
 import com.uisrael.worknow.Model.FirebaseAuthRepository
 import com.uisrael.worknow.Model.FirebaseModelsRepository
 import com.uisrael.worknow.ViewModel.ValidatorRespuestas.Respuesta
+import com.uisrael.worknow.Views.Utilities.Utilitity
 import com.wajahatkarim3.easyvalidation.core.Validator
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -36,7 +37,7 @@ class ClientViewModel : ViewModel() {
     }
 
     fun registeViewCliDataUsuario(uid: String): Any? {
-        _usuarioDatos.value.rol = "Cliente"
+        _usuarioDatos.value.rol = Utilitity.ROL_CLIENTE
         return modelsFirebaseRepository.registerUser(_usuarioDatos.value, uid)
     }
 

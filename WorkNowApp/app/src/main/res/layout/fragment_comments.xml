@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/comments"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Views.CommentsFragment">
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/toolbarComments"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:background="@drawable/background_tabs"
+        app:contentInsetLeft="0dp"
+        app:contentInsetStart="0dp">
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <ImageView
+                android:id="@+id/btnToolbarComments"
+                android:layout_width="wrap_content"
+                android:layout_height="50dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="10dp"
+                android:src="@drawable/ic_back"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                android:elevation="10dp"/>
+
+            <TextView
+                android:id="@+id/titleToolbarComments"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/btnToolbarComments"
+                android:layout_marginEnd="16dp"
+                android:fontFamily="@font/nunitosansbold"
+                android:text="@string/title_comments"
+                android:textAlignment="textEnd"
+                android:textColor="#FFFFFF"
+                android:textSize="24sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/btnToolbarComments" />
+
+            <TextView
+                android:id="@+id/solicitudToolbarComments"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/btnToolbarComments"
+                android:layout_marginEnd="16dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="10dp"
+                android:fontFamily="@font/nunitosansbold"
+                android:text="Solicitud: "
+                android:textAlignment="textEnd"
+                android:textColor="#FFFFFF"
+                android:textSize="16sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/titleToolbarComments" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </com.google.android.material.appbar.MaterialToolbar>
+
+    <RelativeLayout
+        android:id="@+id/rltOfferComments"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/toolbarComments"
+        app:layout_constraintBottom_toTopOf="@id/rltOfferSendComments">
+
+        <ListView
+            android:id="@+id/offerCommentsList"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_alignParentBottom="true"
+            android:elevation="2dp"
+            android:dividerHeight="5dp"
+            android:layout_margin="10dp"
+            android:divider="@null" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/rltOfferSendComments"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:background="@drawable/background_titulo_fotos"
+        android:padding="10sp">
+
+        <!--<com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fab_send_image"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp"
+            android:tint="?attr/colorPrimaryDark"
+            app:fabSize="mini"
+            app:srcCompat="@drawable/ic_image_black_24dp" /-->
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/background_textview_chat"
+            android:padding="5dp">
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/editTxtComments"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_toLeftOf="@id/btnSendComments"
+                android:fontFamily="@font/nunitosansregular"
+                android:hint="Enviar comentario"
+                android:maxLines="3"
+                android:background="@drawable/background_textview_chat"
+                android:stackFromBottom="true"
+                android:padding="5dp"
+                android:textSize="14sp"
+                android:transcriptMode="alwaysScroll" />
+
+            <ImageView
+                android:id="@+id/btnSendComments"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentEnd="true"
+                android:layout_marginTop="2dp"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:elevation="2dp"
+                android:src="@drawable/ic_send_24" />
+        </RelativeLayout>
+    </RelativeLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -15,7 +15,6 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            android:elevation="0dp"
             android:background="@drawable/background_tabs"
             app:contentInsetLeft="0dp"
             app:contentInsetStart="0dp">

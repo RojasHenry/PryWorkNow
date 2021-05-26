@@ -1,23 +1,33 @@
 package com.uisrael.worknow.Views.Adapters
 
 import android.content.Context
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
+import androidx.core.view.isVisible
+import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
+import androidx.lifecycle.viewModelScope
 import com.uisrael.worknow.Model.Data.PublicationsData
 import com.uisrael.worknow.R
+import com.uisrael.worknow.ViewModel.TabsFragViewModel.DashboardViewModel
+import com.uisrael.worknow.Views.CommentsActivity
 import com.uisrael.worknow.Views.Dialogs.OfferBottomSheetFragment
 import com.uisrael.worknow.Views.Utilities.Utilitity
 import kotlinx.android.synthetic.main.offers_item_publish_nocalif_adapter.view.*
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 
-class OfferPubNoCalifListAdapter (
+class OfferPubNoCalifListAdapter(
     private var c: Context,
     var publicaciones: ArrayList<PublicationsData>,
     var supportFragmentManager: FragmentManager,
-    var isPubliOffer:Boolean
-    ) : BaseAdapter() {
+    var isPubliOffer: Boolean,
+    val requireActivity: FragmentActivity?,
+    val dashboardViewModel: DashboardViewModel
+) : BaseAdapter() {
 
     override fun getCount(): Int {
         return publicaciones.size
@@ -49,7 +59,22 @@ class OfferPubNoCalifListAdapter (
                         convertView.estadoRefOfferPubliNoCalif.visibility = View.GONE
 
                         convertView.btnComentsOfferPubliNoCalif.setOnClickListener {
+                            if(requireActivity != null){
+                                val intent = Intent(c, CommentsActivity::class.java).apply {
+                                    putExtra("uidPub", publicaciones[position].uid)
+                                    putExtra("uidUserAcceptProf", publicaciones[position].idAceptadoProf)
+                                    putExtra("uidSolClient",  publicaciones[position].idUsuarioCli)
+                                }
+                                requireActivity.startActivity(intent)
+                                requireActivity.overridePendingTransition(R.anim.anim_left_toright  ,
+                                    R.anim.anim_right_toleft)
+                            }
+                        }
 
+                        dashboardViewModel.viewModelScope.launch {
+                            dashboardViewModel.isNewViewComments(publicaciones[position].uid,dashboardViewModel.currentUser.uid).collect {
+                                convertView.dotRedNewComments.isVisible = it.size > 0
+                            }
                         }
                     }
 

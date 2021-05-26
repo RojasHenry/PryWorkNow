@@ -54,10 +54,34 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@id/rltTituloTxtOfferPublic"
                     android:padding="5dp">
+                    <RelativeLayout
+                        android:id="@+id/rltErrorlistOffersPublic"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:visibility="gone">
+                        <ImageView
+                            android:id="@+id/imageErrorlistOffersPublic"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerInParent="true"
+                            android:src="@drawable/ic_no_list_24" />
+
+                        <TextView
+                            android:id="@+id/textErrorlistOffersPublic"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@id/imageErrorlistOffersPublic"
+                            android:layout_centerHorizontal="true"
+                            android:fontFamily="@font/nunitosansbold"
+                            android:text="No se ha publicado ninguna oferta"
+                            android:textAlignment="center"
+                            android:textColor="#AEAEAE" />
+                    </RelativeLayout>
+
                     <ListView
                         android:id="@+id/listOffersPublic"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"/>
+                        android:layout_height="wrap_content" />
                 </RelativeLayout>
 
             </RelativeLayout>
@@ -99,6 +123,29 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@id/rltTituloOffersNoCalif"
                     android:padding="5dp">
+                    <RelativeLayout
+                        android:id="@+id/rltErrorlistOffersNoCalif"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:visibility="gone">
+                        <ImageView
+                            android:id="@+id/imageErrorlistOffersNoCalif"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerInParent="true"
+                            android:src="@drawable/ic_no_qualif_24" />
+
+                        <TextView
+                            android:id="@+id/textErrorlistOffersNoCalif"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@id/imageErrorlistOffersNoCalif"
+                            android:layout_centerHorizontal="true"
+                            android:fontFamily="@font/nunitosansbold"
+                            android:text="No hay ofertas sin calificar."
+                            android:textAlignment="center"
+                            android:textColor="#AEAEAE" />
+                    </RelativeLayout>
                     <ListView
                         android:id="@+id/listOffersNoCalif"
                         android:layout_width="match_parent"
@@ -151,6 +198,31 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@id/rltTituloAcceptOffer"
                     android:padding="5dp">
+
+                    <RelativeLayout
+                        android:id="@+id/rltErrorlistOffersAccept"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:visibility="gone">
+                        <ImageView
+                            android:id="@+id/imageErrorlistOffersAccept"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerInParent="true"
+                            android:src="@drawable/ic_no_list_24" />
+
+                        <TextView
+                            android:id="@+id/textErrorlistOffersAccept"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@id/imageErrorlistOffersAccept"
+                            android:layout_centerHorizontal="true"
+                            android:fontFamily="@font/nunitosansbold"
+                            android:text="No se ha acetado ninguna oferta"
+                            android:textAlignment="center"
+                            android:textColor="#AEAEAE" />
+                    </RelativeLayout>
+
                     <ListView
                         android:id="@+id/listOffersAccept"
                         android:layout_width="match_parent"

@@ -11,6 +11,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.FileProvider
 import androidx.fragment.app.DialogFragment
+import androidx.fragment.app.Fragment
 import com.uisrael.worknow.R
 import com.uisrael.worknow.Views.TabsFragments.OffersRegisterFragment
 import kotlinx.android.synthetic.main.picture_dialog_fragment.view.*
@@ -19,7 +20,7 @@ import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.*
 
-class PicturePickerFragment (private val c: Context,  var activity: OffersRegisterFragment, var currentPhotoPath: String ) :  DialogFragment() {
+class PicturePickerFragment (private val c: Context,  var activity: Fragment, var currentPhotoPath: String ) :  DialogFragment() {
 
     private val REQUESTCAMERA = 200
     private val REQUESTGALLERY = 201

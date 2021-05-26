@@ -60,8 +60,8 @@
 
                     <RelativeLayout
                         android:id="@+id/iconContenedorDialog"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_width="80dp"
+                        android:layout_height="80dp"
                         android:layout_marginEnd="10dp"
                         android:scaleX="1">
 
@@ -69,7 +69,8 @@
                             android:id="@+id/imageClientOfferDialog"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:src="@drawable/background_circle"/>
+                            android:layout_centerInParent="true"
+                            android:src="@drawable/background_circle" />
 
                         <TextView
                             android:id="@+id/iconClientOfferDialog"

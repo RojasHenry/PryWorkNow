@@ -6,6 +6,8 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
+import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.viewModelScope
 import com.uisrael.worknow.Model.Data.PublicationsData
 import com.uisrael.worknow.R
@@ -17,13 +19,10 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
-class HistoryOffersFragment : Fragment() {
+class HistoryOffersFragment : DialogFragment() {
     private lateinit var adapterHistoric: OfferHistoricListAdapter
     private var listAdapter: ArrayList<PublicationsData> = arrayListOf()
     var jobForCancel : Job? = null
-    companion object {
-        fun newInstance() = HistoryOffersFragment()
-    }
 
     private lateinit var viewModel: HistoryOffersViewModel
 
@@ -32,6 +31,10 @@ class HistoryOffersFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         return inflater.inflate(R.layout.history_offers_fragment, container, false)
+    }
+
+    override fun getTheme(): Int {
+        return R.style.FullScreenDialog
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -44,6 +47,10 @@ class HistoryOffersFragment : Fragment() {
     private fun inicializateComponents() {
         adapterHistoric = context?.let { activity?.let { it1 -> OfferHistoricListAdapter(it,listAdapter, it1.supportFragmentManager) } }!!
         offerListHistoric.adapter = adapterHistoric
+
+        btnToolbarListHistoric.setOnClickListener {
+            dismiss()
+        }
     }
 
     private fun collectorFlow() {
@@ -51,9 +58,17 @@ class HistoryOffersFragment : Fragment() {
             viewModel.getUserViewLogged().observe(viewLifecycleOwner,{
                 viewModel.viewModelScope.launch {
                     viewModel.getOffersViewPorStatusAndCli(it.uid, Utilitity.ESTADO_SOL_TERMINADO).collect {
-                        adapterHistoric.publicaciones = it as ArrayList<PublicationsData>
-                        adapterHistoric.notifyDataSetChanged()
-                        jobForCancel?.cancel()
+                        progressListHistoric.isVisible = false
+                        if(it.size > 0){
+                            adapterHistoric.publicaciones = it as ArrayList<PublicationsData>
+                            adapterHistoric.notifyDataSetChanged()
+                            jobForCancel?.cancel()
+                            rltErrorListHistoric.isVisible = false
+                            offerListHistoric.isVisible = true
+                        }else{
+                            rltErrorListHistoric.isVisible = true
+                            offerListHistoric.isVisible = false
+                        }
                     }
                 }
             })

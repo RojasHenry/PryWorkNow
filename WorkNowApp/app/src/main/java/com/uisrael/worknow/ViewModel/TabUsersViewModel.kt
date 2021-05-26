@@ -9,6 +9,8 @@ import com.uisrael.worknow.Model.FirebaseModelsRepository
 import kotlinx.coroutines.flow.Flow
 
 class TabUsersViewModel : ViewModel() {
+
+    lateinit var userCurrent: UsuariosData;
     private var authFirebaseRepository: FirebaseAuthRepository = FirebaseAuthRepository()
     private var modelFirebaseRepository: FirebaseModelsRepository = FirebaseModelsRepository()
 
@@ -16,8 +18,8 @@ class TabUsersViewModel : ViewModel() {
         return authFirebaseRepository.loginOutUser()
     }
 
-    fun getCurrentUser(uid:String ): Flow<UsuariosData?> {
-        return modelFirebaseRepository.getCurrentUser(uid,true)
+    fun getCurrentUser(uid: String, finish: Boolean): Flow<UsuariosData?> {
+        return modelFirebaseRepository.getCurrentUser(uid,finish)
     }
 
     fun getUserLogged(): MutableLiveData<FirebaseUser> {

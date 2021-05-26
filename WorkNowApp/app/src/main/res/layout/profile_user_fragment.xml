@@ -1,13 +1,571 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Views.ProfileUserFragment">
+    tools:context=".Views.ProfileUserFragment"
+    android:background="@color/white">
 
-    <TextView
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/toolbarUserProfile"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="Hello 3" />
+        android:layout_height="wrap_content"
+        android:background="@drawable/background_tabs"
+        app:contentInsetLeft="0dp"
+        app:contentInsetStart="0dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
-</FrameLayout>
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/btnToolbarUserProfile"
+                android:layout_width="wrap_content"
+                android:layout_height="50dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="10dp"
+                android:elevation="10dp"
+                android:src="@drawable/ic_back"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <RelativeLayout
+                android:id="@+id/imageContenedorUserProfile"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="24dp"
+                android:layout_marginBottom="8dp"
+                app:layout_constraintBottom_toTopOf="@+id/titleToolbarUserProfile"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:id="@+id/imageUsuarioUserProfile"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:src="@drawable/background_circle" />
+
+                <TextView
+                    android:id="@+id/iconUsuarioUserProfile"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:fontFamily="@font/nunitosansblack"
+                    android:text="IN"
+                    android:textColor="@android:color/white"
+                    android:textSize="24sp" />
+            </RelativeLayout>
+
+
+
+            <TextView
+                android:id="@+id/titleToolbarUserProfile"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="16dp"
+                android:layout_marginBottom="10dp"
+                android:fontFamily="@font/nunitosansbold"
+                android:text="@string/title_profile"
+                android:textAlignment="textEnd"
+                android:textColor="#FFFFFF"
+                android:textSize="24sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/imageContenedorUserProfile" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </com.google.android.material.appbar.MaterialToolbar>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:fillViewport="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/toolbarUserProfile">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="20dp">
+
+            <TextView
+                android:id="@+id/titleDatosPersonalesUserProfile"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:fontFamily="@font/nunitosansbold"
+                android:text="Datos Personales" />
+
+            <RelativeLayout
+                android:id="@+id/rltDatosPersonalesUserProfile"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/titleDatosPersonalesUserProfile">
+
+                <RelativeLayout
+                    android:id="@+id/rltNombreUserProfile"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:layout_alignParentTop="true"
+                    android:layout_marginTop="10dp"
+                    android:background="@drawable/background_fields"
+                    android:orientation="horizontal">
+
+                    <RelativeLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true">
+
+                        <EditText
+                            android:id="@+id/nombreTxtUserProfile"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_centerVertical="true"
+                            android:layout_gravity="center"
+                            android:layout_marginLeft="10dp"
+                            android:background="#00FFFFFF"
+                            android:ems="10"
+                            android:fontFamily="@font/nunitosansregular"
+                            android:gravity="center|left"
+                            android:hint="Nombre"
+                            android:imeOptions="actionNext"
+                            android:inputType="textPersonName"
+                            android:paddingLeft="10dp"
+                            android:paddingRight="10dp"
+                            android:singleLine="true"
+                            android:textColor="#6c6d70"
+                            android:textSize="15dp" />
+                    </RelativeLayout>
+
+                </RelativeLayout>
+
+                <TextView
+                    android:id="@+id/errorNombreUserProfile"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/rltNombreUserProfile"
+                    android:layout_marginHorizontal="30dp"
+                    android:layout_marginTop="5dp"
+                    android:fontFamily="@font/nunitosanslight"
+                    android:text="Complete el campo de correo"
+                    android:textColor="@color/rederror"
+                    android:visibility="gone" />
+
+
+                <RelativeLayout
+                    android:id="@+id/rltApellidoUserProfile"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:layout_below="@id/errorNombreUserProfile"
+                    android:layout_marginTop="20dp"
+                    android:background="@drawable/background_fields"
+                    android:orientation="horizontal">
+
+                    <RelativeLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true">
+
+                        <EditText
+                            android:id="@+id/apellidoTxtUserProfile"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_centerVertical="true"
+                            android:layout_gravity="center"
+                            android:layout_marginLeft="10dp"
+                            android:background="#00FFFFFF"
+                            android:ems="10"
+                            android:fontFamily="@font/nunitosansregular"
+                            android:gravity="center|left"
+                            android:hint="Apellido"
+                            android:imeOptions="actionNext"
+                            android:inputType="textPersonName"
+                            android:paddingLeft="10dp"
+                            android:paddingRight="10dp"
+                            android:singleLine="true"
+                            android:textColor="#6c6d70"
+                            android:textSize="15dp" />
+                    </RelativeLayout>
+
+                </RelativeLayout>
+
+                <TextView
+                    android:id="@+id/errorApellidoUserProfile"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/rltApellidoUserProfile"
+                    android:layout_marginHorizontal="30dp"
+                    android:layout_marginTop="5dp"
+                    android:fontFamily="@font/nunitosanslight"
+                    android:text="Complete el campo de correo"
+                    android:textColor="@color/rederror"
+                    android:visibility="gone" />
+
+                <RelativeLayout
+                    android:id="@+id/rltCiudadUserProfile"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:layout_below="@id/errorApellidoUserProfile"
+                    android:layout_marginTop="20dp"
+                    android:background="@drawable/background_fields"
+                    android:orientation="horizontal">
+
+                    <RelativeLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true">
+
+                        <EditText
+                            android:id="@+id/ciudadTxtUserProfile"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_centerVertical="true"
+                            android:layout_gravity="center"
+                            android:layout_marginLeft="10dp"
+                            android:background="#00FFFFFF"
+                            android:drawableEnd="@drawable/ic_ubication_24"
+                            android:ems="10"
+                            android:fontFamily="@font/nunitosansregular"
+                            android:gravity="center|left"
+                            android:hint="Ciudad"
+                            android:imeOptions="actionNext"
+                            android:inputType="textPersonName"
+                            android:paddingLeft="10dp"
+                            android:paddingRight="10dp"
+                            android:singleLine="true"
+                            android:textColor="#6c6d70"
+                            android:textSize="15dp" />
+                    </RelativeLayout>
+
+
+                </RelativeLayout>
+
+                <TextView
+                    android:id="@+id/errorCiudadUserProfile"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/rltCiudadUserProfile"
+                    android:layout_marginHorizontal="30dp"
+                    android:layout_marginTop="5dp"
+                    android:fontFamily="@font/nunitosanslight"
+                    android:text="Complete el campo de correo"
+                    android:textColor="@color/rederror"
+                    android:visibility="gone" />
+
+                <RelativeLayout
+                    android:id="@+id/rltTelefonoUserProfile"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:layout_below="@id/errorCiudadUserProfile"
+                    android:layout_marginTop="20dp"
+                    android:background="@drawable/background_fields"
+                    android:orientation="horizontal">
+
+                    <RelativeLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true">
+
+                        <EditText
+                            android:id="@+id/telefonoTxtUserProfile"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_centerVertical="true"
+                            android:layout_gravity="center"
+                            android:layout_marginLeft="10dp"
+                            android:background="#00FFFFFF"
+                            android:ems="10"
+                            android:fontFamily="@font/nunitosansregular"
+                            android:gravity="center|left"
+                            android:hint="Teléfono"
+                            android:imeOptions="actionNext"
+                            android:inputType="phone"
+                            android:paddingLeft="10dp"
+                            android:paddingRight="10dp"
+                            android:singleLine="true"
+                            android:textColor="#6c6d70"
+                            android:textSize="15dp" />
+                    </RelativeLayout>
+
+                </RelativeLayout>
+
+                <TextView
+                    android:id="@+id/errorTelefonoUserProfile"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/rltTelefonoUserProfile"
+                    android:layout_marginHorizontal="30dp"
+                    android:layout_marginTop="5dp"
+                    android:fontFamily="@font/nunitosanslight"
+                    android:text="Complete el campo de correo"
+                    android:textColor="@color/rederror"
+                    android:visibility="gone" />
+
+            </RelativeLayout>
+
+            <TextView
+                android:id="@+id/titleDatosUsuarioUserProfile"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/rltDatosPersonalesUserProfile"
+                android:layout_marginTop="20dp"
+                android:fontFamily="@font/nunitosansbold"
+                android:text="Datos de Usuario" />
+
+            <RelativeLayout
+                android:id="@+id/rltDatosUsuarioUserProfile"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/titleDatosUsuarioUserProfile">
+
+                <RelativeLayout
+                    android:id="@+id/rltCorreoUserProfile"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:layout_marginTop="10dp"
+                    android:background="@drawable/background_fields"
+                    android:orientation="horizontal">
+
+                    <RelativeLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true">
+
+                        <ImageView
+                            android:id="@+id/correoIconUserProfile"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentLeft="true"
+                            android:layout_alignParentBottom="false"
+                            android:layout_centerVertical="true"
+                            android:layout_marginLeft="10dp"
+                            android:gravity="center"
+                            android:src="@drawable/round_mail"
+                            android:textSize="16sp" />
+
+                        <EditText
+                            android:id="@+id/correoTxtUserProfile"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_centerVertical="true"
+                            android:layout_gravity="center"
+                            android:layout_marginLeft="10dp"
+                            android:layout_toRightOf="@id/correoIconUserProfile"
+                            android:background="#00FFFFFF"
+                            android:ems="10"
+                            android:fontFamily="@font/nunitosansregular"
+                            android:gravity="center|left"
+                            android:hint="Correo"
+                            android:imeOptions="actionNext"
+                            android:inputType="textEmailAddress"
+                            android:paddingLeft="10dp"
+                            android:paddingRight="10dp"
+                            android:singleLine="true"
+                            android:textColor="#6c6d70"
+                            android:textSize="15dp" />
+                    </RelativeLayout>
+
+                </RelativeLayout>
+
+                <TextView
+                    android:id="@+id/errorCorreoUserProfile"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/rltCorreoUserProfile"
+                    android:layout_marginHorizontal="30dp"
+                    android:layout_marginTop="5dp"
+                    android:fontFamily="@font/nunitosanslight"
+                    android:text="Complete el campo de correo"
+                    android:textColor="@color/rederror"
+                    android:visibility="gone" />
+
+                <RelativeLayout
+                    android:id="@+id/rltPasswordUserProfile"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:layout_below="@id/errorCorreoUserProfile"
+                    android:layout_marginTop="20dp"
+                    android:background="@drawable/background_fields"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:id="@+id/passwordIconUserProfile"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentBottom="false"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="10dp"
+                        android:gravity="center"
+                        android:src="@drawable/key_pass"
+                        android:textSize="16sp" />
+
+                    <EditText
+                        android:id="@+id/passwordTxtUserProfile"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_centerVertical="true"
+                        android:layout_gravity="center"
+                        android:layout_marginLeft="10dp"
+                        android:layout_toRightOf="@id/passwordIconUserProfile"
+                        android:background="#00FFFFFF"
+                        android:ems="10"
+                        android:fontFamily="@font/nunitosansregular"
+                        android:gravity="center|left"
+                        android:hint="Contraseña"
+                        android:imeOptions="actionNext"
+                        android:inputType="textPassword"
+                        android:paddingLeft="10dp"
+                        android:paddingRight="10dp"
+                        android:singleLine="true"
+                        android:textColor="#6c6d70"
+                        android:textSize="15dp" />
+                </RelativeLayout>
+
+                <TextView
+                    android:id="@+id/errorPasswordUserProfile"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/rltPasswordUserProfile"
+                    android:layout_marginHorizontal="30dp"
+                    android:layout_marginTop="5dp"
+                    android:fontFamily="@font/nunitosanslight"
+                    android:text="Complete el campo de correo"
+                    android:textColor="@color/rederror"
+                    android:visibility="gone" />
+            </RelativeLayout>
+
+            <TextView
+                android:id="@+id/titleDatosProfesionalUserProfile"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/rltDatosUsuarioUserProfile"
+                android:layout_marginTop="20dp"
+                android:fontFamily="@font/nunitosansbold"
+                android:text="Datos del Profesional"
+                android:visibility="gone" />
+
+            <RelativeLayout
+                android:id="@+id/rltDatosProfesionalUserProfile"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/titleDatosProfesionalUserProfile"
+                android:visibility="gone">
+
+                <RelativeLayout
+                    android:id="@+id/rltCategoriasUserProfile"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:layout_marginTop="10dp"
+                    android:background="@drawable/background_fields"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/spinnerCategoriasUserProfile"
+                        android:layout_width="match_parent"
+                        android:layout_height="40sp"
+                        android:layout_gravity="center"
+                        android:drawableRight="@drawable/ic_arrowdrop"
+                        android:fontFamily="@font/nunitosansregular"
+                        android:gravity="start|top"
+                        android:padding="10dp"
+                        android:singleLine="true"
+                        android:text="Escoja su categoria"
+                        android:textColor="#9E9FA1" />
+                </RelativeLayout>
+
+                <TextView
+                    android:id="@+id/errorCategoriaUserProfile"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/rltCategoriasUserProfile"
+                    android:layout_marginHorizontal="30dp"
+                    android:layout_marginTop="5dp"
+                    android:fontFamily="@font/nunitosanslight"
+                    android:text="Complete el campo de correo"
+                    android:textColor="@color/rederror"
+                    android:visibility="gone" />
+
+                <RelativeLayout
+                    android:id="@+id/rltDescripcionUserProfile"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/errorCategoriaUserProfile"
+                    android:layout_marginTop="10dp"
+                    android:background="@drawable/background_fields"
+                    android:orientation="horizontal">
+
+                    <EditText
+                        android:id="@+id/descripcionTxtUserProfile"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@null"
+                        android:ems="10"
+                        android:fontFamily="@font/nunitosansregular"
+                        android:gravity="start|top"
+                        android:hint="Descripción de su actividad laboral"
+                        android:inputType="textMultiLine"
+                        android:lines="4"
+                        android:maxLines="4"
+                        android:padding="10dp"
+                        android:singleLine="false"
+                        android:textSize="14sp" />
+                </RelativeLayout>
+
+                <TextView
+                    android:id="@+id/errorDescripcionUserProfile"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/rltDescripcionUserProfile"
+                    android:layout_marginHorizontal="30dp"
+                    android:layout_marginTop="5dp"
+                    android:fontFamily="@font/nunitosanslight"
+                    android:text="Complete el campo de correo"
+                    android:textColor="@color/rederror"
+                    android:visibility="gone" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/btnEditarUserProfile"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/rltDatosProfesionalUserProfile"
+                android:layout_alignParentLeft="false"
+                android:layout_centerVertical="false"
+                android:layout_marginHorizontal="40dp"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/background_button_login"
+                android:gravity="center"
+                android:padding="10dp"
+                android:paddingVertical="10dp">
+
+                <TextView
+                    android:id="@+id/registerTextoOffer"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginRight="15dp"
+                    android:fontFamily="@font/nunitosansregular"
+                    android:gravity="center"
+                    android:paddingRight="5dp"
+                    android:text="Editar"
+                    android:textColor="#FFFFFF"
+                    android:textSize="13sp" />
+            </RelativeLayout>
+
+        </RelativeLayout>
+    </ScrollView>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

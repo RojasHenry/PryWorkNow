@@ -143,7 +143,7 @@ class ProfessionalRegisterFragment : Fragment() {
         }
 
         lifecycleScope.launch {
-            viewModel.isCategoriaProOk.collect { value ->
+            viewModel.isCategoriaProfOk.collect { value ->
                 if (isCategoriaTypedProf){
                     when (value.respuesta) {
                         0 -> {
@@ -162,7 +162,7 @@ class ProfessionalRegisterFragment : Fragment() {
         }
 
         lifecycleScope.launch {
-            viewModel.isDescripcionProOk.collect { value ->
+            viewModel.isDescripcionProfOk.collect { value ->
                 if (isDescripcionTypedProf){
                     when (value.respuesta) {
                         0 -> {

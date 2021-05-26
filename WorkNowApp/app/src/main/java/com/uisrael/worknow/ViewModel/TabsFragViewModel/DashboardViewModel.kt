@@ -3,12 +3,15 @@ package com.uisrael.worknow.ViewModel.TabsFragViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.google.firebase.auth.FirebaseUser
+import com.uisrael.worknow.Model.Data.ComentariosData
 import com.uisrael.worknow.Model.Data.PublicationsData
 import com.uisrael.worknow.Model.FirebaseAuthRepository
 import com.uisrael.worknow.Model.FirebaseModelsRepository
 import kotlinx.coroutines.flow.Flow
 
 class DashboardViewModel : ViewModel() {
+
+    lateinit var currentUser: FirebaseUser
     private var authFirebaseRepository: FirebaseAuthRepository = FirebaseAuthRepository()
     private var modelFirebaseRepository: FirebaseModelsRepository = FirebaseModelsRepository()
 
@@ -25,5 +28,9 @@ class DashboardViewModel : ViewModel() {
 
     fun getOfferViewAccepted(uidProf: String): Flow<MutableList<PublicationsData>> {
         return modelFirebaseRepository.getOfferViewAccepted(uidProf)
+    }
+
+    fun isNewViewComments(uidPub: String, uidUser: String): Flow<MutableList<ComentariosData>> {
+        return modelFirebaseRepository.isNewComments(uidPub, uidUser)
     }
 }

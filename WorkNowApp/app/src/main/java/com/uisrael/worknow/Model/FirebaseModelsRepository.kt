@@ -18,13 +18,12 @@ class FirebaseModelsRepository {
     private var database = Firebase.database
 
     companion object{
-
         const val REF_USUARIOS = "Usuarios"
         const val REF_CREDENCIALES = "Credenciales"
         const val REF_CATEGORIAS = "Categorias"
         const val REF_PUBLICACION = "Publicacion"
         const val REF_FOTOS = "FotosPublicacion"
-
+        const val REF_COMENTARIOS = "Comentarios"
     }
 
      fun registerUser(usuariosData: UsuariosData, uid: String): Any? {
@@ -108,7 +107,7 @@ class FirebaseModelsRepository {
                 userDatabase.child(uid).setValue(value)
                 uid
             }else{
-                ""
+                null
             }
         }catch (e: Exception){
             Log.i("Error", e.message)
@@ -207,7 +206,7 @@ class FirebaseModelsRepository {
                     override fun onDataChange(snapshot: DataSnapshot) {
                         snapshot.let {
                             var publicacionData = snapshot.getValue(PublicationsData::class.java)
-                            sendBlocking(publicacionData)
+                            this@callbackFlow.sendBlocking(publicacionData)
                         }
                     }
 
@@ -425,6 +424,118 @@ class FirebaseModelsRepository {
         return try {
             val databaseReference = database.getReference(REF_USUARIOS)
             databaseReference.child(uidProf).child("datosProf").child("calificaciones").setValue(calificaciones)
+        }catch (e: Exception){
+            Log.i("Error", e.message)
+            null
+        }
+    }
+
+    fun getCredencialesUser(uidUser: String): Flow<CredencialesData?> {
+        return callbackFlow {
+            val databaseReference = database.getReference(REF_CREDENCIALES).child(uidUser)
+            val eventListener = databaseReference.addValueEventListener(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    snapshot.let {
+                        var credencialesData = snapshot.getValue(CredencialesData::class.java)
+                        databaseReference.removeEventListener(this)
+                        this@callbackFlow.sendBlocking(credencialesData)
+                    }
+                }
+                override fun onCancelled(error: DatabaseError) {
+                    this@callbackFlow.close(error?.toException())
+                }
+            })
+
+            awaitClose{
+                databaseReference.removeEventListener(eventListener)
+            }
+        }
+    }
+
+    fun setUpdateUserProfile(uidUsuario: String, currentUser: UsuariosData): Any? {
+        return try {
+            val databaseReference = database.getReference(REF_USUARIOS)
+            databaseReference.child(uidUsuario).setValue(currentUser)
+        }catch (e: Exception){
+            Log.i("Error", e.message)
+            null
+        }
+    }
+
+    fun sendCommentOffer(uidPub: String, comment: ComentariosData): Any? {
+        return try {
+            val userDatabase = database.getReference(REF_COMENTARIOS)
+            val uid = userDatabase.push().key
+            return if (uid != null) {
+                userDatabase.child(uidPub).child(uid).setValue(comment)
+                uid
+            }else{
+                null
+            }
+        }catch (e: Exception){
+            Log.i("Error", e.message)
+            null
+        }
+    }
+
+    fun getCommentsOffer(uidPub: String): Flow<MutableList<ComentariosData>> {
+        return callbackFlow {
+            val databaseReference = database.getReference(REF_COMENTARIOS).child(uidPub).orderByChild("timespan")
+            val eventListener = databaseReference.addValueEventListener(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    var listaComentariosData: MutableList<ComentariosData> = ArrayList()
+                    for (child in snapshot.children) {
+                        var comentariosData: ComentariosData? = child.getValue(ComentariosData::class.java)
+                        if (comentariosData != null) {
+                            comentariosData.uid = child.key!!
+                            listaComentariosData.add(comentariosData)
+                        }
+                    }
+                    this@callbackFlow.sendBlocking(listaComentariosData)
+                }
+                override fun onCancelled(error: DatabaseError) {
+                    this@callbackFlow.close(error?.toException())
+                }
+            })
+
+            awaitClose{
+                databaseReference.removeEventListener(eventListener)
+            }
+        }
+    }
+
+    fun isNewComments(uidPub: String, uidUser: String): Flow<MutableList<ComentariosData>> {
+        return callbackFlow {
+            val databaseReference = database.getReference(REF_COMENTARIOS).child(uidPub).orderByChild("idReceptor").equalTo(uidUser)
+            val eventListener = databaseReference.addValueEventListener(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    var listaComentariosData: MutableList<ComentariosData> = ArrayList()
+                    for (child in snapshot.children) {
+                        var comentariosData: ComentariosData? = child.getValue(ComentariosData::class.java)
+                        if (comentariosData != null) {
+                            if(comentariosData.estado == Utilitity.COMMENT_ENVIADO){
+                                comentariosData.uid = child.key!!
+                                listaComentariosData.add(comentariosData)
+                            }
+                        }
+                    }
+                    this@callbackFlow.sendBlocking(listaComentariosData)
+                }
+                override fun onCancelled(error: DatabaseError) {
+                    this@callbackFlow.close(error?.toException())
+                }
+            })
+
+            awaitClose{
+                databaseReference.removeEventListener(eventListener)
+            }
+        }
+    }
+
+    fun setUpdateComment(uidPub: String,uidComment: String): Any? {
+        return try {
+            val databaseReference = database.getReference(REF_COMENTARIOS)
+            databaseReference.child(uidPub).child(uidComment).child("estado").setValue(Utilitity.COMMENT_LEIDO)
         }catch (e: Exception){
             Log.i("Error", e.message)
             null

@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
@@ -49,11 +50,18 @@ class DashboardFragment(var isProf: Boolean, var tabUsersActivity: TabUsersActiv
         if (isProf){
             rltDaschboardCli.visibility = View.GONE
             rltDaschboardProf.visibility = View.VISIBLE
-            adapterAccepted = context?.let { activity?.let { it1 -> OfferAcceptListAdapter(it, listAdapter, it1.supportFragmentManager) } }!!
+            adapterAccepted = context?.let { it -> OfferAcceptListAdapter(it, listAdapter, requireActivity().supportFragmentManager, requireActivity(), dashboardViewModel) }!!
             listOffersAccept.adapter = adapterAccepted
         }else{
-            adapterPublic = context?.let { activity?.let { it1 -> OfferPubNoCalifListAdapter(it, listAdapter, it1.supportFragmentManager,true) } }!!
-            adapterNoCalif = context?.let { activity?.let { it1 -> OfferPubNoCalifListAdapter(it, listAdapter, it1.supportFragmentManager,false) } }!!
+            adapterPublic = context?.let { activity?.let { it1 -> OfferPubNoCalifListAdapter(it, listAdapter, it1.supportFragmentManager,true, requireActivity(), dashboardViewModel) } }!!
+            adapterNoCalif = context?.let { activity?.let { it1 -> OfferPubNoCalifListAdapter(
+                it,
+                listAdapter,
+                it1.supportFragmentManager,
+                false,
+                null,
+                dashboardViewModel
+            ) } }!!
 
             listOffersPublic.adapter = adapterPublic
             listOffersNoCalif.adapter = adapterNoCalif
@@ -63,17 +71,22 @@ class DashboardFragment(var isProf: Boolean, var tabUsersActivity: TabUsersActiv
     private fun collectorFlow() {
         if(isProf){
             dashboardViewModel.viewModelScope.launch {
-                dashboardViewModel.getUserViewLogged().observe(viewLifecycleOwner,{
+                dashboardViewModel.getUserViewLogged().observe(viewLifecycleOwner,{ user ->
+                    dashboardViewModel.currentUser = user
                     dashboardViewModel.viewModelScope.launch {
-                        dashboardViewModel.getOfferViewAccepted(it.uid).collect {
+                        dashboardViewModel.getOfferViewAccepted(user.uid).collect {
                             progressAcceptOffer.visibility = View.GONE
                             if(it.size > 0){
+                                listOffersAccept.isVisible = true
                                 tabUsersActivity.moveTabViewpagerFragment(0)
                                 tabUsersActivity.disableViewpagerFragment(1,false)
                                 adapterAccepted.publicaciones = it as ArrayList<PublicationsData>
                                 adapterAccepted.notifyDataSetChanged()
+                                rltErrorlistOffersAccept.isVisible = false
                             }else{
                                 tabUsersActivity.disableViewpagerFragment(1,true)
+                                rltErrorlistOffersAccept.isVisible = true
+                                listOffersAccept.isVisible = false
                             }
                         }
                     }
@@ -81,16 +94,21 @@ class DashboardFragment(var isProf: Boolean, var tabUsersActivity: TabUsersActiv
             }
         }else{
             dashboardViewModel.viewModelScope.launch {
-                dashboardViewModel.getUserViewLogged().observe(viewLifecycleOwner,{
+                dashboardViewModel.getUserViewLogged().observe(viewLifecycleOwner,{ user ->
+                    dashboardViewModel.currentUser = user
                     dashboardViewModel.viewModelScope.launch {
-                        dashboardViewModel.getOffersViewAcceptAndPublic(it.uid).collect {
+                        dashboardViewModel.getOffersViewAcceptAndPublic(user.uid).collect {
                             progressOffersPublic.visibility = View.GONE
                             if(it.size > 2){
+                                listOffersPublic.isVisible = true
                                 tabUsersActivity.moveTabViewpagerFragment(0)
                                 tabUsersActivity.disableViewpagerFragment(1,false)
                                 adapterPublic.publicaciones = it as ArrayList<PublicationsData>
                                 adapterPublic.notifyDataSetChanged()
+                                rltErrorlistOffersPublic.isVisible = false
                             }else{
+                                rltErrorlistOffersPublic.isVisible = true
+                                listOffersPublic.isVisible = false
                                 tabUsersActivity.disableViewpagerFragment(1,true)
                             }
 
@@ -98,10 +116,18 @@ class DashboardFragment(var isProf: Boolean, var tabUsersActivity: TabUsersActiv
                     }
 
                     dashboardViewModel.viewModelScope.launch {
-                        dashboardViewModel.getOffersViewNoCalifCli(it.uid,Utilitity.ESTADO_SOL_TERMINADO).collect {
+                        dashboardViewModel.getOffersViewNoCalifCli(user.uid,Utilitity.ESTADO_SOL_TERMINADO).collect {
                             progressOffersNoCalif.visibility = View.GONE
-                            adapterNoCalif.publicaciones = it as ArrayList<PublicationsData>
-                            adapterNoCalif.notifyDataSetChanged()
+                            if(it.size > 0){
+                                listOffersNoCalif.isVisible = true
+                                adapterNoCalif.publicaciones = it as ArrayList<PublicationsData>
+                                adapterNoCalif.notifyDataSetChanged()
+                                rltErrorlistOffersNoCalif.isVisible = false
+                            }else{
+                                rltErrorlistOffersNoCalif.isVisible = true
+                                listOffersNoCalif.isVisible = false
+                            }
+
                         }
                     }
                 })

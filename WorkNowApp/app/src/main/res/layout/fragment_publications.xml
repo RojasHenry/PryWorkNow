@@ -1,12 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".Views.TabsFragments.PublicationsFragment"
     android:layout_margin="10dp">
+
+    <ProgressBar
+        android:id="@+id/progressListaPublicacion"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:indeterminate="true" />
+
+    <RelativeLayout
+        android:id="@+id/rltErrorListaPublicacion"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone">
+        <ImageView
+            android:id="@+id/imageErrorListaPublicacion"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:src="@drawable/ic_no_listpub_24" />
+
+        <TextView
+            android:id="@+id/textErrorListaPublicacion"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/imageErrorListaPublicacion"
+            android:layout_centerHorizontal="true"
+            android:fontFamily="@font/nunitosansbold"
+            android:text="No se ha publicado ninguna oferta."
+            android:textAlignment="center"
+            android:textColor="#AEAEAE" />
+    </RelativeLayout>
+
     <ListView
         android:id="@+id/ofertasListaPublicacion"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
-</FrameLayout>
+</RelativeLayout>

@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="160sp" >
+    android:layout_height="170sp" >
 
     <RelativeLayout
         android:id="@+id/relativeLayout"
@@ -25,13 +25,13 @@
         android:padding="15dp">
         <RelativeLayout
             android:id="@+id/iconContenedor"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:scaleX="1">
+            android:layout_width="80dp"
+            android:layout_height="80dp">
             <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/imageUsuarioActual"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
                 android:src="@drawable/background_circle" />
 
             <TextView
@@ -43,6 +43,34 @@
                 android:text="IN"
                 android:textColor="@android:color/white"
                 android:textSize="24sp" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/rltCalifContenedor"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:padding="10dp"
+            android:visibility="gone">
+
+            <TextView
+                android:id="@+id/califTxtUsuarioProf"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:fontFamily="@font/nunitosansbold"
+                android:text="4"
+                android:textColor="@android:color/white"
+                android:textSize="34sp" />
+
+            <RatingBar
+                android:id="@+id/ratingUsuarioProf"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:theme="@style/RatingBar"
+                android:layout_toRightOf="@id/califTxtUsuarioProf"
+                android:numStars="1" />
         </RelativeLayout>
 
         <TextView

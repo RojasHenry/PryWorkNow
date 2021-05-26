@@ -103,8 +103,8 @@
                                 android:fontFamily="@font/nunitosansregular"
                                 android:hint="Fecha Inicio"
                                 android:inputType="none"
-                                android:paddingLeft="10dp"
-                                android:paddingRight="10dp"
+                                android:paddingLeft="5dp"
+                                android:paddingRight="5dp"
                                 android:singleLine="true"
                                 android:textColor="#6c6d70"
                                 android:textSize="15dp" />
@@ -132,8 +132,8 @@
                                 android:fontFamily="@font/nunitosansregular"
                                 android:hint="Fecha Fin"
                                 android:inputType="none"
-                                android:paddingLeft="10dp"
-                                android:paddingRight="10dp"
+                                android:paddingLeft="5dp"
+                                android:paddingRight="5dp"
                                 android:singleLine="true"
                                 android:textColor="#6c6d70"
                                 android:textSize="15dp" />

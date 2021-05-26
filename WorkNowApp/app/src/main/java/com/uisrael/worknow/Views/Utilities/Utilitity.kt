@@ -15,12 +15,20 @@ class Utilitity {
 
 
     companion object {
+        // Estados Publicación
         const val ESTADO_PUBLICADO = "Publicado"
         const val ESTADO_ACEPTADO = "Aceptado"
         const val ESTADO_SOL_TERMINADO = "Concluido"
         const val ESTADO_PRO_TERMINADO = "Terminado"
         const val ESTADO_CANCELADO = "Cancelado"
 
+        // Roles Usuarios
+        const val ROL_CLIENTE = "Cliente"
+        const val ROL_PROFESIONAL = "Profesional"
+
+        // Estados Comentarios
+        const val COMMENT_ENVIADO = "Enviado"
+        const val COMMENT_LEIDO = "Leido"
     }
 
     fun compressImage(imageUri: String, ctx: Context): String? {

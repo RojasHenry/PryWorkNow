@@ -8,10 +8,13 @@ import android.util.Base64
 import android.view.MenuItem
 import android.view.View
 import android.widget.ImageView
+import android.widget.RatingBar
+import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
+import androidx.core.view.isVisible
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModelProvider
@@ -24,6 +27,7 @@ import com.google.android.material.navigation.NavigationView
 import com.uisrael.worknow.R
 import com.uisrael.worknow.ViewModel.TabUsersViewModel
 import com.uisrael.worknow.Views.Adapters.SectionsPagerAdapter
+import com.uisrael.worknow.Views.Utilities.Utilitity
 import kotlinx.android.synthetic.main.activity_tab_users.*
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
@@ -53,7 +57,7 @@ class TabUsersActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
 
 
         setSupportActionBar(toolbar)
-        isProf = intent.getStringExtra("rolUser")?.equals("Profesional") == true
+        isProf = intent.getStringExtra("rolUser")?.equals(Utilitity.ROL_PROFESIONAL) == true
         uidUsuario = intent.getStringExtra("uid")
 
 
@@ -63,9 +67,9 @@ class TabUsersActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
 
             navDrawableLayout.menu.clear()
             navDrawableLayout.inflateMenu(R.menu.left_nav_menu_prof)
-            SectionsPagerAdapter(supportFragmentManager, arrayListOf("Dashboard", "Register", "InProgress","Perfil"), isProf, this)
+            SectionsPagerAdapter(supportFragmentManager, arrayListOf("Dashboard", "Register", "InProgress"), isProf, this)
         }else{
-            SectionsPagerAdapter(supportFragmentManager, arrayListOf("Dashboard", "Register", "InProgress","Perfil","Historial"), isProf, this)
+            SectionsPagerAdapter(supportFragmentManager, arrayListOf("Dashboard", "Register", "InProgress"), isProf, this)
         }
 
         viewpager_fragments.adapter = pagerAdapter
@@ -124,21 +128,21 @@ class TabUsersActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
             }
         })
 
-        getCurrentUser();
+        getCurrentUser()
     }
 
     private fun getCurrentUser() {
         viewModel.viewModelScope.launch {
-            viewModel.getCurrentUser(uidUsuario).collect {
-                var cabeceraView = navDrawableLayout.getHeaderView(0)
-                var nombreUsuarioActual = cabeceraView.findViewById<TextView>(R.id.nombreUsuarioActual)
+            viewModel.getCurrentUser(uidUsuario, false).collect {
+                val cabeceraView = navDrawableLayout.getHeaderView(0)
+                val nombreUsuarioActual = cabeceraView.findViewById<TextView>(R.id.nombreUsuarioActual)
+                val iconUsuarioActual = cabeceraView.findViewById<TextView>(R.id.iconUsuarioActual)
                 if (it != null) {
+                    viewModel.userCurrent = it
                     nombreUsuarioActual.text = "${it.nombre} ${it.apellido}"
-                }
-                var iconUsuarioActual = cabeceraView.findViewById<TextView>(R.id.iconUsuarioActual)
-                if (it != null) {
+
                     if (it.foto.isNotBlank()){
-                        var imageUsuarioActual = cabeceraView.findViewById<ImageView>(R.id.imageUsuarioActual)
+                        val imageUsuarioActual = cabeceraView.findViewById<ImageView>(R.id.imageUsuarioActual)
                         val imageBytes = Base64.decode(it?.foto, Base64.DEFAULT)
                         val decodedImage = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.size)
                         imageUsuarioActual.setImageBitmap(decodedImage)
@@ -146,13 +150,30 @@ class TabUsersActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
                     }else{
                         iconUsuarioActual.text = "${it.nombre.get(0)}${it.apellido.get(0)}"
                     }
+
+                    if(it.rol == Utilitity.ROL_PROFESIONAL){
+                        val rltCalifContenedor = cabeceraView.findViewById<RelativeLayout>(R.id.rltCalifContenedor)
+                        val califTxtUsuarioProf = cabeceraView.findViewById<TextView>(R.id.califTxtUsuarioProf)
+                        val ratingUsuarioProf = cabeceraView.findViewById<RatingBar>(R.id.ratingUsuarioProf)
+                        rltCalifContenedor.isVisible = true
+
+                        var califacionSum = 0.0
+
+                        it.datosProf.calificaciones.map { calificacionData ->
+                            califacionSum += calificacionData.calificacion
+                        }
+
+                        califTxtUsuarioProf.text = (califacionSum / it.datosProf.calificaciones.size).toString()
+                        ratingUsuarioProf.rating = (califacionSum / it.datosProf.calificaciones.size).toFloat()
+                        ratingUsuarioProf.isEnabled = false
+                    }
                 }
             }
         }
 
         viewModel.viewModelScope.launch {
-            var cabeceraView = navDrawableLayout.getHeaderView(0)
-            var emailUsuarioActual = cabeceraView.findViewById<TextView>(R.id.emailUsuarioActual)
+            val cabeceraView = navDrawableLayout.getHeaderView(0)
+            val emailUsuarioActual = cabeceraView.findViewById<TextView>(R.id.emailUsuarioActual)
             lifecycleOwner()?.let {
                 viewModel.getUserLogged().observe(it,{ user->
                     emailUsuarioActual.text = user.email
@@ -235,19 +256,17 @@ class TabUsersActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
                 }
             }
             R.id.navigation_profile -> {
-                titleToolbar.text = item.toString()
-                hideBottomNav()
-                lockDrawer()
-                changeToolbarFuncions(true)
-                moveTabViewpagerFragment(3)
+                viewModel.viewModelScope.launch {
+                    viewModel.getCurrentUser(uidUsuario, true).collect {
+                        val dialogProfileUserFragment = it?.let { it1 -> ProfileUserFragment(uidUsuario, it1) }
+                        dialogProfileUserFragment?.show(supportFragmentManager,"dialogProfileUser")
+                    }
+                }
             }
 
             R.id.navigation_history_offer_cli -> {
-                titleToolbar.text = item.toString()
-                hideBottomNav()
-                lockDrawer()
-                changeToolbarFuncions(true)
-                moveTabViewpagerFragment(4)
+                val dialogHistoryOffersFragment = HistoryOffersFragment()
+                dialogHistoryOffersFragment.show(supportFragmentManager,"dialogHistoryOffers")
             }
         }
         drawerLayout.closeDrawers();

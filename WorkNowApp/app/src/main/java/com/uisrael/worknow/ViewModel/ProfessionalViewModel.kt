@@ -10,6 +10,7 @@ import com.uisrael.worknow.Model.Data.UsuariosData
 import com.uisrael.worknow.Model.FirebaseAuthRepository
 import com.uisrael.worknow.Model.FirebaseModelsRepository
 import com.uisrael.worknow.ViewModel.ValidatorRespuestas.Respuesta
+import com.uisrael.worknow.Views.Utilities.Utilitity
 import com.wajahatkarim3.easyvalidation.core.Validator
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -47,7 +48,7 @@ class ProfessionalViewModel : ViewModel() {
     }
 
     fun registeViewProfDataUsuario(uid: String): Any? {
-        _usuarioDatos.value.rol = "Profesional"
+        _usuarioDatos.value.rol = Utilitity.ROL_PROFESIONAL
         _usuarioDatos.value.datosProf = _usuarioProfesional.value
         return modelsFirebaseRepository.registerUser(_usuarioDatos.value, uid)
     }
@@ -85,7 +86,7 @@ class ProfessionalViewModel : ViewModel() {
 
     fun setCategoriasProf (categorias: String){
         _categoriasProf.value = categorias
-        _usuarioProfesional.value.categorias = categorias.split(",")
+        _usuarioProfesional.value.categorias = categorias.split(",").map { it.trim() }
         _usuarioProfesionalOK.value = true
     }
 
@@ -214,7 +215,7 @@ class ProfessionalViewModel : ViewModel() {
         return@combine respuesta
     }
 
-    val isCategoriaProOk: Flow<Respuesta> = combine(_categoriasProf) { categorias ->
+    val isCategoriaProfOk: Flow<Respuesta> = combine(_categoriasProf) { categorias ->
         val respuesta = Respuesta()
         if(categorias[0].isEmpty()){
             respuesta.respuesta = 2
@@ -237,7 +238,7 @@ class ProfessionalViewModel : ViewModel() {
         return@combine respuesta
     }
 
-    val isDescripcionProOk: Flow<Respuesta> = combine(_descripcionProf) { descripcion ->
+    val isDescripcionProfOk: Flow<Respuesta> = combine(_descripcionProf) { descripcion ->
         val respuesta = Respuesta()
         val validatorDescripcion = Validator(descripcion[0])
         if(validatorDescripcion.nonEmpty().check()){

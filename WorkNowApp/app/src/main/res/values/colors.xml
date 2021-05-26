@@ -11,4 +11,6 @@
     <color name="white">#FFFFFFFF</color>
     <color name="rederror">#E12929</color>
     <color name="grayline">#979595</color>
+
+    <color name="staryellow">#FFF200</color>
 </resources>

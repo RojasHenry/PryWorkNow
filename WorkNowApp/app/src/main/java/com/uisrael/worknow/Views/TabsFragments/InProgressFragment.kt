@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
@@ -49,11 +50,20 @@ class InProgressFragment(var isProf: Boolean) : Fragment() {
     private fun collectorFlow() {
         if(isProf){
             inProgressViewModel.viewModelScope.launch {
-                inProgressViewModel.getUserViewLogged().observe(viewLifecycleOwner,{
+                inProgressViewModel.getUserViewLogged().observe(viewLifecycleOwner,{user ->
                     inProgressViewModel.viewModelScope.launch {
-                        inProgressViewModel.getOffersViewProfAceptedOnProgress(it.uid).collect {
-                            adapterProgress.publicaciones = it as ArrayList<PublicationsData>
-                            adapterProgress.notifyDataSetChanged()
+                        inProgressViewModel.getOffersViewProfAceptedOnProgress(user.uid).collect {
+                            progressOnProgress.isVisible = false
+                            if(it.size > 0){
+                                adapterProgress.publicaciones = it as ArrayList<PublicationsData>
+                                adapterProgress.notifyDataSetChanged()
+                                rltErrorofferListOnProgress.isVisible = false
+                                offerListOnProgress.isVisible = true
+                            }else{
+                                rltErrorofferListOnProgress.isVisible = true
+                                offerListOnProgress.isVisible = false
+                            }
+
                         }
                     }
                 })
@@ -63,8 +73,16 @@ class InProgressFragment(var isProf: Boolean) : Fragment() {
                 inProgressViewModel.getUserViewLogged().observe(viewLifecycleOwner,{
                     inProgressViewModel.viewModelScope.launch {
                         inProgressViewModel.getOffersViewCliAcceptedOnProgress(it.uid).collect {
-                            adapterProgress.publicaciones = it as ArrayList<PublicationsData>
-                            adapterProgress.notifyDataSetChanged()
+                            progressOnProgress.isVisible = false
+                            if(it.size > 0){
+                                adapterProgress.publicaciones = it as ArrayList<PublicationsData>
+                                adapterProgress.notifyDataSetChanged()
+                                rltErrorofferListOnProgress.isVisible = false
+                                offerListOnProgress.isVisible = true
+                            }else{
+                                rltErrorofferListOnProgress.isVisible = true
+                                offerListOnProgress.isVisible = false
+                            }
                         }
                     }
                 })

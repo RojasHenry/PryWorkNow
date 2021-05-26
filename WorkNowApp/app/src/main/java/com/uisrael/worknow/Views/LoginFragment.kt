@@ -136,9 +136,9 @@ class LoginFragment : Fragment() {
                     viewModel.getViewUserLogged().observe(viewLifecycleOwner, Observer {userFire ->
                         lifecycleScope.launch {
                             val uid = userFire.uid
-                            viewModel.getCurrentUser(uid).collect {
-                                if (it != null) {
-                                    goToMenuPrincipal(it.rol, uid)
+                            viewModel.getCurrentUser(uid).collect { user->
+                                if (user != null) {
+                                    goToMenuPrincipal(user.rol, uid)
                                 }
                             }
                         }
@@ -246,7 +246,9 @@ class LoginFragment : Fragment() {
             putExtra("rolUser", rol)
             putExtra("uid", uid)
         }
+
         startActivity(intent)
+
     }
 
 }

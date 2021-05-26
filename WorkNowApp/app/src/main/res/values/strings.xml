@@ -7,6 +7,7 @@
     <string name="title_publications">Publicaciones</string>
     <string name="title_profile">Mi Perfil</string>
     <string name="title_history_offers">Historial de Solicitudes</string>
+    <string name="title_comments">Comentarios</string>
     <string name="navigation_drawer_open">Abrir</string>
     <string name="navigation_drawer_close">Cerrar</string>
     <string name="title_logout">Cerrar Sesión</string>

@@ -30,15 +30,12 @@ class SectionsPagerAdapter(
                 0 ->  return DashboardFragment.newInstance(isProf, tabUsersActivity)
                 1 ->  return PublicationsFragment.newInstance()
                 2 ->  return InProgressFragment.newInstance(isProf)
-                3 ->  return ProfileUserFragment.newInstance()
             }
         }else{
             when (position){
                 0 ->  return DashboardFragment.newInstance(isProf, tabUsersActivity)
                 1 ->  return OffersRegisterFragment.newInstance()
                 2 ->  return InProgressFragment.newInstance(isProf)
-                3 ->  return ProfileUserFragment.newInstance()
-                4 ->  return HistoryOffersFragment.newInstance()
             }
         }
         return OffersRegisterFragment.newInstance()
