@@ -1,12 +1,20 @@
 package com.uisrael.worknow.Views.Utilities
 
+import android.R
+import android.annotation.SuppressLint
+import android.app.AlertDialog
 import android.content.Context
 import android.graphics.*
 import android.media.ExifInterface
 import android.net.Uri
+import android.os.Handler
+import android.os.Looper
 import android.provider.MediaStore
 import android.util.Base64
 import android.util.Log
+import android.util.Patterns
+import androidx.fragment.app.FragmentManager
+import com.uisrael.worknow.Views.Dialogs.LoadingFragment
 import java.io.ByteArrayOutputStream
 import java.io.IOException
 
@@ -14,7 +22,11 @@ import java.io.IOException
 class Utilitity {
 
 
+
     companion object {
+        @SuppressLint("StaticFieldLeak")
+        lateinit var loadingDialog: LoadingFragment
+
         // Estados Publicación
         const val ESTADO_PUBLICADO = "Publicado"
         const val ESTADO_ACEPTADO = "Aceptado"
@@ -29,6 +41,23 @@ class Utilitity {
         // Estados Comentarios
         const val COMMENT_ENVIADO = "Enviado"
         const val COMMENT_LEIDO = "Leido"
+
+        fun showLoading(ctx: Context, titulo:String, manager: FragmentManager){
+            loadingDialog = LoadingFragment(ctx, titulo)
+            loadingDialog.showLoading(manager)
+        }
+
+        fun dissMissLoading (timeDiss:Long){
+            if(timeDiss > 0){
+                Handler(Looper.getMainLooper()).postDelayed({
+                    if (loadingDialog != null)
+                        loadingDialog.dissmissLoading()
+                }, timeDiss)
+            }else{
+                if (loadingDialog != null)
+                    loadingDialog.dissmissLoading()
+            }
+        }
     }
 
     fun compressImage(imageUri: String, ctx: Context): String? {
@@ -182,4 +211,17 @@ class Utilitity {
         canvas.drawBitmap(bitmap, rect, rect, paint)
         return output
     }
+
+    fun showDialog (ctx: Context, title:String, message:String, icon:Int): AlertDialog.Builder? {
+        return AlertDialog.Builder(ctx)
+            .setTitle(title)
+            .setMessage(message)
+            .setIcon(icon)
+
+    }
+
+    fun isValidUrl(foto:String): Boolean {
+        return Patterns.WEB_URL.matcher(foto).matches()
+    }
+
 }

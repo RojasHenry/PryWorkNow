@@ -1,12 +1,10 @@
 package com.uisrael.worknow.ViewModel
 
+import android.util.Log
 import android.util.Patterns
 import androidx.lifecycle.ViewModel
 import com.google.firebase.auth.FirebaseUser
-import com.uisrael.worknow.Model.Data.CategoriasData
-import com.uisrael.worknow.Model.Data.CredencialesData
-import com.uisrael.worknow.Model.Data.ProfesionalData
-import com.uisrael.worknow.Model.Data.UsuariosData
+import com.uisrael.worknow.Model.Data.*
 import com.uisrael.worknow.Model.FirebaseAuthRepository
 import com.uisrael.worknow.Model.FirebaseModelsRepository
 import com.uisrael.worknow.ViewModel.ValidatorRespuestas.Respuesta
@@ -20,6 +18,8 @@ class ProfessionalViewModel : ViewModel() {
 
     private var modelsFirebaseRepository: FirebaseModelsRepository = FirebaseModelsRepository()
     private var authFirebaseRepository: FirebaseAuthRepository = FirebaseAuthRepository()
+
+    var userGoogleView: FirebaseUser? = null
 
     private val _nombreProf = MutableStateFlow("")
     private val _apellidoProf = MutableStateFlow("")
@@ -52,12 +52,21 @@ class ProfessionalViewModel : ViewModel() {
         _usuarioDatos.value.datosProf = _usuarioProfesional.value
         return modelsFirebaseRepository.registerUser(_usuarioDatos.value, uid)
     }
-    fun registeViewProfCredenciales(uid: String): Any? {
+    fun registeViewProfCredenciales(uid: String, fromSocialNet: Boolean): Any? {
+        _usuarioCredentials.value.fromSocNet = fromSocialNet
         return modelsFirebaseRepository.registerCredenciales(_usuarioCredentials.value, uid)
+    }
+
+    fun registerViewProfToken(uid: String, token:String): Any? {
+        return modelsFirebaseRepository.registerViewUserToken(uid, TokenData(token = token))
     }
 
     fun getViewCategorias (): Flow<List<CategoriasData>> {
         return modelsFirebaseRepository.getCategorias
+    }
+
+    fun setFotoProf(fotoB64: String){
+        _usuarioDatos.value.foto = fotoB64
     }
 
     fun setNombreProf (nombre: String){
@@ -109,7 +118,7 @@ class ProfessionalViewModel : ViewModel() {
     }
 
 
-    val isFormProfSucess: Flow<Boolean> = combine(_usuarioDatosOK,_usuarioCredencialesOK,_usuarioProfesionalOK) { usuarioDatosOK, usuarioCredentialsOK, usuarioProfesional->
+    val isFormProfSucess: Flow<Boolean> = combine(_usuarioDatosOK,_usuarioCredencialesOK,_usuarioProfesionalOK) { _, _, _->
         val validatorNombre = Validator(_usuarioDatos.value.nombre)
         val validatorApellido = Validator(_usuarioDatos.value.apellido)
         val validatorCiudad = Validator(_usuarioDatos.value.ciudad)
@@ -125,7 +134,8 @@ class ProfessionalViewModel : ViewModel() {
         val isDescripcionValid = validatorDescripcion.nonEmpty().minLength(caracteres).check()
         val isCategoriasValid = validatorCategorias.nonEmpty().check() and (validatorCategorias.text != "A") and (validatorCategorias.text != "N") and (validatorCategorias.text != "C") and (validatorCategorias.text != "Escoja su categoria")
         val isCorreoValid = validatorCorreo.nonEmpty().validEmail().check()
-        val isPasswordValid = validatorPassword.nonEmpty().check()
+        val isPasswordValid = if (userGoogleView == null) validatorPassword.nonEmpty().check() else true
+        Log.i("Profesional",_usuarioDatos.value.toString())
         if(isNombreValid and isApellidoValid and isCiudadValid and isTelefonoValid and isCorreoValid and isPasswordValid and isDescripcionValid and isCategoriasValid){
             return@combine true
         }else{

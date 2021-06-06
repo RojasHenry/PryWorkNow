@@ -24,6 +24,10 @@ class LoginViewModel : ViewModel() {
         return authFirebaseRepository.loginUser(email, password)?.user
     }
 
+    fun loginViewWithGoogle(idToken: String): Flow<FirebaseUser?> {
+        return authFirebaseRepository.loginViewWithGoogle(idToken)
+    }
+
     fun validateViewUserLogged(): MutableLiveData<Boolean> {
         return authFirebaseRepository.validateUserLogged()
     }

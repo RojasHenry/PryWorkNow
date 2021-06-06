@@ -24,6 +24,7 @@ class FirebaseModelsRepository {
         const val REF_PUBLICACION = "Publicacion"
         const val REF_FOTOS = "FotosPublicacion"
         const val REF_COMENTARIOS = "Comentarios"
+        const val REF_TOKENS = "Tokens"
     }
 
      fun registerUser(usuariosData: UsuariosData, uid: String): Any? {
@@ -536,6 +537,16 @@ class FirebaseModelsRepository {
         return try {
             val databaseReference = database.getReference(REF_COMENTARIOS)
             databaseReference.child(uidPub).child(uidComment).child("estado").setValue(Utilitity.COMMENT_LEIDO)
+        }catch (e: Exception){
+            Log.i("Error", e.message)
+            null
+        }
+    }
+
+    fun registerViewUserToken(uid: String, tokenData: TokenData): Any?  {
+        return try {
+            val databaseReference = database.getReference(REF_TOKENS)
+            databaseReference.child(uid).setValue(tokenData)
         }catch (e: Exception){
             Log.i("Error", e.message)
             null

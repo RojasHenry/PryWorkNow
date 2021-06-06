@@ -34,8 +34,8 @@ class PublicationsFragment : Fragment() {
         return inflater.inflate(R.layout.fragment_publications, container, false)
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         viewModel = ViewModelProvider(this).get(PublicationsViewModel::class.java)
         adapter = context?.let { activity?.let { it1 -> PublicationsListAdapter(it, listAdapter, it1.supportFragmentManager) } }!!
 

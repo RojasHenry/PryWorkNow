@@ -1,24 +1,29 @@
 package com.uisrael.worknow.Views
 
-import androidx.lifecycle.ViewModelProvider
+import android.annotation.SuppressLint
 import android.os.Bundle
-import androidx.fragment.app.Fragment
+import android.text.Editable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.core.widget.addTextChangedListener
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewModelScope
+import com.google.android.material.snackbar.Snackbar
+import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.messaging.FirebaseMessaging
 import com.uisrael.worknow.R
 import com.uisrael.worknow.ViewModel.ClientViewModel
 import kotlinx.android.synthetic.main.client_fragment.*
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
-class ClientRegisterFragment : Fragment() {
+
+class ClientRegisterFragment(private val userGoogle: FirebaseUser?) : Fragment() {
 
     var isNombreTypedCli : Boolean = false
     var isApellidoTypedCli : Boolean = false
@@ -28,7 +33,7 @@ class ClientRegisterFragment : Fragment() {
     var isPaswordTypedCli : Boolean = false
 
     companion object {
-        fun newInstance() = ClientRegisterFragment()
+        fun newInstance(user: FirebaseUser?) = ClientRegisterFragment(user)
     }
 
     private lateinit var viewModel: ClientViewModel
@@ -38,9 +43,12 @@ class ClientRegisterFragment : Fragment() {
         return inflater.inflate(R.layout.client_fragment, container, false)
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         viewModel = ViewModelProvider(this).get(ClientViewModel::class.java)
+        if (userGoogle != null) {
+            viewModel.userGoogleView = userGoogle
+        }
         inicializarListeners()
         collectorFlow()
     }
@@ -168,6 +176,7 @@ class ClientRegisterFragment : Fragment() {
 
     }
 
+    @SuppressLint("ShowToast")
     private fun inicializarListeners() {
         nombreTxtCli.addTextChangedListener{
             if (!isNombreTypedCli){
@@ -252,19 +261,167 @@ class ClientRegisterFragment : Fragment() {
             }
         }
 
+        /*rltCiudadCli.setOnClickListener {
+            context?.let { it1 -> MapCityFragment(it1) }
+                ?.show(childFragmentManager, "mapcityfragment")
+        }*/
+
         btnRegisterCli.setOnClickListener{
-            viewModel.viewModelScope.launch {
+            FirebaseMessaging.getInstance().token.addOnCompleteListener {
+                if(!it.isSuccessful){
+                    Snackbar
+                        .make(rltContentDatosPersonalesCli, "Dispositivo no compatible con notificaciones.", Snackbar.LENGTH_SHORT)
+                        .setAnimationMode(Snackbar.ANIMATION_MODE_SLIDE)
+                        .setBackgroundTint(resources.getColor(R.color.black))
+                        .show()
+                    return@addOnCompleteListener
+                }
+
+                // Get new FCM registration token
+                val token = it.result
+                registerCli(userGoogle, token)
+            }
+
+        }
+
+        if(userGoogle != null){
+            val nameSplit = userGoogle.displayName.split(" ")
+            if (nameSplit.size >=2) {
+                nombreTxtCli.text = Editable.Factory.getInstance().newEditable(nameSplit[0])
+                apellidoTxtCli.text = Editable.Factory.getInstance().newEditable(nameSplit[1])
+            }else{
+                nombreTxtCli.text = Editable.Factory.getInstance().newEditable(userGoogle.displayName)
+            }
+            correoTxtCli.text = Editable.Factory.getInstance().newEditable(userGoogle.email)
+            correoTxtCli.isEnabled = false
+            rltPasswordCli.isVisible = false
+
+            viewModel.setFotoCli(userGoogle.photoUrl.toString())
+
+        }
+    }
+
+    @SuppressLint("ShowToast")
+    private fun registerCli(userGoogle: FirebaseUser?, tokenFire: String) {
+        viewModel.viewModelScope.launch {
+            if (userGoogle != null) {
+                val datosProf = viewModel.registerViewCliDataUsuario(userGoogle.uid)
+                if (datosProf != null) {
+                    val credencialesProf =
+                        viewModel.registerViewCliCredenciales(userGoogle.uid, true)
+                    if (credencialesProf != null) {
+                        val tokenCli = viewModel.registerViewCliToken(userGoogle.uid, tokenFire)
+                        if(tokenCli != null){
+                            Snackbar
+                                .make(
+                                    rltContentDatosPersonalesCli,
+                                    "Usuario ${userGoogle.displayName} registrado exitosamente.",
+                                    Snackbar.LENGTH_INDEFINITE
+                                )
+                                .setAnimationMode(Snackbar.ANIMATION_MODE_SLIDE)
+                                .setBackgroundTint(resources.getColor(R.color.black))
+                                .setActionTextColor(resources.getColor(R.color.purple_500))
+                                .setAction("OK") {}
+                                .show()
+                        } else {
+                            Snackbar
+                                .make(
+                                    rltContentDatosPersonalesCli,
+                                    "Error al crear el usuario.",
+                                    Snackbar.LENGTH_SHORT
+                                )
+                                .setAnimationMode(Snackbar.ANIMATION_MODE_SLIDE)
+                                .setBackgroundTint(resources.getColor(R.color.black))
+                                .show()
+                        }
+                    } else {
+                        Snackbar
+                            .make(
+                                rltContentDatosPersonalesCli,
+                                "Error al crear el usuario.",
+                                Snackbar.LENGTH_SHORT
+                            )
+                            .setAnimationMode(Snackbar.ANIMATION_MODE_SLIDE)
+                            .setBackgroundTint(resources.getColor(R.color.black))
+                            .show()
+                    }
+                } else {
+                    Snackbar
+                        .make(
+                            rltContentDatosPersonalesCli,
+                            "Error al crear el usuario.",
+                            Snackbar.LENGTH_SHORT
+                        )
+                        .setAnimationMode(Snackbar.ANIMATION_MODE_SLIDE)
+                        .setBackgroundTint(resources.getColor(R.color.black))
+                        .show()
+                }
+            } else {
                 val user = viewModel.registerViewCli()
                 if (user != null) {
-                    val datosProf = viewModel.registeViewCliDataUsuario(user.uid)
-                    if(datosProf != null){
-                        val credencialesProf = viewModel.registeViewCliCredenciales(user.uid)
-                        if(credencialesProf != null){
-                            Toast.makeText(activity, "Usuario ${user.uid} Registrado exitosamente.", Toast.LENGTH_SHORT).show()
+                    val datosProf = viewModel.registerViewCliDataUsuario(user.uid)
+                    if (datosProf != null) {
+                        val credencialesProf = viewModel.registerViewCliCredenciales(
+                            user.uid,
+                            false
+                        )
+                        if (credencialesProf != null) {
+                            val tokenCli = viewModel.registerViewCliToken(user.uid, tokenFire)
+                            if(tokenCli != null){
+                                Snackbar
+                                    .make(
+                                        rltContentDatosPersonalesCli,
+                                        "Usuario ${user.uid} registrado exitosamente.",
+                                        Snackbar.LENGTH_INDEFINITE
+                                    )
+                                    .setAnimationMode(Snackbar.ANIMATION_MODE_SLIDE)
+                                    .setBackgroundTint(resources.getColor(R.color.black))
+                                    .setActionTextColor(resources.getColor(R.color.purple_500))
+                                    .setAction("OK") {}
+                                    .show()
+                            }else{
+                                Snackbar
+                                    .make(
+                                        rltContentDatosPersonalesCli,
+                                        "Error al crear el usuario.",
+                                        Snackbar.LENGTH_SHORT
+                                    )
+                                    .setAnimationMode(Snackbar.ANIMATION_MODE_SLIDE)
+                                    .setBackgroundTint(resources.getColor(R.color.black))
+                                    .show()
+                            }
+                        } else {
+                            Snackbar
+                                .make(
+                                    rltContentDatosPersonalesCli,
+                                    "Error al crear el usuario.",
+                                    Snackbar.LENGTH_SHORT
+                                )
+                                .setAnimationMode(Snackbar.ANIMATION_MODE_SLIDE)
+                                .setBackgroundTint(resources.getColor(R.color.black))
+                                .show()
                         }
+                    } else {
+                        Snackbar
+                            .make(
+                                rltContentDatosPersonalesCli,
+                                "Error al crear el usuario.",
+                                Snackbar.LENGTH_SHORT
+                            )
+                            .setAnimationMode(Snackbar.ANIMATION_MODE_SLIDE)
+                            .setBackgroundTint(resources.getColor(R.color.black))
+                            .show()
                     }
-                }else{
-                    Toast.makeText(activity, "Error al crear el usuario", Toast.LENGTH_SHORT).show()
+                } else {
+                    Snackbar
+                        .make(
+                            rltContentDatosPersonalesCli,
+                            "Error al crear el usuario.",
+                            Snackbar.LENGTH_SHORT
+                        )
+                        .setAnimationMode(Snackbar.ANIMATION_MODE_SLIDE)
+                        .setBackgroundTint(resources.getColor(R.color.black))
+                        .show()
                 }
             }
         }

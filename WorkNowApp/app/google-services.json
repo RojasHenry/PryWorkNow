@@ -1,6 +1,7 @@
 {
   "project_info": {
     "project_number": "1064249264511",
+    "firebase_url": "https://worknowpry-default-rtdb.firebaseio.com",
     "project_id": "worknowpry",
     "storage_bucket": "worknowpry.appspot.com"
   },
@@ -13,6 +14,14 @@
         }
       },
       "oauth_client": [
+        {
+          "client_id": "1064249264511-35mlg2jjf12nbm1vo49ko0vgu0s6nca8.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.uisrael.worknow",
+            "certificate_hash": "cec52834c7f94d3f47a0b3648deb254a709f0d2c"
+          }
+        },
         {
           "client_id": "1064249264511-66a1r0d2324rlm04teuqmrc24sep1d9f.apps.googleusercontent.com",
           "client_type": 3

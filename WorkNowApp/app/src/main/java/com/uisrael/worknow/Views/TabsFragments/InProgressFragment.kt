@@ -35,8 +35,8 @@ class InProgressFragment(var isProf: Boolean) : Fragment() {
         return inflater.inflate(R.layout.fragment_inprogress, container, false)
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         inProgressViewModel = ViewModelProvider(this).get(InProgressViewModel::class.java)
         inicializateComponents()
         collectorFlow()

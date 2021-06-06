@@ -37,8 +37,8 @@ class HistoryOffersFragment : DialogFragment() {
         return R.style.FullScreenDialog
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         viewModel = ViewModelProvider(this).get(HistoryOffersViewModel::class.java)
         inicializateComponents()
         collectorFlow()

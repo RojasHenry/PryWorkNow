@@ -54,7 +54,7 @@ class OfferHistoricListAdapter (
             }
 
             convertView.btnVermasHistoricOfferList.setOnClickListener {
-                val offerBottomSheetFragment = OfferBottomSheetFragment(c, publicaciones[position], fromDashboard = true,fromPubAccept = false, fromPubCli = false)
+                val offerBottomSheetFragment = OfferBottomSheetFragment(c, publicaciones[position], fromDashboard = true,fromPubAccept = false, fromPubCli = false, supportFragmentManager)
                 offerBottomSheetFragment.show(supportFragmentManager, "ModalBottomOffer")
             }
         }

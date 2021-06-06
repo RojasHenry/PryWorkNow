@@ -73,7 +73,7 @@
                             android:layout_below="@id/imageErrorlistOffersPublic"
                             android:layout_centerHorizontal="true"
                             android:fontFamily="@font/nunitosansbold"
-                            android:text="No se ha publicado ninguna oferta"
+                            android:text="No hay ninguna oferta publicada"
                             android:textAlignment="center"
                             android:textColor="#AEAEAE" />
                     </RelativeLayout>
@@ -218,7 +218,7 @@
                             android:layout_below="@id/imageErrorlistOffersAccept"
                             android:layout_centerHorizontal="true"
                             android:fontFamily="@font/nunitosansbold"
-                            android:text="No se ha acetado ninguna oferta"
+                            android:text="No hay ofertas aceptadas"
                             android:textAlignment="center"
                             android:textColor="#AEAEAE" />
                     </RelativeLayout>

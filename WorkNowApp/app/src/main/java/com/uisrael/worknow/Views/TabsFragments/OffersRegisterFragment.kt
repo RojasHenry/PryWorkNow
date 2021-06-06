@@ -13,7 +13,6 @@ import android.text.Editable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.core.widget.addTextChangedListener
@@ -21,6 +20,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewModelScope
+import com.google.android.material.snackbar.Snackbar
 import com.uisrael.worknow.Model.Data.CategoriasData
 import com.uisrael.worknow.R
 import com.uisrael.worknow.ViewModel.TabsFragViewModel.OffersRegisterViewModel
@@ -77,13 +77,14 @@ class OffersRegisterFragment : Fragment() {
         return inflater.inflate(R.layout.fragment_offersregister, container, false)
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         offersRegisterViewModel = ViewModelProvider(this).get(OffersRegisterViewModel::class.java)
         inicializarListeners()
         collectorFlow()
     }
 
+    @SuppressLint("ShowToast")
     private fun inicializarListeners() {
 
         spinnerCategoriasOffer.setOnClickListener{
@@ -373,7 +374,13 @@ class OffersRegisterFragment : Fragment() {
                 if(uid.isNotEmpty()){
                     val offerPicture = offersRegisterViewModel.registerViewOfferPictures(uid, requireContext())
                     if(offerPicture != null){
-                        Toast.makeText(activity, "Solicitud ingresada exitosamente", Toast.LENGTH_SHORT).show()
+                        Snackbar
+                            .make(rltContenedorDatosSolicitudOffer, "Solicitud ingresada exitosamente.", Snackbar.LENGTH_INDEFINITE)
+                            .setAnimationMode(Snackbar.ANIMATION_MODE_SLIDE)
+                            .setBackgroundTint(resources.getColor(R.color.black))
+                            .setActionTextColor(resources.getColor(R.color.purple_500))
+                            .setAction("OK"){}
+                            .show()
                         lifecycleScope.launch {
                             currentCategoria?.let { it1 ->
                                 clearFormTypedsView()
@@ -384,10 +391,18 @@ class OffersRegisterFragment : Fragment() {
                             }
                         }
                     }else{
-                        Toast.makeText(activity, "Error al ingresar las fotografias de la solicitud", Toast.LENGTH_SHORT).show()
+                        Snackbar
+                            .make(rltContenedorDatosSolicitudOffer, "Error al ingresar las fotografias de la solicitud.", Snackbar.LENGTH_SHORT)
+                            .setAnimationMode(Snackbar.ANIMATION_MODE_SLIDE)
+                            .setBackgroundTint(resources.getColor(R.color.black))
+                            .show()
                     }
                 }else{
-                    Toast.makeText(activity, "Error al crear la solicitud", Toast.LENGTH_SHORT).show()
+                    Snackbar
+                        .make(rltContenedorDatosSolicitudOffer, "Error al crear la solicitud.", Snackbar.LENGTH_SHORT)
+                        .setAnimationMode(Snackbar.ANIMATION_MODE_SLIDE)
+                        .setBackgroundTint(resources.getColor(R.color.black))
+                        .show()
                 }
             }
         }

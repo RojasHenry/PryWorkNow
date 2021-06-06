@@ -1,14 +1,16 @@
 package com.uisrael.worknow.Views.Adapters
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.text.Editable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
-import android.widget.Toast
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.viewModelScope
+import com.google.android.material.snackbar.Snackbar
 import com.uisrael.worknow.Model.Data.PublicationsData
 import com.uisrael.worknow.R
 import com.uisrael.worknow.ViewModel.TabsFragViewModel.InProgressViewModel
@@ -38,6 +40,7 @@ class OfferProgressListAdapter(
         return position.toLong()
     }
 
+    @SuppressLint("ShowToast")
     override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View? {
         val convertView: View? = LayoutInflater.from(c).inflate(R.layout.offers_item_progress_adapter, null)
 
@@ -77,22 +80,67 @@ class OfferProgressListAdapter(
                     inProgressViewModel.viewModelScope.launch {
                         val response = inProgressViewModel.setOfferViewProfUpdateEstado(publicaciones[position].uid,Utilitity.ESTADO_ACEPTADO)
                         if (response != null){
-                            Toast.makeText(c, "Estado de solicitud actualizado exitosamente", Toast.LENGTH_SHORT).show()
+                            if (parent != null) {
+                                Snackbar
+                                    .make(parent, "Estado de solicitud actualizado exitosamente.", Snackbar.LENGTH_SHORT)
+                                    .setAnimationMode(Snackbar.ANIMATION_MODE_SLIDE)
+                                    .setBackgroundTint(c.resources.getColor(R.color.black))
+                                    .show()
+                            }
                         }else{
-                            Toast.makeText(c, "Error al deshacer terminar en la solicitud actual", Toast.LENGTH_SHORT).show()
+                            if (parent != null) {
+                                Snackbar
+                                    .make(parent, "Error al deshacer terminar en la solicitud actual.", Snackbar.LENGTH_SHORT)
+                                    .setAnimationMode(Snackbar.ANIMATION_MODE_SLIDE)
+                                    .setBackgroundTint(c.resources.getColor(R.color.black))
+                                    .show()
+                            }
                         }
                     }
                 }
 
                 convertView.btnTerminarProgressOfferList.setOnClickListener {
-                    inProgressViewModel.viewModelScope.launch {
-                        val response = inProgressViewModel.setOfferViewProfUpdateEstado(publicaciones[position].uid,Utilitity.ESTADO_PRO_TERMINADO)
-                        if (response != null){
-                            Toast.makeText(c, "Solicitud terminada exitosamente.", Toast.LENGTH_SHORT).show()
-                        }else{
-                            Toast.makeText(c, "Error al terminar la solicitud actual", Toast.LENGTH_SHORT).show()
+
+                    Utilitity().showDialog(c,"Aviso", "Esta seguro que desea 'terminar' la oferta actual?",R.drawable.ic_warning_24)
+                        ?.setPositiveButton("Aceptar") { dialog, _ ->
+                            inProgressViewModel.viewModelScope.launch {
+                                val response = inProgressViewModel.setOfferViewProfUpdateEstado(
+                                    publicaciones[position].uid,
+                                    Utilitity.ESTADO_PRO_TERMINADO
+                                )
+                                if (response != null) {
+                                    if (parent != null) {
+                                        Snackbar
+                                            .make(
+                                                parent,
+                                                "Solicitud terminada exitosamente.",
+                                                Snackbar.LENGTH_INDEFINITE
+                                            )
+                                            .setAnimationMode(Snackbar.ANIMATION_MODE_SLIDE)
+                                            .setBackgroundTint(c.resources.getColor(R.color.black))
+                                            .setActionTextColor(c.resources.getColor(R.color.purple_500))
+                                            .setAction("OK") {}
+                                            .show()
+                                    }
+                                } else {
+                                    if (parent != null) {
+                                        Snackbar
+                                            .make(
+                                                parent,
+                                                "Error al terminar la solicitud actual.",
+                                                Snackbar.LENGTH_SHORT
+                                            )
+                                            .setAnimationMode(Snackbar.ANIMATION_MODE_SLIDE)
+                                            .setBackgroundTint(c.resources.getColor(R.color.black))
+                                            .show()
+                                    }
+                                }
+                            }
+                            dialog.dismiss()
                         }
-                    }
+                        ?.setNegativeButton("Cancelar") { dialog, which -> dialog.dismiss() }
+                        ?.show()
+
                 }
             }else{
                 when (publicaciones[position].estado){
@@ -107,31 +155,72 @@ class OfferProgressListAdapter(
                 }
 
                 convertView.btnFinishProgressOfferList.setOnClickListener {
-                    inProgressViewModel.viewModelScope.launch {
-                        val response = inProgressViewModel.setOfferViewProfUpdateEstado(publicaciones[position].uid,Utilitity.ESTADO_SOL_TERMINADO)
-                        if (response != null){
-                            val dialogCalif = QualificationFragment(publicaciones[position].idAceptadoProf,publicaciones[position].uid)
-                            dialogCalif.show(supportFragmentManager,"dialogQualification")
-                            Toast.makeText(c, "Solicitud finalizada exitosamente.", Toast.LENGTH_SHORT).show()
-                        }else{
-                            Toast.makeText(c, "Error al finalizar la solicitud", Toast.LENGTH_SHORT).show()
+                    Utilitity().showDialog(c,"Aviso", "Esta seguro que desea 'finalizar' la oferta actual?",R.drawable.ic_warning_24)
+                        ?.setPositiveButton("Aceptar") { dialog, _ ->
+                            Utilitity.showLoading(c,"Cargando, por favor espere...",supportFragmentManager)
+                            inProgressViewModel.viewModelScope.launch {
+                                val response = inProgressViewModel.setOfferViewProfUpdateEstado(publicaciones[position].uid,Utilitity.ESTADO_SOL_TERMINADO)
+                                if (response != null){
+                                    val dialogCalif = QualificationFragment(publicaciones[position].idAceptadoProf,publicaciones[position].uid)
+                                    dialogCalif.show(supportFragmentManager,"dialogQualification")
+                                    if (parent != null) {
+                                        Snackbar
+                                            .make(parent, "Solicitud finalizada exitosamente.", Snackbar.LENGTH_SHORT)
+                                            .setAnimationMode(Snackbar.ANIMATION_MODE_SLIDE)
+                                            .setBackgroundTint(c.resources.getColor(R.color.black))
+                                            .show()
+                                    }
+                                }else{
+                                    if (parent != null) {
+                                        Snackbar
+                                            .make(parent, "Error al finalizar la solicitud.", Snackbar.LENGTH_SHORT)
+                                            .setAnimationMode(Snackbar.ANIMATION_MODE_SLIDE)
+                                            .setBackgroundTint(c.resources.getColor(R.color.black))
+                                            .show()
+                                    }
+                                }
+                            }
+                            dialog.dismiss()
                         }
-                    }
+                        ?.setNegativeButton("Cancelar") { dialog, _ -> dialog.dismiss() }
+                        ?.show()
+
                 }
 
                 convertView.btnCancelProgressOfferList.setOnClickListener {
-                    inProgressViewModel.viewModelScope.launch {
-                        val response = inProgressViewModel.setOfferViewProfUpdateEstado(publicaciones[position].uid,Utilitity.ESTADO_CANCELADO)
-                        if (response != null){
-                            Toast.makeText(c, "Solicitud cancelada", Toast.LENGTH_SHORT).show()
-                        }else{
-                            Toast.makeText(c, "Error al cancelar la solicitud", Toast.LENGTH_SHORT).show()
+                    Utilitity().showDialog(c,"Aviso", "Esta seguro que desea 'cancelar' la oferta actual?",R.drawable.ic_warning_24)
+                        ?.setPositiveButton("Aceptar") { dialog, _ ->
+                            inProgressViewModel.viewModelScope.launch {
+                                val response = inProgressViewModel.setOfferViewProfUpdateEstado(publicaciones[position].uid,Utilitity.ESTADO_CANCELADO)
+                                if (response != null){
+                                    if (parent != null) {
+                                        Snackbar
+                                            .make(parent, "Solicitud cancelada.", Snackbar.LENGTH_INDEFINITE)
+                                            .setAnimationMode(Snackbar.ANIMATION_MODE_SLIDE)
+                                            .setBackgroundTint(c.resources.getColor(R.color.black))
+                                            .setActionTextColor(c.resources.getColor(R.color.purple_500))
+                                            .setAction("OK"){}
+                                            .show()
+                                    }
+                                }else{
+                                    if (parent != null) {
+                                        Snackbar
+                                            .make(parent, "Error al cancelar la solicitud.", Snackbar.LENGTH_SHORT)
+                                            .setAnimationMode(Snackbar.ANIMATION_MODE_SLIDE)
+                                            .setBackgroundTint(c.resources.getColor(R.color.black))
+                                            .show()
+                                    }
+                                }
+                            }
+                            dialog.dismiss()
                         }
-                    }
+                        ?.setNegativeButton("Cancelar") { dialog, _ -> dialog.dismiss() }
+                        ?.show()
+
                 }
 
                 convertView.btnVermasProgressOfferList.setOnClickListener {
-                    val offerBottomSheetFragment = OfferBottomSheetFragment(c, publicaciones[position], fromDashboard = true,fromPubAccept = false, fromPubCli = false)
+                    val offerBottomSheetFragment = OfferBottomSheetFragment(c, publicaciones[position], fromDashboard = true,fromPubAccept = false, fromPubCli = false, supportFragmentManager)
                     offerBottomSheetFragment.show(supportFragmentManager, "ModalBottomOffer")
                 }
             }

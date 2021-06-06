@@ -19,6 +19,7 @@ class ProfileUserViewModel : ViewModel() {
 
     lateinit var currentUser:UsuariosData
     lateinit var uidUserCurrent: String
+    var isFromSocNet = false
 
     private val _nombreUser = MutableStateFlow("")
     private val _apellidoUser = MutableStateFlow("")
@@ -141,7 +142,7 @@ class ProfileUserViewModel : ViewModel() {
         val isCategoriasValid = if (currentUser.rol == Utilitity.ROL_PROFESIONAL) validatorCategorias.nonEmpty().check() and (validatorCategorias.text != "A") and (validatorCategorias.text != "N") and (validatorCategorias.text != "C") and (validatorCategorias.text != "Escoja su categoria") else true
 
         val isCorreoValid = validatorCorreo.nonEmpty().validEmail().check()
-        val isPasswordValid = validatorPassword.nonEmpty().check()
+        val isPasswordValid = if(isFromSocNet) true else validatorPassword.nonEmpty().check()
         if(isNombreValid and isApellidoValid and isCiudadValid and isTelefonoValid and isCorreoValid and isPasswordValid and isDescripcionValid and isCategoriasValid){
             return@combine true
         }else{

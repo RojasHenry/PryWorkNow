@@ -2,9 +2,16 @@ package com.uisrael.worknow.Model
 
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
+import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.auth.GoogleAuthProvider
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.channels.sendBlocking
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.tasks.await
 import java.lang.Exception
 
@@ -56,6 +63,24 @@ class FirebaseAuthRepository {
         loggedOutLiveData.postValue(false)
         uidUserCurrent.postValue("")
         firebaseAuth.signOut()
+    }
+
+    fun loginViewWithGoogle(idToken: String): Flow<FirebaseUser?> {
+        val credential = GoogleAuthProvider.getCredential(idToken, null)
+        return callbackFlow {
+            firebaseAuth.signInWithCredential(credential)
+                .addOnCompleteListener {
+                    if (it.isSuccessful){
+                        this@callbackFlow.sendBlocking(firebaseAuth.currentUser)
+                    }else{
+                        this@callbackFlow.sendBlocking(null)
+                    }
+                }
+
+            awaitClose {
+                cancel()
+            }
+        }
     }
 
 }

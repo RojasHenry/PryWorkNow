@@ -4,10 +4,11 @@ import android.content.Context
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
+import com.google.firebase.auth.FirebaseUser
 import com.uisrael.worknow.Views.ClientRegisterFragment
 import com.uisrael.worknow.Views.ProfessionalRegisterFragment
 
-class RegisterAdapter(fm: FragmentManager, ctx: Context, private var totalTabs: Int) : FragmentPagerAdapter(
+class RegisterAdapter(fm: FragmentManager, ctx: Context, private var totalTabs: Int, val user: FirebaseUser?) : FragmentPagerAdapter(
     fm
 ) {
 
@@ -20,12 +21,12 @@ class RegisterAdapter(fm: FragmentManager, ctx: Context, private var totalTabs: 
     override fun getItem(position: Int): Fragment {
         return when(position){
             0 -> {
-                ClientRegisterFragment()
+                ClientRegisterFragment.newInstance(user)
             }
             1 -> {
-                ProfessionalRegisterFragment()
+                ProfessionalRegisterFragment.newInstance(user)
             }
-            else -> ClientRegisterFragment()
+            else -> ClientRegisterFragment.newInstance(user)
         }
     }
 

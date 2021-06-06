@@ -39,8 +39,8 @@ class DashboardFragment(var isProf: Boolean, var tabUsersActivity: TabUsersActiv
         return inflater.inflate(R.layout.fragment_dashboard, container, false)
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         dashboardViewModel = ViewModelProvider(this).get(DashboardViewModel::class.java)
         inicializateComponents()
         collectorFlow()
@@ -83,10 +83,12 @@ class DashboardFragment(var isProf: Boolean, var tabUsersActivity: TabUsersActiv
                                 adapterAccepted.publicaciones = it as ArrayList<PublicationsData>
                                 adapterAccepted.notifyDataSetChanged()
                                 rltErrorlistOffersAccept.isVisible = false
+                                Utilitity.dissMissLoading(3000)
                             }else{
                                 tabUsersActivity.disableViewpagerFragment(1,true)
                                 rltErrorlistOffersAccept.isVisible = true
                                 listOffersAccept.isVisible = false
+                                Utilitity.dissMissLoading(0)
                             }
                         }
                     }
@@ -99,17 +101,21 @@ class DashboardFragment(var isProf: Boolean, var tabUsersActivity: TabUsersActiv
                     dashboardViewModel.viewModelScope.launch {
                         dashboardViewModel.getOffersViewAcceptAndPublic(user.uid).collect {
                             progressOffersPublic.visibility = View.GONE
-                            if(it.size > 2){
-                                listOffersPublic.isVisible = true
-                                tabUsersActivity.moveTabViewpagerFragment(0)
-                                tabUsersActivity.disableViewpagerFragment(1,false)
-                                adapterPublic.publicaciones = it as ArrayList<PublicationsData>
-                                adapterPublic.notifyDataSetChanged()
-                                rltErrorlistOffersPublic.isVisible = false
+                            if(it.size > 0){
+                                if(it.size <= 2){
+                                    listOffersPublic.isVisible = true
+                                    tabUsersActivity.moveTabViewpagerFragment(0)
+                                    tabUsersActivity.disableViewpagerFragment(1,false)
+                                    adapterPublic.publicaciones = it as ArrayList<PublicationsData>
+                                    adapterPublic.notifyDataSetChanged()
+                                    rltErrorlistOffersPublic.isVisible = false
+                                    Utilitity.dissMissLoading(3000)
+                                }
                             }else{
                                 rltErrorlistOffersPublic.isVisible = true
                                 listOffersPublic.isVisible = false
                                 tabUsersActivity.disableViewpagerFragment(1,true)
+                                Utilitity.dissMissLoading(0)
                             }
 
                         }
@@ -127,7 +133,6 @@ class DashboardFragment(var isProf: Boolean, var tabUsersActivity: TabUsersActiv
                                 rltErrorlistOffersNoCalif.isVisible = true
                                 listOffersNoCalif.isVisible = false
                             }
-
                         }
                     }
                 })

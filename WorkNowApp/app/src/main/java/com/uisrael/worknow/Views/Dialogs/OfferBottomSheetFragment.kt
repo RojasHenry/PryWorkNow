@@ -1,5 +1,6 @@
 package com.uisrael.worknow.Views.Dialogs
 
+import android.annotation.SuppressLint
 import android.app.Dialog
 import android.content.Context
 import android.graphics.BitmapFactory
@@ -11,10 +12,12 @@ import android.util.Base64
 import android.view.*
 import android.widget.ImageView
 import android.widget.LinearLayout
-import android.widget.Toast
+import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import com.google.android.material.snackbar.Snackbar
+import com.squareup.picasso.Picasso
 import com.uisrael.worknow.Model.Data.PublicationsData
 import com.uisrael.worknow.R
 import com.uisrael.worknow.ViewModel.OfferBottomSheetViewModel
@@ -31,7 +34,8 @@ class OfferBottomSheetFragment(
     var publicationsData: PublicationsData,
     var fromDashboard: Boolean,
     var fromPubAccept: Boolean,
-    var fromPubCli: Boolean
+    var fromPubCli: Boolean,
+    val supportFragmentManager:FragmentManager
 ) : BottomSheetDialogFragment() {
 
     private lateinit var viewModel:OfferBottomSheetViewModel
@@ -44,6 +48,7 @@ class OfferBottomSheetFragment(
         viewModel = ViewModelProvider(this).get(OfferBottomSheetViewModel::class.java)
     }
 
+    @SuppressLint("ShowToast")
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -71,9 +76,18 @@ class OfferBottomSheetFragment(
                         convertView.nombreClientOfferDialog.text = "Solicitante: ${it.nombre} ${it.apellido}"
 
                         if (it.foto.isNotBlank()){
-                            val imageBytes = Base64.decode(it.foto, Base64.DEFAULT)
-                            val decodedImage = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.size)
-                            convertView.imageClientOfferDialog.setImageBitmap(Utilitity().getRoundedCornerBitmap(decodedImage))
+                            if(Utilitity().isValidUrl(it.foto)){
+                                Picasso
+                                    .get()
+                                    .load(it.foto)
+                                    .resize(250, 250)
+                                    .centerCrop()
+                                    .into(convertView.imageClientOfferDialog)
+                            }else{
+                                val imageBytes = Base64.decode(it.foto, Base64.DEFAULT)
+                                val decodedImage = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.size)
+                                convertView.imageClientOfferDialog.setImageBitmap(Utilitity().getRoundedCornerBitmap(decodedImage))
+                            }
                             convertView.iconClientOfferDialog.visibility = View.GONE
                         }else{
                             convertView.iconClientOfferDialog.text = "${it.nombre.get(0)}${it.apellido.get(0)}"
@@ -141,18 +155,35 @@ class OfferBottomSheetFragment(
             if(publicationsData.estado == Utilitity.ESTADO_PUBLICADO){
                 convertView.cardViewButtonCancelOfferDialog.visibility = if (fromPubCli) View.VISIBLE else View.GONE
                 convertView.btnCancelOffer.setOnClickListener {
-                    viewModel.getUidProfesional().observe(viewLifecycleOwner, {
-                        viewModel.viewModelScope.launch {
-                            val response = viewModel.setOfferViewUpdateEstado(publicationsData.uid,Utilitity.ESTADO_CANCELADO)
-                            if (response != null){
-                                dismiss()
-                                Toast.makeText(activity, "Solicitud cancelada", Toast.LENGTH_SHORT).show()
-                            }else{
-                                Toast.makeText(activity, "Error al cancelar la solicitud", Toast.LENGTH_SHORT).show()
-                            }
-                        }
+                    Utilitity().showDialog(c,"Aviso", "Esta seguro que desea 'cancelar' la oferta actual?",R.drawable.ic_warning_24)
+                        ?.setPositiveButton("Aceptar") { dialog, _ ->
+                            viewModel.getUidProfesional().observe(viewLifecycleOwner, {
+                                viewModel.viewModelScope.launch {
+                                    val response = viewModel.setOfferViewUpdateEstado(publicationsData.uid,Utilitity.ESTADO_CANCELADO)
+                                    if (response != null){
+                                        dismiss()
+                                        Snackbar
+                                            .make(convertView,  "Solicitud cancelada.", Snackbar.LENGTH_INDEFINITE)
+                                            .setAnimationMode(Snackbar.ANIMATION_MODE_SLIDE)
+                                            .setBackgroundTint(c.resources.getColor(R.color.black))
+                                            .setActionTextColor(c.resources.getColor(R.color.purple_500))
+                                            .setAction("OK"){}
+                                            .show()
+                                    }else{
+                                        Snackbar
+                                            .make(convertView, "Error al cancelar la solicitud.", Snackbar.LENGTH_SHORT)
+                                            .setAnimationMode(Snackbar.ANIMATION_MODE_SLIDE)
+                                            .setBackgroundTint(c.resources.getColor(R.color.black))
+                                            .show()
+                                    }
+                                }
 
-                    })
+                            })
+                            dialog.dismiss()
+                        }
+                        ?.setNegativeButton("Cancelar") { dialog, _ -> dialog.dismiss() }
+                        ?.show()
+
                 }
             }
 
@@ -162,8 +193,24 @@ class OfferBottomSheetFragment(
             }else{
                 convertView.cardViewButtonsOfferDialog.visibility = if (fromDashboard) View.GONE else View.VISIBLE
                 if(!fromDashboard){
+
                     convertView.btnAceptarOfferDialog.setOnClickListener {
-                        dismiss()
+                        viewModel.getUidProfesional().observe(viewLifecycleOwner, {
+                            viewModel.viewModelScope.launch {
+                                Utilitity.showLoading(c,"Cargando, por favor espere...",supportFragmentManager)
+                                val response = viewModel.setOfferViewAcceptProf(it.uid,publicationsData.uid,Utilitity.ESTADO_ACEPTADO)
+                                if (response != null){
+                                    dismiss()
+                                }else{
+                                    Snackbar
+                                        .make(convertView, "Error al aceptar la solicitud actual.", Snackbar.LENGTH_SHORT)
+                                        .setAnimationMode(Snackbar.ANIMATION_MODE_SLIDE)
+                                        .setBackgroundTint(c.resources.getColor(R.color.black))
+                                        .show()
+                                }
+                            }
+
+                        })
                     }
 
                     convertView.btnCancelOfferDialog.setOnClickListener {
@@ -171,21 +218,6 @@ class OfferBottomSheetFragment(
                     }
                 }
             }
-
-            convertView.btnAceptarOfferDialog.setOnClickListener {
-                viewModel.getUidProfesional().observe(viewLifecycleOwner, {
-                    viewModel.viewModelScope.launch {
-                        val response = viewModel.setOfferViewAcceptProf(it.uid,publicationsData.uid,Utilitity.ESTADO_ACEPTADO)
-                        if (response != null){
-                            dismiss()
-                        }else{
-                            Toast.makeText(activity, "Error al aceptar la solicitud actual", Toast.LENGTH_SHORT).show()
-                        }
-                    }
-
-                })
-            }
-
         }
         return convertView
     }

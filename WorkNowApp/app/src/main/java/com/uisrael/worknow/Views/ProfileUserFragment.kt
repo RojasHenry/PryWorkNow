@@ -1,5 +1,6 @@
 package com.uisrael.worknow.Views
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.AlertDialog
 import android.content.DialogInterface
@@ -15,13 +16,14 @@ import android.util.Base64
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewModelScope
+import com.google.android.material.snackbar.Snackbar
+import com.squareup.picasso.Picasso
 import com.uisrael.worknow.Model.Data.CategoriasData
 import com.uisrael.worknow.Model.Data.UsuariosData
 import com.uisrael.worknow.R
@@ -61,8 +63,8 @@ class ProfileUserFragment (var uidUser: String, private val currentUser: Any) : 
         return R.style.FullScreenDialog
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         viewModel = ViewModelProvider(this).get(ProfileUserViewModel::class.java)
         viewModel.currentUser = currentUser as UsuariosData
         viewModel.uidUserCurrent = uidUser
@@ -70,6 +72,7 @@ class ProfileUserFragment (var uidUser: String, private val currentUser: Any) : 
         collectorFlow()
     }
 
+    @SuppressLint("ShowToast")
     private fun inicializarListeners() {
         nombreTxtUserProfile.addTextChangedListener{
             viewModel.viewModelScope.launch { viewModel.setNombreUser(it.toString().trim()) }
@@ -166,17 +169,51 @@ class ProfileUserFragment (var uidUser: String, private val currentUser: Any) : 
         }
 
         btnEditarUserProfile.setOnClickListener{
-            viewModel.viewModelScope.launch {
-                if(viewModel.setDataUserViewUpdateUserProfile(currentUserInfo)){
-                    val response = viewModel.setUpdateViewUserProfile(uidUser)
-                    if (response != null){
-                        Toast.makeText(context, "Datos actualizados exitosamente", Toast.LENGTH_SHORT).show()
-                    }else{
-                        Toast.makeText(context, "Error al actualizar los datos del usuario", Toast.LENGTH_SHORT).show()
-                    }
-                }else{
-                    Toast.makeText(context, "Se deben realizar cambios para actualizar los datos", Toast.LENGTH_SHORT).show()
+            if (viewModel.setDataUserViewUpdateUserProfile(currentUserInfo)) {
+                context?.let { it1 ->
+                    Utilitity().showDialog(it1,"Aviso", "Esta seguro que desea actualizar su perfil?",R.drawable.ic_warning_24)
+                        ?.setPositiveButton("Aceptar") { dialog, _ ->
+                            viewModel.viewModelScope.launch {
+                                val response = viewModel.setUpdateViewUserProfile(uidUser)
+                                if (response != null) {
+                                    Snackbar
+                                        .make(
+                                            scrollDatosPersonalesUserProfile,
+                                            "Datos actualizados exitosamente.",
+                                            Snackbar.LENGTH_SHORT
+                                        )
+                                        .setAnimationMode(Snackbar.ANIMATION_MODE_SLIDE)
+                                        .setBackgroundTint(resources.getColor(R.color.black))
+                                        .show()
+                                } else {
+                                    Snackbar
+                                        .make(
+                                            scrollDatosPersonalesUserProfile,
+                                            "Error al actualizar los datos del usuario.",
+                                            Snackbar.LENGTH_SHORT
+                                        )
+                                        .setAnimationMode(Snackbar.ANIMATION_MODE_SLIDE)
+                                        .setBackgroundTint(resources.getColor(R.color.black))
+                                        .show()
+                                }
+                                dialog.dismiss()
+                            }
+                        }
+                        ?.setNegativeButton("Cancelar") { dialog, _ -> dialog.dismiss() }
+                        ?.show()
                 }
+            } else {
+                Snackbar
+                    .make(
+                        scrollDatosPersonalesUserProfile,
+                        "Se deben realizar cambios para actualizar los datos.",
+                        Snackbar.LENGTH_INDEFINITE
+                    )
+                    .setAnimationMode(Snackbar.ANIMATION_MODE_SLIDE)
+                    .setBackgroundTint(resources.getColor(R.color.black))
+                    .setActionTextColor(resources.getColor(R.color.purple_500))
+                    .setAction("OK") {}
+                    .show()
             }
         }
 
@@ -196,6 +233,11 @@ class ProfileUserFragment (var uidUser: String, private val currentUser: Any) : 
                     passwordTxtUserProfile.text = Editable.Factory.getInstance().newEditable(it.password)
                     correoTxtUserProfile.isEnabled = false
                     passwordTxtUserProfile.isEnabled = false
+                    if(it.fromSocNet){
+                        rltPasswordUserProfile.isVisible = false
+                        errorPasswordUserProfile.isVisible = false
+                        viewModel.isFromSocNet = true
+                    }
                 }
             }
         }
@@ -207,12 +249,22 @@ class ProfileUserFragment (var uidUser: String, private val currentUser: Any) : 
         }
 
         if (viewModel.currentUser.foto.isNotBlank()){
-            val imageBytes = Base64.decode(viewModel.currentUser.foto, Base64.DEFAULT)
-            val decodedImage = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.size)
-            imageUsuarioUserProfile.setImageBitmap(Utilitity().getRoundedCornerBitmap(decodedImage))
+            if(Utilitity().isValidUrl(viewModel.currentUser.foto)){
+                Picasso
+                    .get()
+                    .load(viewModel.currentUser.foto)
+                    .resize(250, 250)
+                    .centerCrop()
+                    .into(imageUsuarioUserProfile)
+            }else{
+                val imageBytes = Base64.decode(viewModel.currentUser.foto, Base64.DEFAULT)
+                val decodedImage = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.size)
+                imageUsuarioUserProfile.setImageBitmap(Utilitity().getRoundedCornerBitmap(decodedImage))
+                iconUsuarioUserProfile.isVisible = false
+            }
             iconUsuarioUserProfile.isVisible = false
         }else{
-            iconUsuarioUserProfile.text = "${viewModel.currentUser.nombre.get(0)}${viewModel.currentUser.apellido.get(0)}"
+            iconUsuarioUserProfile.text = "${viewModel.currentUser.nombre[0]}${viewModel.currentUser.apellido[0]}"
         }
 
         imageContenedorUserProfile.setOnClickListener {

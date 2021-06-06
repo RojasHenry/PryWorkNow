@@ -1,6 +1,7 @@
 package com.uisrael.worknow.Views
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.DialogInterface
 import android.content.Intent
@@ -9,7 +10,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
@@ -20,9 +20,16 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.findNavController
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInClient
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.android.gms.common.api.ApiException
+import com.google.android.material.snackbar.Snackbar
 import com.uisrael.worknow.R
 import com.uisrael.worknow.ViewModel.LoginViewModel
 import com.uisrael.worknow.ViewModel.ValidatorRespuestas.Respuesta
+import com.uisrael.worknow.Views.Dialogs.RegisterCompleteFragment
+import com.uisrael.worknow.Views.Utilities.Utilitity
 import kotlinx.android.synthetic.main.login_fragment.*
 import kotlinx.coroutines.InternalCoroutinesApi
 import kotlinx.coroutines.flow.collect
@@ -31,10 +38,12 @@ import kotlinx.coroutines.launch
 
 class LoginFragment : Fragment() {
 
+    private val RC_SIGN_IN = 2
     private val REQUEST_PERMISOS = 1
 
     var isCorreoTyped : Boolean = false
     var isPaswordTyped : Boolean = false
+    private lateinit var googleSignInClient:GoogleSignInClient
 
     companion object {
         fun newInstance() = LoginFragment()
@@ -50,10 +59,18 @@ class LoginFragment : Fragment() {
     }
 
     @InternalCoroutinesApi
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         viewModel = ViewModelProvider(this).get(LoginViewModel::class.java)
-        validatePermissions ()
+        validatePermissions()
+
+        // Configure Google Sign In
+        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+            .requestIdToken(getString(R.string.default_web_client_id))
+            .requestEmail()
+            .build()
+
+        googleSignInClient = activity?.let { it1 -> GoogleSignIn.getClient(it1, gso) }!!
     }
 
     @InternalCoroutinesApi
@@ -77,6 +94,7 @@ class LoginFragment : Fragment() {
         }
     }
 
+    @SuppressLint("ShowToast")
     @InternalCoroutinesApi
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
@@ -109,8 +127,13 @@ class LoginFragment : Fragment() {
                                         }
                                     })
                         } else {
-                            Toast.makeText(context, "Habilite los permisos solicitados en configuraciones", Toast.LENGTH_LONG)
-                                    .show()
+                            Snackbar
+                                .make(rltContenedorViewLogin, "Habilite los permisos solicitados en configuraciones.", Snackbar.LENGTH_INDEFINITE)
+                                .setAnimationMode(Snackbar.ANIMATION_MODE_SLIDE)
+                                .setBackgroundTint(resources.getColor(R.color.black))
+                                .setActionTextColor(resources.getColor(R.color.purple_500))
+                                .setAction("OK"){}
+                                .show()
                         }
                     }
                 }
@@ -133,12 +156,17 @@ class LoginFragment : Fragment() {
         lifecycleScope.launch {
             viewModel.validateViewUserLogged().observe(viewLifecycleOwner, {
                 if (it) {
-                    viewModel.getViewUserLogged().observe(viewLifecycleOwner, Observer {userFire ->
+                    context?.let { it1 -> Utilitity.showLoading(it1,"Iniciando sesión, por favor espere...",childFragmentManager) }
+                    viewModel.getViewUserLogged().observe(viewLifecycleOwner, { userFire ->
                         lifecycleScope.launch {
                             val uid = userFire.uid
                             viewModel.getCurrentUser(uid).collect { user->
                                 if (user != null) {
                                     goToMenuPrincipal(user.rol, uid)
+                                }else{
+                                    Utilitity.dissMissLoading(0)
+                                    val dialog = RegisterCompleteFragment(userFire)
+                                    dialog.show(childFragmentManager,"registerComplete")
                                 }
                             }
                         }
@@ -192,6 +220,7 @@ class LoginFragment : Fragment() {
         }
     }
 
+    @SuppressLint("ShowToast")
     private fun inicializarListeners(){
         correoTxt.addTextChangedListener {
             if(!isCorreoTyped){
@@ -217,6 +246,7 @@ class LoginFragment : Fragment() {
 
         btnLogin.setOnClickListener {
             if (correoTxt.length() > 0 && passwordTxt.length() > 0) {
+                context?.let { it1 -> Utilitity.showLoading(it1,"Iniciando sesión, por favor espere...",childFragmentManager) }
                 viewModel.viewModelScope.launch {
                     val user = viewModel.loginViewUser(
                             correoTxt.text.toString(),
@@ -226,18 +256,41 @@ class LoginFragment : Fragment() {
                         viewModel.getCurrentUser(user.uid).collect {
                             if (it != null) {
                                 goToMenuPrincipal(it.rol,user.uid)
+                            }else{
+                                Snackbar
+                                    .make(rltContenedorViewLogin, "Error al iniciar sesión.", Snackbar.LENGTH_SHORT)
+                                    .setAnimationMode(Snackbar.ANIMATION_MODE_SLIDE)
+                                    .setBackgroundTint(resources.getColor(R.color.black))
+                                    .show()
+                                Utilitity.dissMissLoading(0)
                             }
                         }
-
+                    }else{
+                        Snackbar
+                            .make(rltContenedorViewLogin, "Error al iniciar sesión.", Snackbar.LENGTH_SHORT)
+                            .setAnimationMode(Snackbar.ANIMATION_MODE_SLIDE)
+                            .setBackgroundTint(resources.getColor(R.color.black))
+                            .show()
+                        Utilitity.dissMissLoading(0)
                     }
                 }
             } else {
-                Toast.makeText(activity, "Error al registrar usuario", Toast.LENGTH_SHORT).show()
+                Snackbar
+                    .make(rltContenedorViewLogin, "Error al iniciar sesión.", Snackbar.LENGTH_SHORT)
+                    .setAnimationMode(Snackbar.ANIMATION_MODE_SLIDE)
+                    .setBackgroundTint(resources.getColor(R.color.black))
+                    .show()
             }
         }
 
         linkRegistro.setOnClickListener {
             view?.findNavController()?.navigate(R.id.action_loginFragment_to_registerFragment)
+        }
+
+        btnLoginGoogle.setOnClickListener {
+            val signInIntent: Intent? = googleSignInClient?.signInIntent
+            startActivityForResult(signInIntent, RC_SIGN_IN)
+
         }
     }
 
@@ -246,10 +299,45 @@ class LoginFragment : Fragment() {
             putExtra("rolUser", rol)
             putExtra("uid", uid)
         }
-
         startActivity(intent)
-
     }
 
+    override fun startActivity(intent: Intent?) {
+        super.startActivity(intent)
+        Utilitity.dissMissLoading(0)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode === RC_SIGN_IN) {
+            val task = GoogleSignIn.getSignedInAccountFromIntent(data)
+            try {
+                // Google Sign In was successful, authenticate with Firebase
+                val account = task.getResult(ApiException::class.java)!!
+                viewModel.viewModelScope.launch {
+                    viewModel.loginViewWithGoogle(account.idToken!!).collect { user ->
+                        if (user != null) {
+                            viewModel.getCurrentUser(user.uid).collect {
+                                if (it != null){
+                                    goToMenuPrincipal(it.rol, user.uid)
+                                }else{
+                                    val dialog = RegisterCompleteFragment(user)
+                                    dialog.show(childFragmentManager,"registerComplete")
+                                }
+                            }
+                        }
+                    }
+                }
+            } catch (e: ApiException) {
+                Snackbar
+                    .make(rltContenedorViewLogin, "Error al iniciar sesión con Google.", Snackbar.LENGTH_SHORT)
+                    .setAnimationMode(Snackbar.ANIMATION_MODE_SLIDE)
+                    .setBackgroundTint(resources.getColor(R.color.black))
+                    .show()
+            }
+
+        }
+
+    }
 }
 

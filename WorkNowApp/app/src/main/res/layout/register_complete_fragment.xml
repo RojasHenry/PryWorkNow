@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".Views.RegisterFragment"
+    android:background="@color/white">
+
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/toolbarCompleteRegister"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/background_tabs"
+        app:contentInsetLeft="0dp"
+        app:contentInsetStart="0dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/btnToolbarCompleteRegister"
+                android:layout_width="wrap_content"
+                android:layout_height="50dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="10dp"
+                android:elevation="10dp"
+                android:src="@drawable/ic_back"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <RelativeLayout
+                android:id="@+id/imageContenedorCompleteRegister"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="24dp"
+                android:layout_marginBottom="8dp"
+                app:layout_constraintBottom_toTopOf="@+id/titleToolbarCompleteRegister"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:id="@+id/imageUsuarioCompleteRegister"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:src="@drawable/background_circle" />
+
+                <TextView
+                    android:id="@+id/iconUsuarioCompleteRegister"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:fontFamily="@font/nunitosansblack"
+                    android:text="IN"
+                    android:textColor="@android:color/white"
+                    android:textSize="24sp" />
+            </RelativeLayout>
+
+            <TextView
+                android:id="@+id/titleToolbarCompleteRegister"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="16dp"
+                android:layout_marginBottom="10dp"
+                android:fontFamily="@font/nunitosansbold"
+                android:text="@string/title_complete_register"
+                android:textAlignment="textEnd"
+                android:textColor="#FFFFFF"
+                android:textSize="24sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/imageContenedorCompleteRegister" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </com.google.android.material.appbar.MaterialToolbar>
+
+    <RelativeLayout
+        android:id="@+id/formViewRegister"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_below="@id/toolbarCompleteRegister">
+
+        <com.google.android.material.tabs.TabLayout
+            android:id="@+id/tablayoutRegister"
+            app:tabBackground="@drawable/tab_layout_item"
+            app:tabMode="fixed"
+            app:tabTextColor="#989898"
+            app:tabSelectedTextColor="#FBAC45"
+            app:tabIndicatorColor="#FBAC45"
+            android:layout_marginTop="15sp"
+            android:layout_marginHorizontal="30sp"
+            app:tabGravity="fill"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <androidx.viewpager.widget.ViewPager
+            android:id="@+id/viewPagerRegister"
+            android:layout_marginHorizontal="5dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@id/tablayoutRegister" />
+    </RelativeLayout>
+</RelativeLayout>

@@ -32,7 +32,7 @@
             android:layout_below="@id/imageErrorListaPublicacion"
             android:layout_centerHorizontal="true"
             android:fontFamily="@font/nunitosansbold"
-            android:text="No se ha publicado ninguna oferta."
+            android:text="No hay ninguna oferta publicada."
             android:textAlignment="center"
             android:textColor="#AEAEAE" />
     </RelativeLayout>

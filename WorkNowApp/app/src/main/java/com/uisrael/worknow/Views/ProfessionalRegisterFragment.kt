@@ -1,19 +1,23 @@
 package com.uisrael.worknow.Views
 
+import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.DialogInterface
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
+import android.text.Editable
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.core.widget.addTextChangedListener
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewModelScope
+import com.google.android.material.snackbar.Snackbar
+import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.messaging.FirebaseMessaging
 import com.uisrael.worknow.Model.Data.CategoriasData
 import com.uisrael.worknow.R
 import com.uisrael.worknow.ViewModel.ProfessionalViewModel
@@ -21,25 +25,26 @@ import kotlinx.android.synthetic.main.professional_fragment.*
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
+import kotlin.collections.ArrayList
 
-class ProfessionalRegisterFragment : Fragment() {
+class ProfessionalRegisterFragment(private val userGoogle: FirebaseUser?) : Fragment() {
 
-    var isNombreTypedProf : Boolean = false
-    var isApellidoTypedProf : Boolean = false
-    var isCiudadTypedProf : Boolean = false
-    var isTelefonoTypedProf : Boolean = false
-    var isCategoriaTypedProf : Boolean = false
-    var isDescripcionTypedProf : Boolean = false
-    var isCorreoTypedProf : Boolean = false
-    var isPaswordTypedProf : Boolean = false
+    private var isNombreTypedProf : Boolean = false
+    private var isApellidoTypedProf : Boolean = false
+    private var isCiudadTypedProf : Boolean = false
+    private var isTelefonoTypedProf : Boolean = false
+    private var isCategoriaTypedProf : Boolean = false
+    private var isDescripcionTypedProf : Boolean = false
+    private var isCorreoTypedProf : Boolean = false
+    private var isPaswordTypedProf : Boolean = false
 
-    var categoriasViewRepository: MutableList<CategoriasData> = ArrayList()
-    var categoriasRepository: Array<String> = emptyArray()
-    lateinit var selectecCategoria: BooleanArray
-    var categoriasList = arrayListOf<Int>()
+    private var categoriasViewRepository: MutableList<CategoriasData> = ArrayList()
+    private var categoriasRepository: Array<String> = emptyArray()
+    private lateinit var selectecCategoria: BooleanArray
+    private var categoriasList = arrayListOf<Int>()
 
     companion object {
-        fun newInstance() = ProfessionalRegisterFragment()
+        fun newInstance(user: FirebaseUser?) = ProfessionalRegisterFragment(user)
     }
 
     private lateinit var viewModel: ProfessionalViewModel
@@ -51,12 +56,14 @@ class ProfessionalRegisterFragment : Fragment() {
         return inflater.inflate(R.layout.professional_fragment, container, false)
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         viewModel = ViewModelProvider(this).get(ProfessionalViewModel::class.java)
+        if (userGoogle != null) {
+            viewModel.userGoogleView = userGoogle
+        }
         inicializarListeners()
         collectorFlow()
-
     }
 
     private fun collectorFlow() {
@@ -221,7 +228,7 @@ class ProfessionalRegisterFragment : Fragment() {
         lifecycleScope.launch {
             viewModel.getViewCategorias().collect{ value ->
                 categoriasViewRepository = value as MutableList<CategoriasData>
-                var categoriasAux = arrayListOf<String>()
+                val categoriasAux = arrayListOf<String>()
 
                 value.forEachIndexed { _ , b ->
                     if(b.estado)
@@ -236,6 +243,7 @@ class ProfessionalRegisterFragment : Fragment() {
         }
     }
 
+    @SuppressLint("ShowToast")
     private fun inicializarListeners() {
         nombreTxtProf.addTextChangedListener{
             if (!isNombreTypedProf){
@@ -303,7 +311,7 @@ class ProfessionalRegisterFragment : Fragment() {
             builder.setTitle("Escoja las categorias a las que desea aplicar")
             builder.setCancelable(false)
 
-            builder.setMultiChoiceItems(categoriasRepository,selectecCategoria) { dialogInterface: DialogInterface, i: Int, b: Boolean ->
+            builder.setMultiChoiceItems(categoriasRepository,selectecCategoria) { _: DialogInterface, i: Int, b: Boolean ->
                 if (b) {
                     categoriasList.add(i)
                     categoriasList.sort()
@@ -312,9 +320,9 @@ class ProfessionalRegisterFragment : Fragment() {
                 }
             }
 
-            builder.setPositiveButton("Aceptar") { dialog, which ->
-                var categoriasSelected = arrayListOf<String>()
-                var categoriasUis = arrayListOf<String>()
+            builder.setPositiveButton("Aceptar") { _, _ ->
+                val categoriasSelected = arrayListOf<String>()
+                val categoriasUis = arrayListOf<String>()
 
                 categoriasList.map { i ->
                     categoriasSelected.add(categoriasRepository[i])
@@ -341,10 +349,10 @@ class ProfessionalRegisterFragment : Fragment() {
 
             }
 
-            builder.setNegativeButton("Cancelar") { dialog, which ->
+            builder.setNegativeButton("Cancelar") { dialog, _ ->
                 dialog.dismiss()
 
-                var categoriasUis = arrayListOf<String>()
+                val categoriasUis = arrayListOf<String>()
 
                 categoriasList.map { i ->
                     categoriasUis.add(categoriasViewRepository[i].uid)
@@ -366,8 +374,8 @@ class ProfessionalRegisterFragment : Fragment() {
                 }
             }
 
-            builder.setNeutralButton("Limpiar") { dialog, which ->
-                selectecCategoria.forEachIndexed { index, b ->
+            builder.setNeutralButton("Limpiar") { _, _ ->
+                selectecCategoria.forEachIndexed { index, _ ->
                     selectecCategoria[index] = false
                 }
 
@@ -428,22 +436,167 @@ class ProfessionalRegisterFragment : Fragment() {
         }
 
         btnRegisterProf.setOnClickListener{
-            viewModel.viewModelScope.launch {
-                val user = viewModel.registerViewProf()
-                if (user != null) {
-                    val datosProf = viewModel.registeViewProfDataUsuario(user.uid)
-                    if(datosProf != null){
-                        val credencialesProf = viewModel.registeViewProfCredenciales(user.uid)
-                        if(credencialesProf != null){
-                            Toast.makeText(activity, "Usuario ${user.uid} Registrado exitosamente.", Toast.LENGTH_SHORT).show()
-                        }
-                    }
-                }else{
-                    Toast.makeText(activity, "Error al crear el usuario", Toast.LENGTH_SHORT).show()
+            FirebaseMessaging.getInstance().token.addOnCompleteListener {
+                if (!it.isSuccessful) {
+                    Snackbar
+                        .make(
+                            rltContentDatosPersonalesProf,
+                            "Dispositivo no compatible con notificaciones.",
+                            Snackbar.LENGTH_SHORT
+                        )
+                        .setAnimationMode(Snackbar.ANIMATION_MODE_SLIDE)
+                        .setBackgroundTint(resources.getColor(R.color.black))
+                        .show()
+                    return@addOnCompleteListener
                 }
+
+                // Get new FCM registration token
+                val token = it.result
+                registerProf(userGoogle, token)
             }
         }
 
+        if(userGoogle != null){
+            val nameSplit = userGoogle.displayName.split(" ")
+            if (nameSplit.size >=2) {
+                nombreTxtProf.text = Editable.Factory.getInstance().newEditable(nameSplit[0])
+                apellidoTxtProf.text = Editable.Factory.getInstance().newEditable(nameSplit[1])
+            }else{
+                nombreTxtProf.text = Editable.Factory.getInstance().newEditable(userGoogle.displayName)
+            }
+            correoTxtProf.text = Editable.Factory.getInstance().newEditable(userGoogle.email)
+            correoTxtProf.isEnabled = false
+            rltPasswordProf.isVisible = false
+
+            viewModel.setFotoProf(userGoogle.photoUrl.toString())
+        }
+    }
+
+    @SuppressLint("ShowToast")
+    private fun registerProf(userGoogle: FirebaseUser?, tokenFire: String) {
+        viewModel.viewModelScope.launch {
+            if (userGoogle != null) {
+                val datosProf = viewModel.registeViewProfDataUsuario(userGoogle.uid)
+                if (datosProf != null) {
+                    val credencialesProf =
+                        viewModel.registeViewProfCredenciales(userGoogle.uid, true)
+                    if (credencialesProf != null) {
+                        val tokenCli = viewModel.registerViewProfToken(userGoogle.uid, tokenFire)
+                        if(tokenCli != null){
+                            Snackbar
+                                .make(
+                                    rltContentDatosPersonalesProf,
+                                    "Usuario ${userGoogle.displayName} registrado exitosamente.",
+                                    Snackbar.LENGTH_INDEFINITE
+                                )
+                                .setAnimationMode(Snackbar.ANIMATION_MODE_SLIDE)
+                                .setBackgroundTint(resources.getColor(R.color.black))
+                                .setActionTextColor(resources.getColor(R.color.purple_500))
+                                .setAction("OK") {}
+                                .show()
+                        }
+                        else{
+                            Snackbar
+                                .make(
+                                    rltContentDatosPersonalesProf,
+                                    "Error al crear el usuario",
+                                    Snackbar.LENGTH_SHORT
+                                )
+                                .setAnimationMode(Snackbar.ANIMATION_MODE_SLIDE)
+                                .setBackgroundTint(resources.getColor(R.color.black))
+                                .show()
+                        }
+                    } else {
+                        Snackbar
+                            .make(
+                                rltContentDatosPersonalesProf,
+                                "Error al crear el usuario",
+                                Snackbar.LENGTH_SHORT
+                            )
+                            .setAnimationMode(Snackbar.ANIMATION_MODE_SLIDE)
+                            .setBackgroundTint(resources.getColor(R.color.black))
+                            .show()
+                    }
+                } else {
+                    Snackbar
+                        .make(
+                            rltContentDatosPersonalesProf,
+                            "Error al crear el usuario",
+                            Snackbar.LENGTH_SHORT
+                        )
+                        .setAnimationMode(Snackbar.ANIMATION_MODE_SLIDE)
+                        .setBackgroundTint(resources.getColor(R.color.black))
+                        .show()
+                }
+            } else {
+                val user = viewModel.registerViewProf()
+                if (user != null) {
+                    val datosProf = viewModel.registeViewProfDataUsuario(user.uid)
+                    if (datosProf != null) {
+                        val credencialesProf = viewModel.registeViewProfCredenciales(
+                            user.uid,
+                            false
+                        )
+                        if (credencialesProf != null) {
+                            val tokenCli = viewModel.registerViewProfToken(user.uid, tokenFire)
+                            if(tokenCli != null){
+                                Snackbar
+                                    .make(
+                                        rltContentDatosPersonalesProf,
+                                        "Usuario ${user.uid} registrado exitosamente.",
+                                        Snackbar.LENGTH_INDEFINITE
+                                    )
+                                    .setAnimationMode(Snackbar.ANIMATION_MODE_SLIDE)
+                                    .setBackgroundTint(resources.getColor(R.color.black))
+                                    .setActionTextColor(resources.getColor(R.color.purple_500))
+                                    .setAction("OK") {}
+                                    .show()
+                            } else {
+                                Snackbar
+                                    .make(
+                                        rltContentDatosPersonalesProf,
+                                        "Error al crear el usuario",
+                                        Snackbar.LENGTH_SHORT
+                                    )
+                                    .setAnimationMode(Snackbar.ANIMATION_MODE_SLIDE)
+                                    .setBackgroundTint(resources.getColor(R.color.black))
+                                    .show()
+                            }
+                        } else {
+                            Snackbar
+                                .make(
+                                    rltContentDatosPersonalesProf,
+                                    "Error al crear el usuario",
+                                    Snackbar.LENGTH_SHORT
+                                )
+                                .setAnimationMode(Snackbar.ANIMATION_MODE_SLIDE)
+                                .setBackgroundTint(resources.getColor(R.color.black))
+                                .show()
+                        }
+                    } else {
+                        Snackbar
+                            .make(
+                                rltContentDatosPersonalesProf,
+                                "Error al crear el usuario",
+                                Snackbar.LENGTH_SHORT
+                            )
+                            .setAnimationMode(Snackbar.ANIMATION_MODE_SLIDE)
+                            .setBackgroundTint(resources.getColor(R.color.black))
+                            .show()
+                    }
+                } else {
+                    Snackbar
+                        .make(
+                            rltContentDatosPersonalesProf,
+                            "Error al crear el usuario",
+                            Snackbar.LENGTH_SHORT
+                        )
+                        .setAnimationMode(Snackbar.ANIMATION_MODE_SLIDE)
+                        .setBackgroundTint(resources.getColor(R.color.black))
+                        .show()
+                }
+            }
+        }
     }
 
 }

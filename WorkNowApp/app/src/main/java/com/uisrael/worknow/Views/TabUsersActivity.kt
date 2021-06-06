@@ -24,11 +24,15 @@ import androidx.navigation.ActivityNavigator
 import androidx.viewpager.widget.ViewPager.OnPageChangeListener
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.navigation.NavigationView
+import com.google.android.material.snackbar.Snackbar
+import com.google.firebase.messaging.FirebaseMessaging
+import com.squareup.picasso.Picasso
 import com.uisrael.worknow.R
 import com.uisrael.worknow.ViewModel.TabUsersViewModel
 import com.uisrael.worknow.Views.Adapters.SectionsPagerAdapter
 import com.uisrael.worknow.Views.Utilities.Utilitity
 import kotlinx.android.synthetic.main.activity_tab_users.*
+import kotlinx.android.synthetic.main.client_fragment.*
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
@@ -128,6 +132,8 @@ class TabUsersActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
             }
         })
 
+        Utilitity.showLoading(this,"Cargando...",supportFragmentManager)
+
         getCurrentUser()
     }
 
@@ -143,12 +149,21 @@ class TabUsersActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
 
                     if (it.foto.isNotBlank()){
                         val imageUsuarioActual = cabeceraView.findViewById<ImageView>(R.id.imageUsuarioActual)
-                        val imageBytes = Base64.decode(it?.foto, Base64.DEFAULT)
-                        val decodedImage = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.size)
-                        imageUsuarioActual.setImageBitmap(decodedImage)
+                        if(Utilitity().isValidUrl(it.foto)){
+                            Picasso
+                                .get()
+                                .load(it.foto)
+                                .resize(250, 250)
+                                .centerCrop()
+                                .into(imageUsuarioActual)
+                        }else{
+                            val imageBytes = Base64.decode(it?.foto, Base64.DEFAULT)
+                            val decodedImage = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.size)
+                            imageUsuarioActual.setImageBitmap(decodedImage)
+                        }
                         iconUsuarioActual.visibility = View.GONE
                     }else{
-                        iconUsuarioActual.text = "${it.nombre.get(0)}${it.apellido.get(0)}"
+                        iconUsuarioActual.text = "${it.nombre[0]}${it.apellido[0]}"
                     }
 
                     if(it.rol == Utilitity.ROL_PROFESIONAL){
@@ -167,6 +182,21 @@ class TabUsersActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
                         ratingUsuarioProf.rating = (califacionSum / it.datosProf.calificaciones.size).toFloat()
                         ratingUsuarioProf.isEnabled = false
                     }
+
+                    FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
+                        if(!task.isSuccessful){
+                            Snackbar
+                                .make(rltContentDatosPersonalesCli, "Dispositivo no compatible con notificaciones.", Snackbar.LENGTH_SHORT)
+                                .setAnimationMode(Snackbar.ANIMATION_MODE_SLIDE)
+                                .setBackgroundTint(resources.getColor(R.color.black))
+                                .show()
+                            return@addOnCompleteListener
+                        }
+
+                        // Get new FCM registration token
+                        val token = task.result
+                        viewModel.updateTokenUserLooged(uidUsuario,token)
+                    }
                 }
             }
         }
@@ -182,6 +212,7 @@ class TabUsersActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
 
         }
     }
+
 
     fun Context.lifecycleOwner(): LifecycleOwner? {
         var curContext = this
@@ -236,7 +267,12 @@ class TabUsersActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
             drawerLayout.closeDrawer(GravityCompat.START)
         } else {
             if(viewpager_fragments.currentItem == 0){
-                super.onBackPressed()
+                Utilitity().showDialog(this,"Aviso", "Esta seguro que desea salir de la aplicación?",R.drawable.ic_warning_24)
+                    ?.setPositiveButton("Aceptar"){ dialog, _ ->
+                        super.onBackPressed()
+                    }
+                    ?.setNegativeButton("Cancelar") { dialog, _ -> dialog.dismiss() }
+                    ?.show()
             }else{
                 titleToolbar.text =  getString(R.string.title_dashboard)
                 unlockDrawer()
@@ -250,10 +286,16 @@ class TabUsersActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         when (item.itemId){
             R.id.navigation_logout -> {
-                lifecycleScope.launch {
-                    viewModel.logOutUsuario()
-                    finish()
-                }
+                Utilitity().showDialog(this,"Aviso", "Esta seguro que desea cerrar la sesión actual?",R.drawable.ic_warning_24)
+                    ?.setPositiveButton("Aceptar"){ dialog, _ ->
+                        lifecycleScope.launch {
+                            viewModel.logOutUsuario()
+                            finish()
+                        }
+                        dialog.dismiss()
+                    }
+                    ?.setNegativeButton("Cancelar") { dialog, _ -> dialog.dismiss() }
+                    ?.show()
             }
             R.id.navigation_profile -> {
                 viewModel.viewModelScope.launch {

@@ -1,15 +1,17 @@
 package com.uisrael.worknow.Views.Dialogs
 
+import android.annotation.SuppressLint
 import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.util.Base64
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import com.google.android.material.snackbar.Snackbar
+import com.squareup.picasso.Picasso
 import com.uisrael.worknow.R
 import com.uisrael.worknow.ViewModel.QualificationViewModel
 import com.uisrael.worknow.Views.Utilities.Utilitity
@@ -31,11 +33,12 @@ class QualificationFragment (private var uidProf:String, var uidPub: String) : D
         return  inflater.inflate(R.layout.calification_dialog_fragment, container)
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         inicializateComponents()
     }
 
+    @SuppressLint("ShowToast")
     private fun inicializateComponents() {
         btnEnviarDialogCalif.isEnabled = false
         viewModel.viewModelScope.launch {
@@ -44,12 +47,21 @@ class QualificationFragment (private var uidProf:String, var uidPub: String) : D
                     viewModel.currentProf = it
                     nombreUProfDialogCalif.text = "${it.nombre} ${it.apellido}"
                     if (it.foto.isNotBlank()){
-                        val imageBytes = Base64.decode(it.foto, Base64.DEFAULT)
-                        val decodedImage = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.size)
-                        imageUsuarioDialogCalif.setImageBitmap(Utilitity().getRoundedCornerBitmap(decodedImage))
+                        if(Utilitity().isValidUrl(it.foto)){
+                            Picasso
+                                .get()
+                                .load(it.foto)
+                                .resize(250, 250)
+                                .centerCrop()
+                                .into(imageUsuarioDialogCalif)
+                        }else{
+                            val imageBytes = Base64.decode(it.foto, Base64.DEFAULT)
+                            val decodedImage = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.size)
+                            imageUsuarioDialogCalif.setImageBitmap(Utilitity().getRoundedCornerBitmap(decodedImage))
+                        }
                         iconUsuarioDialogCalif.visibility = View.GONE
                     }else{
-                        iconUsuarioDialogCalif.text = "${it.nombre.get(0)}${it.apellido.get(0)}"
+                        iconUsuarioDialogCalif.text = "${it.nombre[0]}${it.apellido[0]}"
                     }
                 }
             }
@@ -67,10 +79,18 @@ class QualificationFragment (private var uidProf:String, var uidPub: String) : D
                     if(response != null){
                         dismiss()
                     }else{
-                        Toast.makeText(activity, "Error al calificar al profesional", Toast.LENGTH_SHORT).show()
+                        Snackbar
+                            .make(constrContenedorDialogCalif, "Error al calificar al profesional.", Snackbar.LENGTH_SHORT)
+                            .setAnimationMode(Snackbar.ANIMATION_MODE_SLIDE)
+                            .setBackgroundTint(resources.getColor(R.color.black))
+                            .show()
                     }
                 }else{
-                    Toast.makeText(activity, "Error al calificar al profesional", Toast.LENGTH_SHORT).show()
+                    Snackbar
+                        .make(constrContenedorDialogCalif, "Error al calificar al profesional.", Snackbar.LENGTH_SHORT)
+                        .setAnimationMode(Snackbar.ANIMATION_MODE_SLIDE)
+                        .setBackgroundTint(resources.getColor(R.color.black))
+                        .show()
                 }
             }
         }

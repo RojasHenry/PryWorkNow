@@ -3,6 +3,7 @@ package com.uisrael.worknow.ViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.google.firebase.auth.FirebaseUser
+import com.uisrael.worknow.Model.Data.TokenData
 import com.uisrael.worknow.Model.Data.UsuariosData
 import com.uisrael.worknow.Model.FirebaseAuthRepository
 import com.uisrael.worknow.Model.FirebaseModelsRepository
@@ -24,5 +25,9 @@ class TabUsersViewModel : ViewModel() {
 
     fun getUserLogged(): MutableLiveData<FirebaseUser> {
         return authFirebaseRepository.getUserLogged()
+    }
+
+    fun updateTokenUserLooged(uid: String, token:String): Any? {
+        return modelFirebaseRepository.registerViewUserToken(uid, TokenData(token = token))
     }
 }

@@ -91,7 +91,7 @@ class OfferAcceptListAdapter(
             }
 
             convertView.btnVermasAcceptOfferList.setOnClickListener {
-                val offerBottomSheetFragment = OfferBottomSheetFragment(c, publicaciones[position], fromDashboard = false,fromPubAccept = true, fromPubCli = false)
+                val offerBottomSheetFragment = OfferBottomSheetFragment(c, publicaciones[position], fromDashboard = false,fromPubAccept = true, fromPubCli = false, supportFragmentManager)
                 offerBottomSheetFragment.show(supportFragmentManager, "ModalBottomOffer")
             }
 

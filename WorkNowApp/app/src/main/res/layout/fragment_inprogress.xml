@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:id="@+id/clyContenedorofferListOnProgress"
     tools:context=".Views.TabsFragments.InProgressFragment">
 
     <ProgressBar
@@ -39,7 +40,7 @@
             android:layout_below="@id/imageErrorofferListOnProgress"
             android:layout_centerHorizontal="true"
             android:fontFamily="@font/nunitosansbold"
-            android:text="No se tienen ofertas en progreso."
+            android:text="No hay ofertas en progreso."
             android:textAlignment="center"
             android:textColor="#AEAEAE" />
     </RelativeLayout>

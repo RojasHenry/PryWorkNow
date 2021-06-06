@@ -1,5 +1,6 @@
 package com.uisrael.worknow.Views
 
+import android.annotation.SuppressLint
 import android.content.Context
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
@@ -8,11 +9,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
-import android.widget.Toast
 import androidx.core.widget.addTextChangedListener
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewModelScope
+import com.google.android.material.snackbar.Snackbar
 import com.uisrael.worknow.Model.Data.ComentariosData
 import com.uisrael.worknow.R
 import com.uisrael.worknow.ViewModel.CommentsViewModel
@@ -49,8 +50,8 @@ class CommentsFragment (
         return inflater.inflate(R.layout.fragment_comments, container, false)
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         viewModel = ViewModelProvider(this).get(CommentsViewModel::class.java)
 
         viewModel.viewModelScope.launch {
@@ -69,6 +70,7 @@ class CommentsFragment (
         }
     }
 
+    @SuppressLint("ShowToast")
     private fun inicializarListeners() {
         solicitudToolbarComments.text = "Solicitud: ${uidPub}"
 
@@ -112,7 +114,11 @@ class CommentsFragment (
                             if (uidPub != null && uidUserAcceptProf != null) {
                                 val response = viewModel.sendViewCommentOffer(uidPub, uidSolClient, uidUserAcceptProf)
                                 if (response == null){
-                                    Toast.makeText(context, "Error al enviar el comentario", Toast.LENGTH_SHORT).show()
+                                    Snackbar
+                                        .make(rltOfferComments, "Error al enviar el comentario.", Snackbar.LENGTH_SHORT)
+                                        .setAnimationMode(Snackbar.ANIMATION_MODE_SLIDE)
+                                        .setBackgroundTint(resources.getColor(R.color.black))
+                                        .show()
                                 }else{
                                     editTxtComments.text!!.clear()
                                     hideKeyboard()
@@ -123,7 +129,11 @@ class CommentsFragment (
                             if (uidPub != null && uidSolClient != null) {
                                 val response = viewModel.sendViewCommentOffer(uidPub, uidUserAcceptProf, uidSolClient)
                                 if (response == null){
-                                    Toast.makeText(context, "Error al enviar el comentario", Toast.LENGTH_SHORT).show()
+                                    Snackbar
+                                        .make(rltOfferComments, "Error al enviar el comentario.", Snackbar.LENGTH_SHORT)
+                                        .setAnimationMode(Snackbar.ANIMATION_MODE_SLIDE)
+                                        .setBackgroundTint(resources.getColor(R.color.black))
+                                        .show()
                                 }else{
                                     editTxtComments.text!!.clear()
                                     hideKeyboard()
