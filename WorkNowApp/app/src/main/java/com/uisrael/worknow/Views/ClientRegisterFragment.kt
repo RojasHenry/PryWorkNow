@@ -1,6 +1,8 @@
 package com.uisrael.worknow.Views
 
 import android.annotation.SuppressLint
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.view.LayoutInflater
@@ -18,12 +20,14 @@ import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.messaging.FirebaseMessaging
 import com.uisrael.worknow.R
 import com.uisrael.worknow.ViewModel.ClientViewModel
+import com.uisrael.worknow.Views.Dialogs.IResponseMapFragment
+import com.uisrael.worknow.Views.Dialogs.MapCityFragment
 import kotlinx.android.synthetic.main.client_fragment.*
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 
-class ClientRegisterFragment(private val userGoogle: FirebaseUser?) : Fragment() {
+class ClientRegisterFragment(private val userGoogle: FirebaseUser?) : Fragment(), IResponseMapFragment {
 
     var isNombreTypedCli : Boolean = false
     var isApellidoTypedCli : Boolean = false
@@ -261,10 +265,10 @@ class ClientRegisterFragment(private val userGoogle: FirebaseUser?) : Fragment()
             }
         }
 
-        /*rltCiudadCli.setOnClickListener {
-            context?.let { it1 -> MapCityFragment(it1) }
+        ciudadTxtCli.setOnClickListener {
+            context?.let { it1 -> MapCityFragment(it1, this,false,null,null) }
                 ?.show(childFragmentManager, "mapcityfragment")
-        }*/
+        }
 
         btnRegisterCli.setOnClickListener{
             FirebaseMessaging.getInstance().token.addOnCompleteListener {
@@ -427,4 +431,7 @@ class ClientRegisterFragment(private val userGoogle: FirebaseUser?) : Fragment()
         }
     }
 
+    override fun responseMap(geocoder: String) {
+        ciudadTxtCli.text = Editable.Factory.getInstance().newEditable(geocoder)
+    }
 }

@@ -22,12 +22,15 @@ import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewModelScope
+import com.google.android.gms.maps.model.LatLng
 import com.google.android.material.snackbar.Snackbar
 import com.squareup.picasso.Picasso
 import com.uisrael.worknow.Model.Data.CategoriasData
 import com.uisrael.worknow.Model.Data.UsuariosData
 import com.uisrael.worknow.R
 import com.uisrael.worknow.ViewModel.ProfileUserViewModel
+import com.uisrael.worknow.Views.Dialogs.IResponseMapFragment
+import com.uisrael.worknow.Views.Dialogs.MapCityFragment
 import com.uisrael.worknow.Views.Dialogs.PicturePickerFragment
 import com.uisrael.worknow.Views.Utilities.Utilitity
 import kotlinx.android.synthetic.main.profile_user_fragment.*
@@ -35,7 +38,8 @@ import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
-class ProfileUserFragment (var uidUser: String, private val currentUser: Any) : DialogFragment() {
+class ProfileUserFragment (var uidUser: String, private val currentUser: Any) : DialogFragment(),
+    IResponseMapFragment {
 
     var categoriasViewRepository: MutableList<CategoriasData> = ArrayList()
     var categoriasRepository: Array<String> = emptyArray()
@@ -166,6 +170,15 @@ class ProfileUserFragment (var uidUser: String, private val currentUser: Any) : 
 
         passwordTxtUserProfile.addTextChangedListener{
             viewModel.viewModelScope.launch { viewModel.setPasswordUser(it.toString().trim()) }
+        }
+
+        ciudadTxtUserProfile.setOnClickListener {
+            val datosCiudad =  viewModel.currentUser.ciudad.split("%DIR%")
+            val locationView = datosCiudad[0].replace("lat/lng: (","").replace(")","").split(",")
+            val nameLocation = datosCiudad[1].replace("address(","").replace(")","")
+            context?.let { it1 -> MapCityFragment(it1, this,false,
+                LatLng(locationView[0].toDouble(),locationView[1].toDouble()),nameLocation) }
+                ?.show(childFragmentManager, "mapcityfragment")
         }
 
         btnEditarUserProfile.setOnClickListener{
@@ -511,6 +524,10 @@ class ProfileUserFragment (var uidUser: String, private val currentUser: Any) : 
             cursor.close()
         }
         return result
+    }
+
+    override fun responseMap(geocoder: String) {
+        ciudadTxtUserProfile.text = Editable.Factory.getInstance().newEditable(geocoder)
     }
 
 }

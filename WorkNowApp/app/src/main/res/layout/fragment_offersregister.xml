@@ -297,13 +297,15 @@
                         android:gravity="center|left"
                         android:hint="Ubicación"
                         android:imeOptions="actionNext"
-                        android:inputType="textPersonName"
                         android:paddingLeft="10dp"
                         android:paddingRight="10dp"
                         android:singleLine="true"
                         android:drawableEnd="@drawable/ic_ubication_24"
                         android:textColor="#6c6d70"
-                        android:textSize="15sp" />
+                        android:textSize="15sp"
+                        android:focusable="false"
+                        android:inputType="none"
+                        android:clickable="true"/>
                 </RelativeLayout>
             </RelativeLayout>
 

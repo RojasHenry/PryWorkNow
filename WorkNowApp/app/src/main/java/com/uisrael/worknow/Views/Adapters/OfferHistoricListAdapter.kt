@@ -45,7 +45,11 @@ class OfferHistoricListAdapter (
             }
 
             convertView.descripcionTxtHistoricOfferList.text = publicaciones[position].descripcion
-            convertView.ubicacionTxtHistoricOfferList.text = publicaciones[position].ubicacion
+
+            val datosCiudad = publicaciones[position].ubicacion.split("%DIR%")
+            val locationView = datosCiudad[0].replace("lat/lng: (","").replace(")","")
+            val nameLocation = datosCiudad[1].replace("address(","").replace(")","")
+            convertView.ubicacionTxtHistoricOfferList.text = "${nameLocation}; (${locationView})"
             convertView.inmediatoTxtHistoricOfferList.text = if(publicaciones[position].inmediato) "Si" else "No"
             convertView.cantidadTxtHistoricOfferList.text = if(publicaciones[position].soloUnaPersona) "Una sola persona" else "${publicaciones[position].cantidad} personas"
 

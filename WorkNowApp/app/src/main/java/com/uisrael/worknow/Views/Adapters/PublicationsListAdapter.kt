@@ -42,7 +42,11 @@ class PublicationsListAdapter(
                 convertView.rltFechaFinOfferList.visibility = View.GONE
                 convertView.fechasTituloOfferList.text = "Fecha del trabajo"
             }
-            convertView.ubicacionTxtOfferList.text = publicaciones[position].ubicacion
+
+            val datosCiudad = publicaciones[position].ubicacion.split("%DIR%")
+            val locationView = datosCiudad[0].replace("lat/lng: (","").replace(")","")
+            val nameLocation = datosCiudad[1].replace("address(","").replace(")","")
+            convertView.ubicacionTxtOfferList.text = "${nameLocation}; (${locationView})"
             convertView.inmediatoTxtOfferList.text = if(publicaciones[position].inmediato) "Si" else "No"
             convertView.cantidadTxtOfferList.text = if(publicaciones[position].soloUnaPersona) "Una sola persona" else "${publicaciones[position].cantidad} personas"
 

@@ -152,12 +152,15 @@
                         android:gravity="center|left"
                         android:hint="Ciudad"
                         android:imeOptions="actionNext"
-                        android:inputType="textPersonName"
                         android:paddingLeft="10dp"
                         android:paddingRight="10dp"
+                        android:drawableEnd="@drawable/ic_ubication_24"
                         android:singleLine="true"
                         android:textColor="#6c6d70"
-                        android:textSize="15dp" />
+                        android:textSize="15dp"
+                        android:focusable="false"
+                        android:inputType="none"
+                        android:clickable="true"/>
                 </RelativeLayout>
 
 

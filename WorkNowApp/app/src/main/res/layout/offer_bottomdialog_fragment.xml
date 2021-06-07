@@ -254,6 +254,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_toRightOf="@id/ubicacionTituloOfferListDialog"
                                 android:fontFamily="@font/nunitosansregular"
+                                android:textColor="@drawable/color_link"
                                 android:text="Quito" />
                         </RelativeLayout>
 

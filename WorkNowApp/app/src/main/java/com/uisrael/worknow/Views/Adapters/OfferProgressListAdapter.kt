@@ -56,7 +56,12 @@ class OfferProgressListAdapter(
             }
 
             convertView.descripcionTxtProgressOfferList.text = publicaciones[position].descripcion
-            convertView.ubicacionTxtProgressOfferList.text = publicaciones[position].ubicacion
+
+            val datosCiudad = publicaciones[position].ubicacion.split("%DIR%")
+            val locationView = datosCiudad[0].replace("lat/lng: (","").replace(")","")
+            val nameLocation = datosCiudad[1].replace("address(","").replace(")","")
+
+            convertView.ubicacionTxtProgressOfferList.text = "${nameLocation}; (${locationView})"
             convertView.inmediatoTxtProgressOfferList.text = if(publicaciones[position].inmediato) "Si" else "No"
             convertView.cantidadTxtProgressOfferList.text = if(publicaciones[position].soloUnaPersona) "Una sola persona" else "${publicaciones[position].cantidad} personas"
 

@@ -1,28 +1,85 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
+<RelativeLayout xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/rltMapaUbicacion"
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_height="match_parent"
-    android:layout_width="match_parent">
+    android:layout_height="wrap_content"
+    android:layout_width="400dp"
+    tools:context=".Views.Dialogs.MapCityFragment"
+    android:padding="10dp">
+    <RelativeLayout
+        android:id="@+id/rltTitleMapaUbicacion"
+        android:layout_width="match_parent"
+        android:layout_alignParentTop="true"
+        android:layout_height="wrap_content">
 
-    <fragment
-        android:id="@+id/autocomplete_fragment"
-        android:name="com.google.android.libraries.places.widget.AutocompleteSupportFragment"
+        <ImageView
+            android:id="@+id/imgCloseMapaUbicacion"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentRight="true"
+            app:srcCompat="@android:drawable/ic_menu_close_clear_cancel" />
+
+        <TextView
+            android:id="@+id/titleMapaUbicacion"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:fontFamily="@font/nunitosansbold"
+            android:layout_below="@+id/imgCloseMapaUbicacion"
+            android:text="Seleccione la ubicación:"
+            android:textColor="#6c6d70"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:layout_marginHorizontal="10dp"/>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/rltautocompleteMapaUbicacion"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:layout_below="@+id/rltTitleMapaUbicacion">
+        <fragment
+            android:id="@+id/autocompleteMapaUbicacion"
+            android:name="com.google.android.libraries.places.widget.AutocompleteSupportFragment"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+
+            android:layout_centerHorizontal="true"/>
+    </RelativeLayout>
 
     <fragment
         android:id="@+id/map"
         android:name="com.google.android.gms.maps.SupportMapFragment"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/autocomplete_fragment"
-        tools:context=".Views.Dialogs.MapCityFragment" />
-</androidx.constraintlayout.widget.ConstraintLayout>
+        android:layout_height="400dp"
+        android:layout_marginTop="5dp"
+        android:layout_below="@id/rltautocompleteMapaUbicacion"
+        android:layout_centerHorizontal="true" />
+
+    <RelativeLayout
+        android:id="@+id/btnMapaUbicacion"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/map"
+        android:layout_marginHorizontal="30dp"
+        android:layout_marginTop="30dp"
+        android:background="@drawable/background_button_login"
+        android:gravity="center"
+        android:padding="10dp">
+        <TextView
+            android:id="@+id/ubicacionMapaUbicacion"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="15dp"
+            android:fontFamily="@font/nunitosansregular"
+            android:gravity="center"
+            android:paddingRight="5dp"
+            android:text="Escoger Ubicación"
+            android:textColor="#FFFFFF"
+            android:textSize="13sp" />
+    </RelativeLayout>
+</RelativeLayout>

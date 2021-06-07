@@ -21,13 +21,15 @@ import com.google.firebase.messaging.FirebaseMessaging
 import com.uisrael.worknow.Model.Data.CategoriasData
 import com.uisrael.worknow.R
 import com.uisrael.worknow.ViewModel.ProfessionalViewModel
+import com.uisrael.worknow.Views.Dialogs.IResponseMapFragment
+import com.uisrael.worknow.Views.Dialogs.MapCityFragment
 import kotlinx.android.synthetic.main.professional_fragment.*
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlin.collections.ArrayList
 
-class ProfessionalRegisterFragment(private val userGoogle: FirebaseUser?) : Fragment() {
+class ProfessionalRegisterFragment(private val userGoogle: FirebaseUser?) : Fragment(), IResponseMapFragment {
 
     private var isNombreTypedProf : Boolean = false
     private var isApellidoTypedProf : Boolean = false
@@ -435,6 +437,11 @@ class ProfessionalRegisterFragment(private val userGoogle: FirebaseUser?) : Frag
             }
         }
 
+        ciudadTxtProf.setOnClickListener {
+            context?.let { it1 -> MapCityFragment(it1, this,false,null,null) }
+                ?.show(childFragmentManager, "mapcityfragment")
+        }
+
         btnRegisterProf.setOnClickListener{
             FirebaseMessaging.getInstance().token.addOnCompleteListener {
                 if (!it.isSuccessful) {
@@ -597,6 +604,10 @@ class ProfessionalRegisterFragment(private val userGoogle: FirebaseUser?) : Frag
                 }
             }
         }
+    }
+
+    override fun responseMap(geocoder: String) {
+        ciudadTxtProf.text = Editable.Factory.getInstance().newEditable(geocoder)
     }
 
 }

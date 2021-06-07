@@ -26,6 +26,8 @@ import com.uisrael.worknow.R
 import com.uisrael.worknow.ViewModel.TabsFragViewModel.OffersRegisterViewModel
 import com.uisrael.worknow.Views.Adapters.RespFotosGridAdapter
 import com.uisrael.worknow.Views.Dialogs.DatePickerFragment
+import com.uisrael.worknow.Views.Dialogs.IResponseMapFragment
+import com.uisrael.worknow.Views.Dialogs.MapCityFragment
 import kotlinx.android.synthetic.main.fragment_offersregister.*
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.collect
@@ -35,7 +37,7 @@ import java.util.*
 import kotlin.collections.ArrayList
 
 
-class OffersRegisterFragment : Fragment() {
+class OffersRegisterFragment : Fragment() ,IResponseMapFragment {
 
     var isCategoriaTypedOffer : Boolean = false
     var isFechaIniTypedOffer : Boolean = false
@@ -366,6 +368,11 @@ class OffersRegisterFragment : Fragment() {
             offersRegisterViewModel.viewModelScope.launch {
                 offersRegisterViewModel.setTelefonoOffer(it.toString().trim())
             }
+        }
+
+        ubicacionTxtOffer.setOnClickListener {
+            context?.let { it1 -> MapCityFragment(it1, this,false,null,null) }
+                ?.show(childFragmentManager, "mapcityfragment")
         }
 
         btnRegisterOffer.setOnClickListener {
@@ -867,5 +874,9 @@ class OffersRegisterFragment : Fragment() {
 
         builder.create()
             .show()
+    }
+
+    override fun responseMap(geocoder: String) {
+        ubicacionTxtOffer.text = Editable.Factory.getInstance().newEditable(geocoder)
     }
 }

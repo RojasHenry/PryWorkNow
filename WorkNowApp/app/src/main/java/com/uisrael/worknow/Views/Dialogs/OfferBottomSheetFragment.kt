@@ -15,6 +15,7 @@ import android.widget.LinearLayout
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import com.google.android.gms.maps.model.LatLng
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.snackbar.Snackbar
 import com.squareup.picasso.Picasso
@@ -105,7 +106,17 @@ class OfferBottomSheetFragment(
                 convertView.fechasTituloOfferListDialog.text = "Fecha del trabajo"
             }
 
-            convertView.ubicacionTxtOfferListDialog.text = publicationsData.ubicacion
+            val datosCiudad = publicationsData.ubicacion.split("%DIR%")
+            val locationView = datosCiudad[0].replace("lat/lng: (","").replace(")","")
+            val nameLocation = datosCiudad[1].replace("address(","").replace(")","")
+
+            convertView.ubicacionTxtOfferListDialog.text = "${nameLocation}; (${locationView})"
+
+            convertView.ubicacionTxtOfferListDialog.setOnClickListener {
+                MapCityFragment(c, null,true,
+                    LatLng(locationView.split(",")[0].toDouble(),locationView.split(",")[1].toDouble()),nameLocation)
+                    .show(supportFragmentManager,"mapcityfragment")
+            }
 
             viewModel.viewModelScope.launch {
                 viewModel.getCategoriaViewOfferName(publicationsData.idCategoria).collect {
