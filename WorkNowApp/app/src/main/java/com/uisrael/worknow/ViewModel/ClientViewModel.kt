@@ -52,6 +52,10 @@ class ClientViewModel : ViewModel() {
         return modelsFirebaseRepository.registerViewUserToken(uid,TokenData(token = token))
     }
 
+    fun getViewCredentialEmailUser(): Flow<CredencialesData?> {
+        return modelsFirebaseRepository.getCredentialEmailUser(_usuarioCredentials.value.correo)
+    }
+
     fun setFotoCli(fotoB64: String){
         _usuarioDatos.value.foto = fotoB64
     }

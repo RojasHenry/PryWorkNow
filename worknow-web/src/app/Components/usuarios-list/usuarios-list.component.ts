@@ -5,6 +5,7 @@ import { DataBaseConnService } from 'src/app/Services/data-base-conn.service';
 import { MatDialog } from '@angular/material/dialog';
 import { DialogComponent } from '../dialog/dialog.component';
 import { Credenciales } from 'src/app/Models/credenciales';
+import Calificacion from 'src/app/Models/calificacion';
 
 @Component({
   selector: 'app-usuarios-list',
@@ -26,7 +27,7 @@ export class UsuariosListComponent implements OnInit{
   listCategorias: Array<any> = []
 
   listCredenciales: Array<any> = []
-
+  
   constructor(private dbService: DataBaseConnService, public dialog: MatDialog) {
     const randomIndex = Math.floor(Math.random() * Math.floor(this.colors.length));
     this.circleColor = this.colors[randomIndex];
@@ -85,25 +86,31 @@ export class UsuariosListComponent implements OnInit{
   }
 
   getNombreCategoria(uidCategoria:any){
-    var categoria: any = this.listCategorias.filter(cate => cate.key == uidCategoria)
-
-    return categoria[0].nombre
+    var categoria: Array<any> = this.listCategorias.filter(cate => cate.key == uidCategoria)
+    if(categoria.length > 0){
+      return categoria[0].nombre
+    }
   }
 
   getStatusUsuario(uidUsuario:any){
-    var credencial: any = this.listCredenciales.filter(cred => cred.key == uidUsuario)
-
-    return credencial[0].estado
+    var credencial: Array<any> = this.listCredenciales.filter(cred => cred.key == uidUsuario)
+    if(credencial.length > 0){
+      return credencial[0].estado
+    }
   }
 
   getUsuarioCorreo(uidUsuario:any){
-    var credencial: any = this.listCredenciales.filter(cred => cred.key == uidUsuario)
-    return credencial[0].correo
+    var credencial: Array<any> = this.listCredenciales.filter(cred => cred.key == uidUsuario)
+    if(credencial.length > 0){
+      return credencial[0].correo
+    }
   }
 
   getFromSocNetwork(uidUsuario:any){
-    var credencial: any = this.listCredenciales.filter(cred => cred.key == uidUsuario)
-    return credencial[0].fromSocNet
+    var credencial: Array<any> = this.listCredenciales.filter(cred => cred.key == uidUsuario)
+    if(credencial.length > 0){
+      return credencial[0].fromSocNet
+    }
   }
 
   deshabilitarUsuario(element: any, newEstado:boolean){
@@ -137,7 +144,37 @@ export class UsuariosListComponent implements OnInit{
       }
       
     });
+  }
+
+  goToMaps(ubicacion:String) {
+    var splitValues = ubicacion.split("%DIR%")
+    window.open(`http://maps.google.com?q=${splitValues[0].replace("lat/lng: (","").replace(")","")}`, "_blank");
+  }
+  getUbicacion(ubicacion:String){
+    var splitValues = ubicacion.split("%DIR%")
+    return splitValues[1].replace("address(","").replace(")","")
+  }
+
+  getFotoUsuario(foto:String){
+    if(this.validateUrl(foto)){
+      return foto
+    }else{
+      return 'data:image/jpg;base64,'+foto
+    }
     
+  }
+
+  validateUrl(fotoURl:String){
+    var res = fotoURl.match(/(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/g);
+    return (res !== null)
+  }
+
+  getCalificaciones(calificaciones:Array<Calificacion>){
+    var total = 0
+    calificaciones.forEach(element => {
+      total+= Number(element.calificacion)
+    });
+    return total / calificaciones.length
   }
 }
 

@@ -28,6 +28,7 @@ import com.uisrael.worknow.Views.Adapters.RespFotosGridAdapter
 import com.uisrael.worknow.Views.Dialogs.DatePickerFragment
 import com.uisrael.worknow.Views.Dialogs.IResponseMapFragment
 import com.uisrael.worknow.Views.Dialogs.MapCityFragment
+import com.uisrael.worknow.Views.Utilities.Utilitity
 import kotlinx.android.synthetic.main.fragment_offersregister.*
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.collect
@@ -371,45 +372,51 @@ class OffersRegisterFragment : Fragment() ,IResponseMapFragment {
         }
 
         ubicacionTxtOffer.setOnClickListener {
-            context?.let { it1 -> MapCityFragment(it1, this,false,null,null) }
-                ?.show(childFragmentManager, "mapcityfragment")
+            val internetConnection: Boolean? = activity?.let { it1 -> Utilitity.isNetworkAvailable(it1) }
+            if (internetConnection == true){
+                context?.let { it1 -> MapCityFragment(it1, this,false,null,null) }
+                    ?.show(childFragmentManager, "mapcityfragment")
+            }
         }
 
         btnRegisterOffer.setOnClickListener {
-            offersRegisterViewModel.viewModelScope.launch {
-                val uid:String = offersRegisterViewModel.registerViewOffer() as String
-                if(uid.isNotEmpty()){
-                    val offerPicture = offersRegisterViewModel.registerViewOfferPictures(uid, requireContext())
-                    if(offerPicture != null){
-                        Snackbar
-                            .make(rltContenedorDatosSolicitudOffer, "Solicitud ingresada exitosamente.", Snackbar.LENGTH_INDEFINITE)
-                            .setAnimationMode(Snackbar.ANIMATION_MODE_SLIDE)
-                            .setBackgroundTint(resources.getColor(R.color.black))
-                            .setActionTextColor(resources.getColor(R.color.purple_500))
-                            .setAction("OK"){}
-                            .show()
-                        lifecycleScope.launch {
-                            currentCategoria?.let { it1 ->
-                                clearFormTypedsView()
-                                clearFormValuesView()
-                                offersRegisterViewModel.clearFormViewModel(
-                                    it1.uid
-                                )
+            val internetConnection: Boolean? = activity?.let { it1 -> Utilitity.isNetworkAvailable(it1) }
+            if (internetConnection == true){
+                offersRegisterViewModel.viewModelScope.launch {
+                    val uid:String = offersRegisterViewModel.registerViewOffer() as String
+                    if(uid.isNotEmpty()){
+                        val offerPicture = offersRegisterViewModel.registerViewOfferPictures(uid, requireContext())
+                        if(offerPicture != null){
+                            Snackbar
+                                .make(rltContenedorDatosSolicitudOffer, "Solicitud ingresada exitosamente.", Snackbar.LENGTH_INDEFINITE)
+                                .setAnimationMode(Snackbar.ANIMATION_MODE_SLIDE)
+                                .setBackgroundTint(resources.getColor(R.color.black))
+                                .setActionTextColor(resources.getColor(R.color.purple_500))
+                                .setAction("OK"){}
+                                .show()
+                            lifecycleScope.launch {
+                                currentCategoria?.let { it1 ->
+                                    clearFormTypedsView()
+                                    clearFormValuesView()
+                                    offersRegisterViewModel.clearFormViewModel(
+                                        it1.uid
+                                    )
+                                }
                             }
+                        }else{
+                            Snackbar
+                                .make(rltContenedorDatosSolicitudOffer, "Error al ingresar las fotografias de la solicitud.", Snackbar.LENGTH_SHORT)
+                                .setAnimationMode(Snackbar.ANIMATION_MODE_SLIDE)
+                                .setBackgroundTint(resources.getColor(R.color.black))
+                                .show()
                         }
                     }else{
                         Snackbar
-                            .make(rltContenedorDatosSolicitudOffer, "Error al ingresar las fotografias de la solicitud.", Snackbar.LENGTH_SHORT)
+                            .make(rltContenedorDatosSolicitudOffer, "Error al crear la solicitud.", Snackbar.LENGTH_SHORT)
                             .setAnimationMode(Snackbar.ANIMATION_MODE_SLIDE)
                             .setBackgroundTint(resources.getColor(R.color.black))
                             .show()
                     }
-                }else{
-                    Snackbar
-                        .make(rltContenedorDatosSolicitudOffer, "Error al crear la solicitud.", Snackbar.LENGTH_SHORT)
-                        .setAnimationMode(Snackbar.ANIMATION_MODE_SLIDE)
-                        .setBackgroundTint(resources.getColor(R.color.black))
-                        .show()
                 }
             }
         }

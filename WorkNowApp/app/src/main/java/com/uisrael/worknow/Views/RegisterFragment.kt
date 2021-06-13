@@ -35,21 +35,25 @@ class RegisterFragment : Fragment() {
         tablayoutRegister.addTab(tablayoutRegister.newTab().setText("Cliente"))
         tablayoutRegister.addTab(tablayoutRegister.newTab().setText("Profesional"))
 
-        val adapterTabs = context?.let { RegisterAdapter(
+        viewPagerRegister.adapter = RegisterAdapter(
             childFragmentManager,
-            it,
             tablayoutRegister.tabCount,
-            null
-        ) }
-        viewPagerRegister.adapter = adapterTabs
+            null,
+            null,
+            this
+        )
 
         viewPagerRegister.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(tablayoutRegister))
 
         tablayoutRegister.setupWithViewPager(viewPagerRegister)
 
         backBtn.setOnClickListener{
-            view?.findNavController()?.navigate(R.id.action_registerFragment_to_loginFragment)
+            returnToLogin()
         }
+    }
+
+    fun returnToLogin() {
+        view?.findNavController()?.navigate(R.id.action_registerFragment_to_loginFragment)
     }
 
 }

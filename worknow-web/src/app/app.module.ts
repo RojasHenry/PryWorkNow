@@ -30,7 +30,6 @@ import { DialogComponent } from './Components/dialog/dialog.component';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { NgxStarsModule } from 'ngx-stars';
 import { DialogPicturesComponent } from './Components/dialog-pictures/dialog-pictures.component';
-import { MatCarouselModule } from '@ngmodule/material-carousel';
 
 @NgModule({
   declarations: [
@@ -64,8 +63,7 @@ import { MatCarouselModule } from '@ngmodule/material-carousel';
     AngularFireModule.initializeApp(environment.firebase),
     AngularFireAuthModule,
     AngularFirestoreModule,
-    NgxStarsModule,
-    MatCarouselModule.forRoot()
+    NgxStarsModule
   ],
   providers: [AuthService, DataBaseConnService],
   bootstrap: [AppComponent]

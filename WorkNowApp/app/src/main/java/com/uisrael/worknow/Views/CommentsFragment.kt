@@ -2,6 +2,10 @@ package com.uisrael.worknow.Views
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
+import android.net.NetworkRequest
+import android.os.Build
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -9,6 +13,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.isVisible
 import androidx.core.widget.addTextChangedListener
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
@@ -18,6 +24,8 @@ import com.uisrael.worknow.Model.Data.ComentariosData
 import com.uisrael.worknow.R
 import com.uisrael.worknow.ViewModel.CommentsViewModel
 import com.uisrael.worknow.Views.Adapters.CommentsOfferListAdapter
+import com.uisrael.worknow.Views.Utilities.EventsNetwork
+import com.uisrael.worknow.Views.Utilities.Utilitity
 import kotlinx.android.synthetic.main.fragment_comments.*
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
@@ -31,6 +39,9 @@ class CommentsFragment (
     var isMensajeTypedComment : Boolean = false
     private lateinit var adapterComments: CommentsOfferListAdapter
     private var listAdapter: ArrayList<ComentariosData> = arrayListOf()
+
+    private var manager: ConnectivityManager? = null
+    private lateinit var eventsNetwork: EventsNetwork
 
     companion object {
         fun newInstance(
@@ -68,6 +79,18 @@ class CommentsFragment (
                 }
             })
         }
+
+        manager = activity?.getSystemService(AppCompatActivity.CONNECTIVITY_SERVICE) as ConnectivityManager?
+        eventsNetwork = context?.let { EventsNetwork(rltOfferSendComments, it) }!!
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            manager?.registerDefaultNetworkCallback(eventsNetwork)
+        }else {
+            manager?.registerNetworkCallback(
+                NetworkRequest.Builder()
+                    .addCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET).build(),
+                eventsNetwork
+            )
+        }
     }
 
     @SuppressLint("ShowToast")
@@ -83,10 +106,17 @@ class CommentsFragment (
         viewModel.viewModelScope.launch {
             if (uidPub != null) {
                 viewModel.getCommentsOffer(uidPub).collect {
-                    adapterComments.comentarios = it as ArrayList<ComentariosData>
-                    adapterComments.notifyDataSetChanged()
-                    offerCommentsList.smoothScrollToPosition(adapterComments.count -1)
-                    viewModel.setUpdateComment(uidPub,viewModel.usuarioUidData,adapterComments.comentarios)
+                    if(it.size > 0){
+                        offerCommentsList.isVisible = true
+                        rltErrorListaComentarios.isVisible = false
+                        adapterComments.comentarios = it as ArrayList<ComentariosData>
+                        adapterComments.notifyDataSetChanged()
+                        offerCommentsList.smoothScrollToPosition(adapterComments.count -1)
+                        viewModel.setUpdateComment(uidPub,viewModel.usuarioUidData,adapterComments.comentarios)
+                    }else{
+                        offerCommentsList.isVisible = false
+                        rltErrorListaComentarios.isVisible = true
+                    }
                 }
             }
         }
@@ -107,36 +137,39 @@ class CommentsFragment (
         }
 
         btnSendComments.setOnClickListener {
-            if(editTxtComments.text?.isNotEmpty() == true){
-                viewModel.viewModelScope.launch {
-                    when(viewModel.usuarioUidData){
-                        uidSolClient ->{
-                            if (uidPub != null && uidUserAcceptProf != null) {
-                                val response = viewModel.sendViewCommentOffer(uidPub, uidSolClient, uidUserAcceptProf)
-                                if (response == null){
-                                    Snackbar
-                                        .make(rltOfferComments, "Error al enviar el comentario.", Snackbar.LENGTH_SHORT)
-                                        .setAnimationMode(Snackbar.ANIMATION_MODE_SLIDE)
-                                        .setBackgroundTint(resources.getColor(R.color.black))
-                                        .show()
-                                }else{
-                                    editTxtComments.text!!.clear()
-                                    hideKeyboard()
+            val internetConnection: Boolean? = activity?.let { it1 -> Utilitity.isNetworkAvailable(it1) }
+            if (internetConnection == true){
+                if(editTxtComments.text?.isNotEmpty() == true){
+                    viewModel.viewModelScope.launch {
+                        when(viewModel.usuarioUidData){
+                            uidSolClient ->{
+                                if (uidPub != null && uidUserAcceptProf != null) {
+                                    val response = viewModel.sendViewCommentOffer(uidPub, uidSolClient, uidUserAcceptProf)
+                                    if (response == null){
+                                        Snackbar
+                                            .make(rltOfferComments, "Error al enviar el comentario.", Snackbar.LENGTH_SHORT)
+                                            .setAnimationMode(Snackbar.ANIMATION_MODE_SLIDE)
+                                            .setBackgroundTint(resources.getColor(R.color.black))
+                                            .show()
+                                    }else{
+                                        editTxtComments.text!!.clear()
+                                        hideKeyboard()
+                                    }
                                 }
                             }
-                        }
-                        uidUserAcceptProf ->{
-                            if (uidPub != null && uidSolClient != null) {
-                                val response = viewModel.sendViewCommentOffer(uidPub, uidUserAcceptProf, uidSolClient)
-                                if (response == null){
-                                    Snackbar
-                                        .make(rltOfferComments, "Error al enviar el comentario.", Snackbar.LENGTH_SHORT)
-                                        .setAnimationMode(Snackbar.ANIMATION_MODE_SLIDE)
-                                        .setBackgroundTint(resources.getColor(R.color.black))
-                                        .show()
-                                }else{
-                                    editTxtComments.text!!.clear()
-                                    hideKeyboard()
+                            uidUserAcceptProf ->{
+                                if (uidPub != null && uidSolClient != null) {
+                                    val response = viewModel.sendViewCommentOffer(uidPub, uidUserAcceptProf, uidSolClient)
+                                    if (response == null){
+                                        Snackbar
+                                            .make(rltOfferComments, "Error al enviar el comentario.", Snackbar.LENGTH_SHORT)
+                                            .setAnimationMode(Snackbar.ANIMATION_MODE_SLIDE)
+                                            .setBackgroundTint(resources.getColor(R.color.black))
+                                            .show()
+                                    }else{
+                                        editTxtComments.text!!.clear()
+                                        hideKeyboard()
+                                    }
                                 }
                             }
                         }
@@ -166,6 +199,11 @@ class CommentsFragment (
                 }
             }
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        manager?.unregisterNetworkCallback(eventsNetwork)
     }
 
 }

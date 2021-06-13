@@ -15,6 +15,7 @@ import com.uisrael.worknow.R
 import com.uisrael.worknow.ViewModel.TabsFragViewModel.DashboardViewModel
 import com.uisrael.worknow.Views.CommentsActivity
 import com.uisrael.worknow.Views.Dialogs.OfferBottomSheetFragment
+import com.uisrael.worknow.Views.Dialogs.QualificationFragment
 import com.uisrael.worknow.Views.Utilities.Utilitity
 import kotlinx.android.synthetic.main.offers_item_publish_nocalif_adapter.view.*
 import kotlinx.coroutines.flow.collect
@@ -52,22 +53,23 @@ class OfferPubNoCalifListAdapter(
             convertView.cantidadTxtOfferPubliNoCalif.text = if(publicaciones[position].soloUnaPersona) "Una sola persona" else "${publicaciones[position].cantidad} personas"
 
             if(isPubliOffer){
-
                 when (publicaciones[position].estado){
                     Utilitity.ESTADO_ACEPTADO ->{
                         convertView.btnComentsOfferPubliNoCalif.visibility = View.VISIBLE
                         convertView.estadoRefOfferPubliNoCalif.visibility = View.GONE
 
                         convertView.btnComentsOfferPubliNoCalif.setOnClickListener {
-                            if(requireActivity != null){
-                                val intent = Intent(c, CommentsActivity::class.java).apply {
-                                    putExtra("uidPub", publicaciones[position].uid)
-                                    putExtra("uidUserAcceptProf", publicaciones[position].idAceptadoProf)
-                                    putExtra("uidSolClient",  publicaciones[position].idUsuarioCli)
+                            if(Utilitity.isNetworkAvailable(c)){
+                                if(requireActivity != null){
+                                    val intent = Intent(c, CommentsActivity::class.java).apply {
+                                        putExtra("uidPub", publicaciones[position].uid)
+                                        putExtra("uidUserAcceptProf", publicaciones[position].idAceptadoProf)
+                                        putExtra("uidSolClient",  publicaciones[position].idUsuarioCli)
+                                    }
+                                    requireActivity.startActivity(intent)
+                                    requireActivity.overridePendingTransition(R.anim.anim_left_toright  ,
+                                        R.anim.anim_right_toleft)
                                 }
-                                requireActivity.startActivity(intent)
-                                requireActivity.overridePendingTransition(R.anim.anim_left_toright  ,
-                                    R.anim.anim_right_toleft)
                             }
                         }
 
@@ -92,9 +94,11 @@ class OfferPubNoCalifListAdapter(
                 }
 
                 convertView.btnVermasOfferPubliNoCalif.setOnClickListener {
-                    val offerBottomSheetFragment = OfferBottomSheetFragment(c, publicaciones[position], fromDashboard = true,
-                        fromPubAccept = false, fromPubCli = true, supportFragmentManager)
-                    offerBottomSheetFragment.show(supportFragmentManager, "ModalBottomOffer")
+                    if(Utilitity.isNetworkAvailable(c)){
+                        val offerBottomSheetFragment = OfferBottomSheetFragment(c, publicaciones[position], fromDashboard = true,
+                            fromPubAccept = false, fromPubCli = true, supportFragmentManager)
+                        offerBottomSheetFragment.show(supportFragmentManager, "ModalBottomOffer")
+                    }
                 }
 
             }else{
@@ -103,7 +107,10 @@ class OfferPubNoCalifListAdapter(
                 convertView.rltComentsVermasButtons.visibility = View.GONE
                 convertView.rltCalificarButton.visibility = View.VISIBLE
                 convertView.btnCalificarOfferPubliNoCalif.setOnClickListener {
-
+                    if(Utilitity.isNetworkAvailable(c)){
+                        val dialogCalif = QualificationFragment(publicaciones[position].idAceptadoProf,publicaciones[position].uid)
+                        dialogCalif.show(supportFragmentManager,"dialogQualification")
+                    }
                 }
             }
         }

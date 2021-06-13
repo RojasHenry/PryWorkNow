@@ -3,6 +3,7 @@ package com.uisrael.worknow.Views
 import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.DialogInterface
+import android.content.Intent
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
 import android.text.Editable
@@ -23,13 +24,17 @@ import com.uisrael.worknow.R
 import com.uisrael.worknow.ViewModel.ProfessionalViewModel
 import com.uisrael.worknow.Views.Dialogs.IResponseMapFragment
 import com.uisrael.worknow.Views.Dialogs.MapCityFragment
+import com.uisrael.worknow.Views.Dialogs.RegisterCompleteFragment
+import com.uisrael.worknow.Views.Utilities.Utilitity
 import kotlinx.android.synthetic.main.professional_fragment.*
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlin.collections.ArrayList
 
-class ProfessionalRegisterFragment(private val userGoogle: FirebaseUser?) : Fragment(), IResponseMapFragment {
+class ProfessionalRegisterFragment(private val userGoogle: FirebaseUser?,
+                                   val completeFragment: RegisterCompleteFragment?,
+                                   val registerFragment: RegisterFragment?) : Fragment(), IResponseMapFragment {
 
     private var isNombreTypedProf : Boolean = false
     private var isApellidoTypedProf : Boolean = false
@@ -46,7 +51,9 @@ class ProfessionalRegisterFragment(private val userGoogle: FirebaseUser?) : Frag
     private var categoriasList = arrayListOf<Int>()
 
     companion object {
-        fun newInstance(user: FirebaseUser?) = ProfessionalRegisterFragment(user)
+        fun newInstance(user: FirebaseUser?,
+                        completeFragment: RegisterCompleteFragment?,
+                        registerFragment: RegisterFragment?) = ProfessionalRegisterFragment(user, completeFragment, registerFragment)
     }
 
     private lateinit var viewModel: ProfessionalViewModel
@@ -438,28 +445,48 @@ class ProfessionalRegisterFragment(private val userGoogle: FirebaseUser?) : Frag
         }
 
         ciudadTxtProf.setOnClickListener {
-            context?.let { it1 -> MapCityFragment(it1, this,false,null,null) }
-                ?.show(childFragmentManager, "mapcityfragment")
+            val internetConnection: Boolean? = activity?.let { it1 -> Utilitity.isNetworkAvailable(it1) }
+            if(internetConnection == true){
+                context?.let { it1 -> MapCityFragment(it1, this,false,null,null) }
+                    ?.show(childFragmentManager, "mapcityfragment")
+            } else {
+                Snackbar
+                    .make(rltContentDatosPersonalesProf, "Sin conexión a internet, revise los ajustes de conexión para continuar.", Snackbar.LENGTH_SHORT)
+                    .setAnimationMode(Snackbar.ANIMATION_MODE_SLIDE)
+                    .setAnchorView(view)
+                    .setBackgroundTint(resources.getColor(R.color.purple_700))
+                    .show()
+            }
         }
 
         btnRegisterProf.setOnClickListener{
-            FirebaseMessaging.getInstance().token.addOnCompleteListener {
-                if (!it.isSuccessful) {
-                    Snackbar
-                        .make(
-                            rltContentDatosPersonalesProf,
-                            "Dispositivo no compatible con notificaciones.",
-                            Snackbar.LENGTH_SHORT
-                        )
-                        .setAnimationMode(Snackbar.ANIMATION_MODE_SLIDE)
-                        .setBackgroundTint(resources.getColor(R.color.black))
-                        .show()
-                    return@addOnCompleteListener
-                }
+            val internetConnection: Boolean? = activity?.let { it1 -> Utilitity.isNetworkAvailable(it1) }
+            if(internetConnection == true){
+                FirebaseMessaging.getInstance().token.addOnCompleteListener {
+                    if (!it.isSuccessful) {
+                        Snackbar
+                            .make(
+                                rltContentDatosPersonalesProf,
+                                "Dispositivo no compatible con notificaciones.",
+                                Snackbar.LENGTH_SHORT
+                            )
+                            .setAnimationMode(Snackbar.ANIMATION_MODE_SLIDE)
+                            .setBackgroundTint(resources.getColor(R.color.black))
+                            .show()
+                        return@addOnCompleteListener
+                    }
 
-                // Get new FCM registration token
-                val token = it.result
-                registerProf(userGoogle, token)
+                    // Get new FCM registration token
+                    val token = it.result
+                    registerProf(userGoogle, token)
+                }
+            } else {
+                Snackbar
+                    .make(rltContentDatosPersonalesProf, "Sin conexión a internet, revise los ajustes de conexión para continuar.", Snackbar.LENGTH_SHORT)
+                    .setAnimationMode(Snackbar.ANIMATION_MODE_SLIDE)
+                    .setAnchorView(view)
+                    .setBackgroundTint(resources.getColor(R.color.purple_700))
+                    .show()
             }
         }
 
@@ -494,15 +521,15 @@ class ProfessionalRegisterFragment(private val userGoogle: FirebaseUser?) : Frag
                                 .make(
                                     rltContentDatosPersonalesProf,
                                     "Usuario ${userGoogle.displayName} registrado exitosamente.",
-                                    Snackbar.LENGTH_INDEFINITE
+                                    Snackbar.LENGTH_SHORT
                                 )
                                 .setAnimationMode(Snackbar.ANIMATION_MODE_SLIDE)
                                 .setBackgroundTint(resources.getColor(R.color.black))
                                 .setActionTextColor(resources.getColor(R.color.purple_500))
-                                .setAction("OK") {}
                                 .show()
-                        }
-                        else{
+                            completeFragment?.dismiss()
+                            goToMenuPrincipal(Utilitity.ROL_PROFESIONAL, userGoogle.uid)
+                        } else{
                             Snackbar
                                 .make(
                                     rltContentDatosPersonalesProf,
@@ -536,28 +563,52 @@ class ProfessionalRegisterFragment(private val userGoogle: FirebaseUser?) : Frag
                         .show()
                 }
             } else {
-                val user = viewModel.registerViewProf()
-                if (user != null) {
-                    val datosProf = viewModel.registeViewProfDataUsuario(user.uid)
-                    if (datosProf != null) {
-                        val credencialesProf = viewModel.registeViewProfCredenciales(
-                            user.uid,
-                            false
-                        )
-                        if (credencialesProf != null) {
-                            val tokenCli = viewModel.registerViewProfToken(user.uid, tokenFire)
-                            if(tokenCli != null){
-                                Snackbar
-                                    .make(
-                                        rltContentDatosPersonalesProf,
-                                        "Usuario ${user.uid} registrado exitosamente.",
-                                        Snackbar.LENGTH_INDEFINITE
-                                    )
-                                    .setAnimationMode(Snackbar.ANIMATION_MODE_SLIDE)
-                                    .setBackgroundTint(resources.getColor(R.color.black))
-                                    .setActionTextColor(resources.getColor(R.color.purple_500))
-                                    .setAction("OK") {}
-                                    .show()
+                viewModel.getViewCredentialEmailUser().collect { credUser ->
+                    if (credUser == null){
+                        val user = viewModel.registerViewProf()
+                        if (user != null) {
+                            val datosProf = viewModel.registeViewProfDataUsuario(user.uid)
+                            if (datosProf != null) {
+                                val credencialesProf = viewModel.registeViewProfCredenciales(
+                                    user.uid,
+                                    false
+                                )
+                                if (credencialesProf != null) {
+                                    val tokenCli = viewModel.registerViewProfToken(user.uid, tokenFire)
+                                    if(tokenCli != null){
+                                        Snackbar
+                                            .make(
+                                                rltContentDatosPersonalesProf,
+                                                "Usuario registrado exitosamente. Por favor inicie sesión.",
+                                                Snackbar.LENGTH_SHORT
+                                            )
+                                            .setAnimationMode(Snackbar.ANIMATION_MODE_SLIDE)
+                                            .setBackgroundTint(resources.getColor(R.color.black))
+                                            .setActionTextColor(resources.getColor(R.color.purple_500))
+                                            .show()
+                                        registerFragment?.returnToLogin()
+                                    } else {
+                                        Snackbar
+                                            .make(
+                                                rltContentDatosPersonalesProf,
+                                                "Error al crear el usuario",
+                                                Snackbar.LENGTH_SHORT
+                                            )
+                                            .setAnimationMode(Snackbar.ANIMATION_MODE_SLIDE)
+                                            .setBackgroundTint(resources.getColor(R.color.black))
+                                            .show()
+                                    }
+                                } else {
+                                    Snackbar
+                                        .make(
+                                            rltContentDatosPersonalesProf,
+                                            "Error al crear el usuario",
+                                            Snackbar.LENGTH_SHORT
+                                        )
+                                        .setAnimationMode(Snackbar.ANIMATION_MODE_SLIDE)
+                                        .setBackgroundTint(resources.getColor(R.color.black))
+                                        .show()
+                                }
                             } else {
                                 Snackbar
                                     .make(
@@ -580,30 +631,28 @@ class ProfessionalRegisterFragment(private val userGoogle: FirebaseUser?) : Frag
                                 .setBackgroundTint(resources.getColor(R.color.black))
                                 .show()
                         }
-                    } else {
+                    }else{
                         Snackbar
                             .make(
                                 rltContentDatosPersonalesProf,
-                                "Error al crear el usuario",
+                                "El email ingresado ya existe",
                                 Snackbar.LENGTH_SHORT
                             )
                             .setAnimationMode(Snackbar.ANIMATION_MODE_SLIDE)
                             .setBackgroundTint(resources.getColor(R.color.black))
                             .show()
                     }
-                } else {
-                    Snackbar
-                        .make(
-                            rltContentDatosPersonalesProf,
-                            "Error al crear el usuario",
-                            Snackbar.LENGTH_SHORT
-                        )
-                        .setAnimationMode(Snackbar.ANIMATION_MODE_SLIDE)
-                        .setBackgroundTint(resources.getColor(R.color.black))
-                        .show()
                 }
             }
         }
+    }
+
+    private fun goToMenuPrincipal(rol: String, uid: String){
+        val intent = Intent(context, TabUsersActivity::class.java).apply {
+            putExtra("rolUser", rol)
+            putExtra("uid", uid)
+        }
+        startActivity(intent)
     }
 
     override fun responseMap(geocoder: String) {

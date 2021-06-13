@@ -47,6 +47,10 @@ class ProfessionalViewModel : ViewModel() {
         return authFirebaseRepository.registerUser(_usuarioCredentials.value.correo,_usuarioCredentials.value.password)?.user
     }
 
+    fun getViewCredentialEmailUser(): Flow<CredencialesData?> {
+        return modelsFirebaseRepository.getCredentialEmailUser(_usuarioCredentials.value.correo)
+    }
+
     fun registeViewProfDataUsuario(uid: String): Any? {
         _usuarioDatos.value.rol = Utilitity.ROL_PROFESIONAL
         _usuarioDatos.value.datosProf = _usuarioProfesional.value

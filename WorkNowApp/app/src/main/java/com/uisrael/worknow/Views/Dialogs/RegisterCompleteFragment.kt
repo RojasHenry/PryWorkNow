@@ -11,7 +11,6 @@ import com.google.firebase.auth.FirebaseUser
 import com.squareup.picasso.Picasso
 import com.uisrael.worknow.R
 import com.uisrael.worknow.Views.Adapters.RegisterAdapter
-import kotlinx.android.synthetic.main.calification_dialog_fragment.*
 import kotlinx.android.synthetic.main.register_complete_fragment.*
 
 class RegisterCompleteFragment(val user: FirebaseUser) : DialogFragment() {
@@ -36,13 +35,18 @@ class RegisterCompleteFragment(val user: FirebaseUser) : DialogFragment() {
                 .into(imageUsuarioCompleteRegister)
             iconUsuarioCompleteRegister.isVisible = false
         }else{
-            iconUsuarioDialogCalif.text = "${user.displayName[0]}"
+            iconUsuarioCompleteRegister.text = "${user.displayName[0]}"
         }
         tablayoutRegister.addTab(tablayoutRegister.newTab().setText("Cliente"))
         tablayoutRegister.addTab(tablayoutRegister.newTab().setText("Profesional"))
 
-        val adapterTabs = context?.let { RegisterAdapter(childFragmentManager, it,tablayoutRegister.tabCount, user) }
-        viewPagerRegister.adapter = adapterTabs
+        viewPagerRegister.adapter = RegisterAdapter(
+            childFragmentManager,
+            tablayoutRegister.tabCount,
+            user,
+            this,
+            null
+        )
 
         viewPagerRegister.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(tablayoutRegister))
 

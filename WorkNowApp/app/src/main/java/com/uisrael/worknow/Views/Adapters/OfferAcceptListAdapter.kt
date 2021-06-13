@@ -71,14 +71,16 @@ class OfferAcceptListAdapter(
                     convertView.btnVerComentsAcceptOfferList.visibility = View.VISIBLE
                     convertView.estadoRefAcceptOfferList.visibility = View.GONE
                     convertView.btnVerComentsAcceptOfferList.setOnClickListener {
-                        val intent = Intent(c, CommentsActivity::class.java).apply {
-                            putExtra("uidPub", publicaciones[position].uid)
-                            putExtra("uidUserAcceptProf", publicaciones[position].idAceptadoProf)
-                            putExtra("uidSolClient",  publicaciones[position].idUsuarioCli)
+                        if (Utilitity.isNetworkAvailable(c)){
+                            val intent = Intent(c, CommentsActivity::class.java).apply {
+                                putExtra("uidPub", publicaciones[position].uid)
+                                putExtra("uidUserAcceptProf", publicaciones[position].idAceptadoProf)
+                                putExtra("uidSolClient",  publicaciones[position].idUsuarioCli)
+                            }
+                            activity.startActivity(intent)
+                            activity.overridePendingTransition(R.anim.anim_left_toright,
+                                R.anim.anim_right_toleft)
                         }
-                        activity.startActivity(intent)
-                        activity.overridePendingTransition(R.anim.anim_left_toright,
-                            R.anim.anim_right_toleft)
                     }
 
                     dashboardViewModel.viewModelScope.launch {
@@ -96,8 +98,10 @@ class OfferAcceptListAdapter(
             }
 
             convertView.btnVermasAcceptOfferList.setOnClickListener {
-                val offerBottomSheetFragment = OfferBottomSheetFragment(c, publicaciones[position], fromDashboard = false,fromPubAccept = true, fromPubCli = false, supportFragmentManager)
-                offerBottomSheetFragment.show(supportFragmentManager, "ModalBottomOffer")
+                if (Utilitity.isNetworkAvailable(c)){
+                    val offerBottomSheetFragment = OfferBottomSheetFragment(c, publicaciones[position], fromDashboard = false,fromPubAccept = true, fromPubCli = false, supportFragmentManager)
+                    offerBottomSheetFragment.show(supportFragmentManager, "ModalBottomOffer")
+                }
             }
 
         }

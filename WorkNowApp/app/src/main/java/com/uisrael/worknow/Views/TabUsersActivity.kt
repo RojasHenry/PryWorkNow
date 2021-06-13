@@ -3,6 +3,10 @@ package com.uisrael.worknow.Views
 import android.content.Context
 import android.content.ContextWrapper
 import android.graphics.BitmapFactory
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
+import android.net.NetworkRequest
+import android.os.Build
 import android.os.Bundle
 import android.util.Base64
 import android.view.MenuItem
@@ -24,22 +28,21 @@ import androidx.navigation.ActivityNavigator
 import androidx.viewpager.widget.ViewPager.OnPageChangeListener
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.navigation.NavigationView
-import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.messaging.FirebaseMessaging
 import com.squareup.picasso.Picasso
 import com.uisrael.worknow.R
 import com.uisrael.worknow.ViewModel.TabUsersViewModel
 import com.uisrael.worknow.Views.Adapters.SectionsPagerAdapter
+import com.uisrael.worknow.Views.Utilities.EventsNetwork
 import com.uisrael.worknow.Views.Utilities.Utilitity
 import kotlinx.android.synthetic.main.activity_tab_users.*
-import kotlinx.android.synthetic.main.client_fragment.*
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 
 class TabUsersActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
-
+    private var manager: ConnectivityManager? = null
     private lateinit var drawerLayout: DrawerLayout
     private var isProf = false
     private lateinit var navView: BottomNavigationView
@@ -48,6 +51,7 @@ class TabUsersActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
     private lateinit var uidUsuario: String
     private lateinit var pagerAdapter: SectionsPagerAdapter
     private lateinit var navDrawableLayout: NavigationView
+    private lateinit var eventsNetwork: EventsNetwork
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -135,6 +139,19 @@ class TabUsersActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
         Utilitity.showLoading(this,"Cargando...",supportFragmentManager)
 
         getCurrentUser()
+
+        manager = getSystemService(CONNECTIVITY_SERVICE) as ConnectivityManager?
+        eventsNetwork = EventsNetwork(nav_bottom_view,this)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            manager?.registerDefaultNetworkCallback(eventsNetwork)
+        }else {
+            manager?.registerNetworkCallback(
+                NetworkRequest.Builder()
+                    .addCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET).build(),
+                eventsNetwork
+            )
+        }
+
     }
 
     private fun getCurrentUser() {
@@ -185,11 +202,6 @@ class TabUsersActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
 
                     FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
                         if(!task.isSuccessful){
-                            Snackbar
-                                .make(rltContentDatosPersonalesCli, "Dispositivo no compatible con notificaciones.", Snackbar.LENGTH_SHORT)
-                                .setAnimationMode(Snackbar.ANIMATION_MODE_SLIDE)
-                                .setBackgroundTint(resources.getColor(R.color.black))
-                                .show()
                             return@addOnCompleteListener
                         }
 
@@ -248,16 +260,6 @@ class TabUsersActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
 
     }
 
-    private fun hideBottomNav() {
-        navView.visibility = View.GONE
-
-    }
-
-    fun lockDrawer() {
-        drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
-    }
-
-
     fun unlockDrawer() {
         drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
     }
@@ -286,29 +288,36 @@ class TabUsersActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         when (item.itemId){
             R.id.navigation_logout -> {
-                Utilitity().showDialog(this,"Aviso", "Esta seguro que desea cerrar la sesión actual?",R.drawable.ic_warning_24)
-                    ?.setPositiveButton("Aceptar"){ dialog, _ ->
-                        lifecycleScope.launch {
-                            viewModel.logOutUsuario()
-                            finish()
+                if (Utilitity.isNetworkAvailable(this)){
+                    Utilitity().showDialog(this,"Aviso", "Esta seguro que desea cerrar la sesión actual?",R.drawable.ic_warning_24)
+                        ?.setPositiveButton("Aceptar"){ dialog, _ ->
+                            lifecycleScope.launch {
+                                viewModel.logOutUsuario()
+                                finish()
+                            }
+                            dialog.dismiss()
                         }
-                        dialog.dismiss()
-                    }
-                    ?.setNegativeButton("Cancelar") { dialog, _ -> dialog.dismiss() }
-                    ?.show()
+                        ?.setNegativeButton("Cancelar") { dialog, _ -> dialog.dismiss() }
+                        ?.show()
+                }
             }
+
             R.id.navigation_profile -> {
-                viewModel.viewModelScope.launch {
-                    viewModel.getCurrentUser(uidUsuario, true).collect {
-                        val dialogProfileUserFragment = it?.let { it1 -> ProfileUserFragment(uidUsuario, it1) }
-                        dialogProfileUserFragment?.show(supportFragmentManager,"dialogProfileUser")
+                if (Utilitity.isNetworkAvailable(this)){
+                    viewModel.viewModelScope.launch {
+                        viewModel.getCurrentUser(uidUsuario, true).collect {
+                            val dialogProfileUserFragment = it?.let { it1 -> ProfileUserFragment(uidUsuario, it1) }
+                            dialogProfileUserFragment?.show(supportFragmentManager,"dialogProfileUser")
+                        }
                     }
                 }
             }
 
             R.id.navigation_history_offer_cli -> {
-                val dialogHistoryOffersFragment = HistoryOffersFragment()
-                dialogHistoryOffersFragment.show(supportFragmentManager,"dialogHistoryOffers")
+                if (Utilitity.isNetworkAvailable(this)){
+                    val dialogHistoryOffersFragment = HistoryOffersFragment()
+                    dialogHistoryOffersFragment.show(supportFragmentManager,"dialogHistoryOffers")
+                }
             }
         }
         drawerLayout.closeDrawers();
@@ -327,8 +336,14 @@ class TabUsersActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
     override fun finish() {
         super.finish()
         ActivityNavigator.applyPopAnimationsToPendingTransition(this)
-
     }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        manager?.unregisterNetworkCallback(eventsNetwork)
+    }
+
+
 
 
 }

@@ -1,7 +1,6 @@
 package com.uisrael.worknow.Views
 
 import android.annotation.SuppressLint
-import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
@@ -22,13 +21,17 @@ import com.uisrael.worknow.R
 import com.uisrael.worknow.ViewModel.ClientViewModel
 import com.uisrael.worknow.Views.Dialogs.IResponseMapFragment
 import com.uisrael.worknow.Views.Dialogs.MapCityFragment
+import com.uisrael.worknow.Views.Dialogs.RegisterCompleteFragment
+import com.uisrael.worknow.Views.Utilities.Utilitity
 import kotlinx.android.synthetic.main.client_fragment.*
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 
-class ClientRegisterFragment(private val userGoogle: FirebaseUser?) : Fragment(), IResponseMapFragment {
-
+class ClientRegisterFragment(
+    private val userGoogle: FirebaseUser?,
+    val completeFragment: RegisterCompleteFragment?,
+    val registerFragment: RegisterFragment?) : Fragment(), IResponseMapFragment {
     var isNombreTypedCli : Boolean = false
     var isApellidoTypedCli : Boolean = false
     var isCiudadTypedCli : Boolean = false
@@ -37,7 +40,9 @@ class ClientRegisterFragment(private val userGoogle: FirebaseUser?) : Fragment()
     var isPaswordTypedCli : Boolean = false
 
     companion object {
-        fun newInstance(user: FirebaseUser?) = ClientRegisterFragment(user)
+        fun newInstance(user: FirebaseUser?,
+                        completeFragment: RegisterCompleteFragment?,
+                        registerFragment: RegisterFragment?) = ClientRegisterFragment(user,completeFragment,registerFragment)
     }
 
     private lateinit var viewModel: ClientViewModel
@@ -266,26 +271,45 @@ class ClientRegisterFragment(private val userGoogle: FirebaseUser?) : Fragment()
         }
 
         ciudadTxtCli.setOnClickListener {
-            context?.let { it1 -> MapCityFragment(it1, this,false,null,null) }
-                ?.show(childFragmentManager, "mapcityfragment")
+            val internetConnection: Boolean? = activity?.let { it1 -> Utilitity.isNetworkAvailable(it1) }
+            if(internetConnection == true){
+                context?.let { it1 -> MapCityFragment(it1, this,false,null,null) }
+                    ?.show(childFragmentManager, "mapcityfragment")
+            } else {
+                Snackbar
+                    .make(rltContentDatosPersonalesCli, "Sin conexión a internet, revise los ajustes de conexión para continuar.", Snackbar.LENGTH_SHORT)
+                    .setAnimationMode(Snackbar.ANIMATION_MODE_SLIDE)
+                    .setAnchorView(view)
+                    .setBackgroundTint(resources.getColor(R.color.purple_700))
+                    .show()
+            }
         }
 
         btnRegisterCli.setOnClickListener{
-            FirebaseMessaging.getInstance().token.addOnCompleteListener {
-                if(!it.isSuccessful){
-                    Snackbar
-                        .make(rltContentDatosPersonalesCli, "Dispositivo no compatible con notificaciones.", Snackbar.LENGTH_SHORT)
-                        .setAnimationMode(Snackbar.ANIMATION_MODE_SLIDE)
-                        .setBackgroundTint(resources.getColor(R.color.black))
-                        .show()
-                    return@addOnCompleteListener
+            val internetConnection: Boolean? = activity?.let { it1 -> Utilitity.isNetworkAvailable(it1) }
+            if(internetConnection == true){
+                FirebaseMessaging.getInstance().token.addOnCompleteListener {
+                    if(!it.isSuccessful){
+                        Snackbar
+                            .make(rltContentDatosPersonalesCli, "Dispositivo no compatible con notificaciones.", Snackbar.LENGTH_SHORT)
+                            .setAnimationMode(Snackbar.ANIMATION_MODE_SLIDE)
+                            .setBackgroundTint(resources.getColor(R.color.black))
+                            .show()
+                        return@addOnCompleteListener
+                    }
+
+                    // Get new FCM registration token
+                    val token = it.result
+                    registerCli(userGoogle, token)
                 }
-
-                // Get new FCM registration token
-                val token = it.result
-                registerCli(userGoogle, token)
+            } else {
+                Snackbar
+                    .make(rltContentDatosPersonalesCli, "Sin conexión a internet, revise los ajustes de conexión para continuar.", Snackbar.LENGTH_SHORT)
+                    .setAnimationMode(Snackbar.ANIMATION_MODE_SLIDE)
+                    .setAnchorView(view)
+                    .setBackgroundTint(resources.getColor(R.color.purple_700))
+                    .show()
             }
-
         }
 
         if(userGoogle != null){
@@ -320,13 +344,14 @@ class ClientRegisterFragment(private val userGoogle: FirebaseUser?) : Fragment()
                                 .make(
                                     rltContentDatosPersonalesCli,
                                     "Usuario ${userGoogle.displayName} registrado exitosamente.",
-                                    Snackbar.LENGTH_INDEFINITE
+                                    Snackbar.LENGTH_SHORT
                                 )
                                 .setAnimationMode(Snackbar.ANIMATION_MODE_SLIDE)
                                 .setBackgroundTint(resources.getColor(R.color.black))
                                 .setActionTextColor(resources.getColor(R.color.purple_500))
-                                .setAction("OK") {}
                                 .show()
+                            completeFragment?.dismiss()
+                            goToMenuPrincipal(Utilitity.ROL_CLIENTE, userGoogle.uid)
                         } else {
                             Snackbar
                                 .make(
@@ -361,29 +386,53 @@ class ClientRegisterFragment(private val userGoogle: FirebaseUser?) : Fragment()
                         .show()
                 }
             } else {
-                val user = viewModel.registerViewCli()
-                if (user != null) {
-                    val datosProf = viewModel.registerViewCliDataUsuario(user.uid)
-                    if (datosProf != null) {
-                        val credencialesProf = viewModel.registerViewCliCredenciales(
-                            user.uid,
-                            false
-                        )
-                        if (credencialesProf != null) {
-                            val tokenCli = viewModel.registerViewCliToken(user.uid, tokenFire)
-                            if(tokenCli != null){
-                                Snackbar
-                                    .make(
-                                        rltContentDatosPersonalesCli,
-                                        "Usuario ${user.uid} registrado exitosamente.",
-                                        Snackbar.LENGTH_INDEFINITE
-                                    )
-                                    .setAnimationMode(Snackbar.ANIMATION_MODE_SLIDE)
-                                    .setBackgroundTint(resources.getColor(R.color.black))
-                                    .setActionTextColor(resources.getColor(R.color.purple_500))
-                                    .setAction("OK") {}
-                                    .show()
-                            }else{
+                viewModel.getViewCredentialEmailUser().collect { credUser ->
+                    if (credUser == null){
+                        val user = viewModel.registerViewCli()
+                        if (user != null) {
+                            val datosProf = viewModel.registerViewCliDataUsuario(user.uid)
+                            if (datosProf != null) {
+                                val credencialesProf = viewModel.registerViewCliCredenciales(
+                                    user.uid,
+                                    false
+                                )
+                                if (credencialesProf != null) {
+                                    val tokenCli = viewModel.registerViewCliToken(user.uid, tokenFire)
+                                    if(tokenCli != null){
+                                        Snackbar
+                                            .make(
+                                                rltContentDatosPersonalesCli,
+                                                "Usuario registrado exitosamente. Por favor inicie sesión.",
+                                                Snackbar.LENGTH_SHORT
+                                            )
+                                            .setAnimationMode(Snackbar.ANIMATION_MODE_SLIDE)
+                                            .setBackgroundTint(resources.getColor(R.color.black))
+                                            .setActionTextColor(resources.getColor(R.color.purple_500))
+                                            .show()
+                                        registerFragment?.returnToLogin()
+                                    }else{
+                                        Snackbar
+                                            .make(
+                                                rltContentDatosPersonalesCli,
+                                                "Error al crear el usuario.",
+                                                Snackbar.LENGTH_SHORT
+                                            )
+                                            .setAnimationMode(Snackbar.ANIMATION_MODE_SLIDE)
+                                            .setBackgroundTint(resources.getColor(R.color.black))
+                                            .show()
+                                    }
+                                } else {
+                                    Snackbar
+                                        .make(
+                                            rltContentDatosPersonalesCli,
+                                            "Error al crear el usuario.",
+                                            Snackbar.LENGTH_SHORT
+                                        )
+                                        .setAnimationMode(Snackbar.ANIMATION_MODE_SLIDE)
+                                        .setBackgroundTint(resources.getColor(R.color.black))
+                                        .show()
+                                }
+                            } else {
                                 Snackbar
                                     .make(
                                         rltContentDatosPersonalesCli,
@@ -405,30 +454,28 @@ class ClientRegisterFragment(private val userGoogle: FirebaseUser?) : Fragment()
                                 .setBackgroundTint(resources.getColor(R.color.black))
                                 .show()
                         }
-                    } else {
+                    }else{
                         Snackbar
                             .make(
                                 rltContentDatosPersonalesCli,
-                                "Error al crear el usuario.",
+                                "El email ingresado ya existe",
                                 Snackbar.LENGTH_SHORT
                             )
                             .setAnimationMode(Snackbar.ANIMATION_MODE_SLIDE)
                             .setBackgroundTint(resources.getColor(R.color.black))
                             .show()
                     }
-                } else {
-                    Snackbar
-                        .make(
-                            rltContentDatosPersonalesCli,
-                            "Error al crear el usuario.",
-                            Snackbar.LENGTH_SHORT
-                        )
-                        .setAnimationMode(Snackbar.ANIMATION_MODE_SLIDE)
-                        .setBackgroundTint(resources.getColor(R.color.black))
-                        .show()
                 }
             }
         }
+    }
+
+    private fun goToMenuPrincipal(rol: String, uid: String){
+        val intent = Intent(context, TabUsersActivity::class.java).apply {
+            putExtra("rolUser", rol)
+            putExtra("uid", uid)
+        }
+        startActivity(intent)
     }
 
     override fun responseMap(geocoder: String) {

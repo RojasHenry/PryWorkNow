@@ -1,5 +1,6 @@
 package com.uisrael.worknow.Views.Adapters
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.text.Editable
 import android.view.LayoutInflater
@@ -7,16 +8,22 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
 import androidx.fragment.app.FragmentManager
+import androidx.lifecycle.viewModelScope
+import com.google.android.material.snackbar.Snackbar
 import com.uisrael.worknow.Model.Data.PublicationsData
 import com.uisrael.worknow.R
+import com.uisrael.worknow.ViewModel.HistoryOffersViewModel
 import com.uisrael.worknow.Views.Dialogs.OfferBottomSheetFragment
+import com.uisrael.worknow.Views.Utilities.Utilitity
 import kotlinx.android.synthetic.main.offers_item_historic_adapter.view.*
+import kotlinx.coroutines.launch
 
-class OfferHistoricListAdapter (
+class OfferHistoricListAdapter(
     private var c: Context,
     var publicaciones: ArrayList<PublicationsData>,
-    var supportFragmentManager: FragmentManager
-    ) : BaseAdapter() {
+    var supportFragmentManager: FragmentManager,
+    val viewModel: HistoryOffersViewModel
+) : BaseAdapter() {
 
     override fun getCount(): Int {
         return publicaciones.size
@@ -30,6 +37,7 @@ class OfferHistoricListAdapter (
         return position.toLong()
     }
 
+    @SuppressLint("ShowToast")
     override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View? {
         val convertView: View? = LayoutInflater.from(c).inflate(R.layout.offers_item_historic_adapter, null)
 
@@ -54,12 +62,32 @@ class OfferHistoricListAdapter (
             convertView.cantidadTxtHistoricOfferList.text = if(publicaciones[position].soloUnaPersona) "Una sola persona" else "${publicaciones[position].cantidad} personas"
 
             convertView.btnVolverOfferHistoricOfferList.setOnClickListener {
-
+                if(Utilitity.isNetworkAvailable(c)){
+                    Utilitity().showDialog(c,"Aviso", "Esta seguro que desea volver a publicar la  oferta seleccionada.",R.drawable.ic_warning_24)
+                        ?.setPositiveButton("Aceptar"){ dialog, _ ->
+                            viewModel.viewModelScope.launch {
+                                val uid:String = viewModel.registerViewAgainOffer(publicaciones[position]) as String
+                                viewModel.registerViewAgainOfferPictures(publicaciones[position].uid,uid)
+                                if (parent != null) {
+                                    Snackbar
+                                        .make(parent, "La oferta solicitada fue nuevamente publicada exitosamente.", Snackbar.LENGTH_SHORT)
+                                        .setAnimationMode(Snackbar.ANIMATION_MODE_SLIDE)
+                                        .setBackgroundTint(c.resources.getColor(R.color.black))
+                                        .show()
+                                }
+                            }
+                            dialog.dismiss()
+                        }
+                        ?.setNegativeButton("Cancelar") { dialog, _ -> dialog.dismiss() }
+                        ?.show()
+                }
             }
 
             convertView.btnVermasHistoricOfferList.setOnClickListener {
-                val offerBottomSheetFragment = OfferBottomSheetFragment(c, publicaciones[position], fromDashboard = true,fromPubAccept = false, fromPubCli = false, supportFragmentManager)
-                offerBottomSheetFragment.show(supportFragmentManager, "ModalBottomOffer")
+                if(Utilitity.isNetworkAvailable(c)){
+                    val offerBottomSheetFragment = OfferBottomSheetFragment(c, publicaciones[position], fromDashboard = true,fromPubAccept = false, fromPubCli = false, supportFragmentManager)
+                    offerBottomSheetFragment.show(supportFragmentManager, "ModalBottomOffer")
+                }
             }
         }
         return convertView

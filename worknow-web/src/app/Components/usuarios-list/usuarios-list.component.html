@@ -22,7 +22,7 @@
         <mat-card-content class="dashboard-card-content">
 
           <div mat-card-avatar class="circle" [ngStyle]="{'background-color':  circleColor }">
-            <img *ngIf="usuario.foto" src="{{'data:image/jpg;base64,' + usuario.foto}}">
+            <img *ngIf="usuario.foto" src="{{getFotoUsuario(usuario.foto)}}">
 
             <div *ngIf="!usuario.foto" class="initials">
               {{getInitials(usuario)}}
@@ -64,7 +64,7 @@
               Ciudad: 
             </h3>
             <p class="container-element">
-              {{usuario.ciudad}}
+              <a href="javascript:void(0)" (click)="goToMaps(usuario.ciudad)" >{{getUbicacion(usuario.ciudad)}}</a>
             </p>
           </div>
 
@@ -90,19 +90,20 @@
             </p>
           </div>
 
-          <div class="flex-container" *ngIf="usuario.datosProf.categorias">
-            <h3 class="container-element">
-              Categorias:
-            </h3>
-            <div class="container-element" *ngFor="let categoria of usuario.datosProf.categorias" >
+          <h3 *ngIf="usuario.datosProf.categorias" class="container-element">Categorias:</h3>
+
+          <mat-divider *ngIf="usuario.datosProf.categorias"></mat-divider>
+
+          <div *ngIf="usuario.datosProf.categorias" fxLayout="row wrap" fxLayoutGap="16px grid">
+            <div fxFlex="33%" fxFlex.xs="50%" fxFlex.sm="50%" *ngFor="let categoria of usuario.datosProf.categorias" >
               {{getNombreCategoria(categoria)}}
             </div>
           </div>
 
-          <div *ngIf="usuario.datosProf.categorias">
-            <h2 style="font-weight: bold; font-size: 50px; margin-top: 20px;" *ngIf="usuario.datosProf.categorias">2.5</h2>
+          <div *ngIf="usuario.datosProf.calificaciones">
+            <h2 style="font-weight: bold; font-size: 50px; margin-top: 20px;" *ngIf="usuario.datosProf.categorias">{{getCalificaciones(usuario.datosProf.calificaciones)}}</h2>
             <div *ngIf="usuario.rol == 'Profesional'" class="center-stars">
-              <ngx-stars [readonly]="true" [size]="1" [color]="'#ffcc00'"  [maxStars]="5" [initialStars]="2.5" class="inner-element" ></ngx-stars>
+              <ngx-stars [readonly]="true" [size]="1" [color]="'#ffcc00'"  [maxStars]="5" [initialStars]="getCalificaciones(usuario.datosProf.calificaciones)" class="inner-element" ></ngx-stars>
             </div>
           </div>
          

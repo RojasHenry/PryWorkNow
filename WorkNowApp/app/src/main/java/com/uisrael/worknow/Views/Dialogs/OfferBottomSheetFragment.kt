@@ -113,9 +113,12 @@ class OfferBottomSheetFragment(
             convertView.ubicacionTxtOfferListDialog.text = "${nameLocation}; (${locationView})"
 
             convertView.ubicacionTxtOfferListDialog.setOnClickListener {
-                MapCityFragment(c, null,true,
-                    LatLng(locationView.split(",")[0].toDouble(),locationView.split(",")[1].toDouble()),nameLocation)
-                    .show(supportFragmentManager,"mapcityfragment")
+                val internetConnection: Boolean? = activity?.let { it1 -> Utilitity.isNetworkAvailable(it1) }
+                if (internetConnection == true){
+                    MapCityFragment(c, null,true,
+                        LatLng(locationView.split(",")[0].toDouble(),locationView.split(",")[1].toDouble()),nameLocation)
+                        .show(supportFragmentManager,"mapcityfragment")
+                }
             }
 
             viewModel.viewModelScope.launch {
@@ -166,35 +169,37 @@ class OfferBottomSheetFragment(
             if(publicationsData.estado == Utilitity.ESTADO_PUBLICADO){
                 convertView.cardViewButtonCancelOfferDialog.visibility = if (fromPubCli) View.VISIBLE else View.GONE
                 convertView.btnCancelOffer.setOnClickListener {
-                    Utilitity().showDialog(c,"Aviso", "Esta seguro que desea 'cancelar' la oferta actual?",R.drawable.ic_warning_24)
-                        ?.setPositiveButton("Aceptar") { dialog, _ ->
-                            viewModel.getUidProfesional().observe(viewLifecycleOwner, {
-                                viewModel.viewModelScope.launch {
-                                    val response = viewModel.setOfferViewUpdateEstado(publicationsData.uid,Utilitity.ESTADO_CANCELADO)
-                                    if (response != null){
-                                        dismiss()
-                                        Snackbar
-                                            .make(convertView,  "Solicitud cancelada.", Snackbar.LENGTH_INDEFINITE)
-                                            .setAnimationMode(Snackbar.ANIMATION_MODE_SLIDE)
-                                            .setBackgroundTint(c.resources.getColor(R.color.black))
-                                            .setActionTextColor(c.resources.getColor(R.color.purple_500))
-                                            .setAction("OK"){}
-                                            .show()
-                                    }else{
-                                        Snackbar
-                                            .make(convertView, "Error al cancelar la solicitud.", Snackbar.LENGTH_SHORT)
-                                            .setAnimationMode(Snackbar.ANIMATION_MODE_SLIDE)
-                                            .setBackgroundTint(c.resources.getColor(R.color.black))
-                                            .show()
+                    val internetConnection: Boolean? = activity?.let { it1 -> Utilitity.isNetworkAvailable(it1) }
+                    if (internetConnection == true){
+                        Utilitity().showDialog(c,"Aviso", "Esta seguro que desea 'cancelar' la oferta actual?",R.drawable.ic_warning_24)
+                            ?.setPositiveButton("Aceptar") { dialog, _ ->
+                                viewModel.getUidProfesional().observe(viewLifecycleOwner, {
+                                    viewModel.viewModelScope.launch {
+                                        val response = viewModel.setOfferViewUpdateEstado(publicationsData.uid,Utilitity.ESTADO_CANCELADO)
+                                        if (response != null){
+                                            dismiss()
+                                            Snackbar
+                                                .make(convertView,  "Solicitud cancelada.", Snackbar.LENGTH_INDEFINITE)
+                                                .setAnimationMode(Snackbar.ANIMATION_MODE_SLIDE)
+                                                .setBackgroundTint(c.resources.getColor(R.color.black))
+                                                .setActionTextColor(c.resources.getColor(R.color.purple_500))
+                                                .setAction("OK"){}
+                                                .show()
+                                        }else{
+                                            Snackbar
+                                                .make(convertView, "Error al cancelar la solicitud.", Snackbar.LENGTH_SHORT)
+                                                .setAnimationMode(Snackbar.ANIMATION_MODE_SLIDE)
+                                                .setBackgroundTint(c.resources.getColor(R.color.black))
+                                                .show()
+                                        }
                                     }
-                                }
 
-                            })
-                            dialog.dismiss()
-                        }
-                        ?.setNegativeButton("Cancelar") { dialog, _ -> dialog.dismiss() }
-                        ?.show()
-
+                                })
+                                dialog.dismiss()
+                            }
+                            ?.setNegativeButton("Cancelar") { dialog, _ -> dialog.dismiss() }
+                            ?.show()
+                    }
                 }
             }
 
@@ -206,22 +211,25 @@ class OfferBottomSheetFragment(
                 if(!fromDashboard){
 
                     convertView.btnAceptarOfferDialog.setOnClickListener {
-                        viewModel.getUidProfesional().observe(viewLifecycleOwner, {
-                            viewModel.viewModelScope.launch {
-                                Utilitity.showLoading(c,"Cargando, por favor espere...",supportFragmentManager)
-                                val response = viewModel.setOfferViewAcceptProf(it.uid,publicationsData.uid,Utilitity.ESTADO_ACEPTADO)
-                                if (response != null){
-                                    dismiss()
-                                }else{
-                                    Snackbar
-                                        .make(convertView, "Error al aceptar la solicitud actual.", Snackbar.LENGTH_SHORT)
-                                        .setAnimationMode(Snackbar.ANIMATION_MODE_SLIDE)
-                                        .setBackgroundTint(c.resources.getColor(R.color.black))
-                                        .show()
+                        val internetConnection: Boolean? = activity?.let { it1 -> Utilitity.isNetworkAvailable(it1) }
+                        if (internetConnection == true){
+                            viewModel.getUidProfesional().observe(viewLifecycleOwner, {
+                                viewModel.viewModelScope.launch {
+                                    Utilitity.showLoading(c,"Cargando, por favor espere...",supportFragmentManager)
+                                    val response = viewModel.setOfferViewAcceptProf(it.uid,publicationsData.uid,Utilitity.ESTADO_ACEPTADO)
+                                    if (response != null){
+                                        dismiss()
+                                    }else{
+                                        Snackbar
+                                            .make(convertView, "Error al aceptar la solicitud actual.", Snackbar.LENGTH_SHORT)
+                                            .setAnimationMode(Snackbar.ANIMATION_MODE_SLIDE)
+                                            .setBackgroundTint(c.resources.getColor(R.color.black))
+                                            .show()
+                                    }
                                 }
-                            }
 
-                        })
+                            })
+                        }
                     }
 
                     convertView.btnCancelOfferDialog.setOnClickListener {

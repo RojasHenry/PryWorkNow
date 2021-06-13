@@ -118,14 +118,13 @@ class LoginFragment : Fragment() {
                         if (activity?.let { ActivityCompat.shouldShowRequestPermissionRationale(it, Manifest.permission.CAMERA) } == true ||
                                 activity?.let { ActivityCompat.shouldShowRequestPermissionRationale(it, Manifest.permission.WRITE_EXTERNAL_STORAGE) } == true ||
                                 activity?.let { ActivityCompat.shouldShowRequestPermissionRationale(it, Manifest.permission.READ_EXTERNAL_STORAGE) } == true) {
-                            showDialogOK("Esta aplicación requiere el uso de cámara y el almacenamiento del dispositivo.",
-                                    DialogInterface.OnClickListener { dialog, which ->
-                                        when (which) {
-                                            DialogInterface.BUTTON_POSITIVE -> validatePermissions ()
-                                            DialogInterface.BUTTON_NEGATIVE -> {
-                                            }
-                                        }
-                                    })
+                            showDialogOK("Esta aplicación requiere el uso de cámara y el almacenamiento del dispositivo.") { _, which ->
+                                when (which) {
+                                    DialogInterface.BUTTON_POSITIVE -> validatePermissions()
+                                    DialogInterface.BUTTON_NEGATIVE -> {
+                                    }
+                                }
+                            }
                         } else {
                             Snackbar
                                 .make(rltContenedorViewLogin, "Habilite los permisos solicitados en configuraciones.", Snackbar.LENGTH_INDEFINITE)
@@ -155,22 +154,29 @@ class LoginFragment : Fragment() {
 
         lifecycleScope.launch {
             viewModel.validateViewUserLogged().observe(viewLifecycleOwner, {
-                if (it) {
-                    context?.let { it1 -> Utilitity.showLoading(it1,"Iniciando sesión, por favor espere...",childFragmentManager) }
-                    viewModel.getViewUserLogged().observe(viewLifecycleOwner, { userFire ->
-                        lifecycleScope.launch {
-                            val uid = userFire.uid
-                            viewModel.getCurrentUser(uid).collect { user->
-                                if (user != null) {
-                                    goToMenuPrincipal(user.rol, uid)
-                                }else{
-                                    Utilitity.dissMissLoading(0)
-                                    val dialog = RegisterCompleteFragment(userFire)
-                                    dialog.show(childFragmentManager,"registerComplete")
+                val internetConnection: Boolean? = activity?.let { it1 -> Utilitity.isNetworkAvailable(it1) }
+                if (internetConnection == true){
+                    if (it) {
+                        viewModel.getViewUserLogged().observe(viewLifecycleOwner, { userFire ->
+                            lifecycleScope.launch {
+                                val uid = userFire.uid
+                                viewModel.getCurrentUser(uid).collect { user->
+                                    if (user != null) {
+                                        viewModel.getViewCredentialUser(uid).collect { cred ->
+                                            if(cred?.estado == true){
+                                                context?.let { it1 -> Utilitity.showLoading(it1,"Iniciando sesión, por favor espere...",childFragmentManager) }
+                                                goToMenuPrincipal(user.rol, uid)
+                                            }
+                                        }
+                                    }/*else{
+                                        Utilitity.dissMissLoading(0)
+                                        val dialog = RegisterCompleteFragment(userFire)
+                                        dialog.show(childFragmentManager,"registerComplete")
+                                    }*/
                                 }
                             }
-                        }
-                    })
+                        })
+                    }
                 }
             })
         }
@@ -245,40 +251,62 @@ class LoginFragment : Fragment() {
         }
 
         btnLogin.setOnClickListener {
-            if (correoTxt.length() > 0 && passwordTxt.length() > 0) {
-                context?.let { it1 -> Utilitity.showLoading(it1,"Iniciando sesión, por favor espere...",childFragmentManager) }
-                viewModel.viewModelScope.launch {
-                    val user = viewModel.loginViewUser(
+            val internetConnection: Boolean? = activity?.let { it1 -> Utilitity.isNetworkAvailable(it1) }
+            if (internetConnection == true){
+                if (correoTxt.length() > 0 && passwordTxt.length() > 0) {
+                    context?.let { it1 -> Utilitity.showLoading(it1,"Iniciando sesión, por favor espere...",childFragmentManager) }
+                    viewModel.viewModelScope.launch {
+                        val user = viewModel.loginViewUser(
                             correoTxt.text.toString(),
                             passwordTxt.text.toString()
-                    )
-                    if (user != null) {
-                        viewModel.getCurrentUser(user.uid).collect {
-                            if (it != null) {
-                                goToMenuPrincipal(it.rol,user.uid)
-                            }else{
-                                Snackbar
-                                    .make(rltContenedorViewLogin, "Error al iniciar sesión.", Snackbar.LENGTH_SHORT)
-                                    .setAnimationMode(Snackbar.ANIMATION_MODE_SLIDE)
-                                    .setBackgroundTint(resources.getColor(R.color.black))
-                                    .show()
-                                Utilitity.dissMissLoading(0)
+                        )
+                        if (user != null) {
+                            viewModel.getViewCredentialUser(user.uid).collect { cred ->
+                                if(cred?.estado == true){
+                                    viewModel.getCurrentUser(user.uid).collect {
+                                        if (it != null) {
+                                            goToMenuPrincipal(it.rol,user.uid)
+                                        }else{
+                                            Snackbar
+                                                .make(rltContenedorViewLogin, "Error al iniciar sesión.", Snackbar.LENGTH_SHORT)
+                                                .setAnimationMode(Snackbar.ANIMATION_MODE_SLIDE)
+                                                .setBackgroundTint(resources.getColor(R.color.black))
+                                                .show()
+                                            Utilitity.dissMissLoading(0)
+                                        }
+                                    }
+                                }else{
+                                    Snackbar
+                                        .make(rltContenedorViewLogin, "Su usuario se encuentra bloqueado.", Snackbar.LENGTH_SHORT)
+                                        .setAnimationMode(Snackbar.ANIMATION_MODE_SLIDE)
+                                        .setBackgroundTint(resources.getColor(R.color.black))
+                                        .show()
+                                    Utilitity.dissMissLoading(0)
+                                }
                             }
+
+                        }else{
+                            Snackbar
+                                .make(rltContenedorViewLogin, "Error al iniciar sesión.", Snackbar.LENGTH_SHORT)
+                                .setAnimationMode(Snackbar.ANIMATION_MODE_SLIDE)
+                                .setBackgroundTint(resources.getColor(R.color.black))
+                                .show()
+                            Utilitity.dissMissLoading(0)
                         }
-                    }else{
-                        Snackbar
-                            .make(rltContenedorViewLogin, "Error al iniciar sesión.", Snackbar.LENGTH_SHORT)
-                            .setAnimationMode(Snackbar.ANIMATION_MODE_SLIDE)
-                            .setBackgroundTint(resources.getColor(R.color.black))
-                            .show()
-                        Utilitity.dissMissLoading(0)
                     }
+                } else {
+                    Snackbar
+                        .make(rltContenedorViewLogin, "Error al iniciar sesión.", Snackbar.LENGTH_SHORT)
+                        .setAnimationMode(Snackbar.ANIMATION_MODE_SLIDE)
+                        .setBackgroundTint(resources.getColor(R.color.black))
+                        .show()
                 }
-            } else {
+            }else{
                 Snackbar
-                    .make(rltContenedorViewLogin, "Error al iniciar sesión.", Snackbar.LENGTH_SHORT)
+                    .make(rltContenedorViewLogin, "Sin conexión a internet, revise los ajustes de conexión para continuar.", Snackbar.LENGTH_SHORT)
                     .setAnimationMode(Snackbar.ANIMATION_MODE_SLIDE)
-                    .setBackgroundTint(resources.getColor(R.color.black))
+                    .setAnchorView(view)
+                    .setBackgroundTint(resources.getColor(R.color.purple_700))
                     .show()
             }
         }
@@ -288,9 +316,19 @@ class LoginFragment : Fragment() {
         }
 
         btnLoginGoogle.setOnClickListener {
-            val signInIntent: Intent? = googleSignInClient?.signInIntent
-            startActivityForResult(signInIntent, RC_SIGN_IN)
-
+            val internetConnection: Boolean? = activity?.let { it1 -> Utilitity.isNetworkAvailable(it1) }
+            if (internetConnection == true){
+                context?.let { it1 -> Utilitity.showLoading(it1,"Iniciando sesión, por favor espere...",childFragmentManager) }
+                val signInIntent: Intent? = googleSignInClient?.signInIntent
+                startActivityForResult(signInIntent, RC_SIGN_IN)
+            }else{
+                Snackbar
+                    .make(rltContenedorViewLogin, "Sin conexión a internet, revise los ajustes de conexión para continuar.", Snackbar.LENGTH_SHORT)
+                    .setAnimationMode(Snackbar.ANIMATION_MODE_SLIDE)
+                    .setAnchorView(view)
+                    .setBackgroundTint(resources.getColor(R.color.purple_700))
+                    .show()
+            }
         }
     }
 
@@ -312,14 +350,24 @@ class LoginFragment : Fragment() {
         if (requestCode === RC_SIGN_IN) {
             val task = GoogleSignIn.getSignedInAccountFromIntent(data)
             try {
-                // Google Sign In was successful, authenticate with Firebase
                 val account = task.getResult(ApiException::class.java)!!
                 viewModel.viewModelScope.launch {
                     viewModel.loginViewWithGoogle(account.idToken!!).collect { user ->
                         if (user != null) {
                             viewModel.getCurrentUser(user.uid).collect {
                                 if (it != null){
-                                    goToMenuPrincipal(it.rol, user.uid)
+                                    viewModel.getViewCredentialUser(user.uid).collect { cred ->
+                                        if (cred?.estado == true) {
+                                            goToMenuPrincipal(it.rol, user.uid)
+                                        }else{
+                                            Utilitity.dissMissLoading(0)
+                                            Snackbar
+                                                .make(rltContenedorViewLogin, "Su usuario se encuentra bloqueado.", Snackbar.LENGTH_SHORT)
+                                                .setAnimationMode(Snackbar.ANIMATION_MODE_SLIDE)
+                                                .setBackgroundTint(resources.getColor(R.color.black))
+                                                .show()
+                                        }
+                                    }
                                 }else{
                                     val dialog = RegisterCompleteFragment(user)
                                     dialog.show(childFragmentManager,"registerComplete")
@@ -329,6 +377,7 @@ class LoginFragment : Fragment() {
                     }
                 }
             } catch (e: ApiException) {
+                Utilitity.dissMissLoading(0)
                 Snackbar
                     .make(rltContenedorViewLogin, "Error al iniciar sesión con Google.", Snackbar.LENGTH_SHORT)
                     .setAnimationMode(Snackbar.ANIMATION_MODE_SLIDE)

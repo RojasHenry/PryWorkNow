@@ -2,7 +2,6 @@ package com.uisrael.worknow.Views
 
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -45,7 +44,7 @@ class HistoryOffersFragment : DialogFragment() {
     }
 
     private fun inicializateComponents() {
-        adapterHistoric = context?.let { activity?.let { it1 -> OfferHistoricListAdapter(it,listAdapter, it1.supportFragmentManager) } }!!
+        adapterHistoric = context?.let { activity?.let { it1 -> OfferHistoricListAdapter(it,listAdapter, it1.supportFragmentManager, viewModel) } }!!
         offerListHistoric.adapter = adapterHistoric
 
         btnToolbarListHistoric.setOnClickListener {

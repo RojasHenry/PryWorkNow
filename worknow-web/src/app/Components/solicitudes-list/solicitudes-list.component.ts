@@ -1,10 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { map } from 'rxjs/operators';
-import { Breakpoints, BreakpointObserver } from '@angular/cdk/layout';
 import { DataBaseConnService } from 'src/app/Services/data-base-conn.service';
 import { DialogPicturesComponent } from '../dialog-pictures/dialog-pictures.component';
 import { MatDialog } from '@angular/material/dialog';
-import { Publicaciones } from 'src/app/Models/publicaciones';
 import { DialogComponent } from '../dialog/dialog.component';
 
 @Component({
@@ -104,7 +102,7 @@ export class SolicitudesListComponent implements OnInit{
       if(result){
         const key: string = publicacion.key
         delete publicacion["key"]
-        publicacion.estado = StatusOfferDatabase.Cancel
+        publicacion.estado = StatusOfferDatabase.Cancelado
         this.dbService.updateStatusPublicacion(key,publicacion)
         .then((success)=>{
           this.dialog.open(DialogComponent,{
@@ -123,11 +121,21 @@ export class SolicitudesListComponent implements OnInit{
     });
     
   }
+
+  goToMaps(ubicacion:String) {
+    var splitValues = ubicacion.split("%DIR%")
+    window.open(`http://maps.google.com?q=${splitValues[0].replace("lat/lng: (","").replace(")","")}`, "_blank");
+  }
+  getUbicacion(ubicacion:String){
+    var splitValues = ubicacion.split("%DIR%")
+    return splitValues[1].replace("address(","").replace(")","")
+  }
 }
 
 enum StatusOfferDatabase {
   Publicado = 'Publicado',
-  OnProgress = 'EnProgreso',
-  Cancel = 'Cancelado',
-  Finish = 'Terminado',
+  Aceptado = 'Aceptado',
+  SolTerminado = 'Concluido',
+  ProfTermindo = 'Terminado',
+  Cancelado = 'Cancelado',
 }

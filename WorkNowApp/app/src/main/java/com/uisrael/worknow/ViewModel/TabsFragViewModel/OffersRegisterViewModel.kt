@@ -1,8 +1,6 @@
 package com.uisrael.worknow.ViewModel.TabsFragViewModel
 
 import android.content.Context
-import android.util.Base64
-import android.util.Base64OutputStream
 import android.util.Patterns
 import androidx.lifecycle.ViewModel
 import com.uisrael.worknow.Model.Data.CategoriasData
@@ -13,12 +11,9 @@ import com.uisrael.worknow.Model.FirebaseModelsRepository
 import com.uisrael.worknow.ViewModel.ValidatorRespuestas.Respuesta
 import com.uisrael.worknow.Views.Utilities.Utilitity
 import com.wajahatkarim3.easyvalidation.core.Validator
-import id.zelory.compressor.Compressor
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
-import java.io.ByteArrayOutputStream
-import java.io.File
 import java.text.SimpleDateFormat
 
 class OffersRegisterViewModel : ViewModel() {
@@ -60,7 +55,7 @@ class OffersRegisterViewModel : ViewModel() {
 
         _fotosOffer.value.split(",").map {
             if(it.trim().isNotEmpty()){
-                val picture64 = Utilitity().compressImage(it.trim(),ctx)
+                val picture64 = Utilitity().compressImage(it.trim())
                 if (picture64 != null) {
                     listPictures.add(picture64)
                 }

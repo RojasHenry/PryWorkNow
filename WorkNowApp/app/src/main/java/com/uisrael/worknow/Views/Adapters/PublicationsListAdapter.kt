@@ -11,6 +11,7 @@ import kotlinx.android.synthetic.main.offers_item_adapter.view.*
 import com.uisrael.worknow.Model.Data.PublicationsData
 import com.uisrael.worknow.R
 import com.uisrael.worknow.Views.Dialogs.OfferBottomSheetFragment
+import com.uisrael.worknow.Views.Utilities.Utilitity
 
 class PublicationsListAdapter(
     private var c: Context,
@@ -51,13 +52,15 @@ class PublicationsListAdapter(
             convertView.cantidadTxtOfferList.text = if(publicaciones[position].soloUnaPersona) "Una sola persona" else "${publicaciones[position].cantidad} personas"
 
             convertView.btnVermasOfferList.setOnClickListener {
-                val offerBottomSheetFragment = OfferBottomSheetFragment(
-                    c,
-                    publicaciones[position],
-                    fromDashboard = false, fromPubAccept = false, fromPubCli = false,
-                    supportFragmentManager
-                )
-                offerBottomSheetFragment.show(supportFragmentManager, "ModalBottomOffer")
+                if (Utilitity.isNetworkAvailable(c) ){
+                    val offerBottomSheetFragment = OfferBottomSheetFragment(
+                        c,
+                        publicaciones[position],
+                        fromDashboard = false, fromPubAccept = false, fromPubCli = false,
+                        supportFragmentManager
+                    )
+                    offerBottomSheetFragment.show(supportFragmentManager, "ModalBottomOffer")
+                }
             }
         }
 

@@ -3,7 +3,9 @@ package com.uisrael.worknow.Views.Dialogs
 import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.app.AlertDialog
 import android.content.Context
+import android.content.DialogInterface
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.Location
@@ -81,33 +83,64 @@ class MapCityFragment(private val applicationContext: Context,
                 .draggable(true))
             mapGoogle.moveCamera(CameraUpdateFactory.newLatLngZoom(locationView, DEFAULT_ZOOM.toFloat()))
         }else{
-
-            mapGoogle.isMyLocationEnabled = true
             if(locationView != null && nameLocation != null){
-                getLocationPermission(false)
-                mapGoogle.addMarker(MarkerOptions()
-                    .position(locationView)
-                    .title(nameLocation)
-                    .draggable(true))
-                mapGoogle.moveCamera(CameraUpdateFactory.newLatLngZoom(locationView, DEFAULT_ZOOM.toFloat()))
-            }else{
-                getLocationPermission(true)
-            }
-            mapGoogle.setOnMyLocationButtonClickListener {
-                if (isLocationEnabled()){
-                    btnMapaUbicacion.isEnabled = true
-                    getDeviceLocation()
-                    return@setOnMyLocationButtonClickListener true
+                if(getLocationPermission()){ // false
+                    mapGoogle.addMarker(MarkerOptions()
+                        .position(locationView)
+                        .title(nameLocation)
+                        .draggable(true))
+                    mapGoogle.moveCamera(CameraUpdateFactory.newLatLngZoom(locationView, DEFAULT_ZOOM.toFloat()))
+                    mapGoogle.isMyLocationEnabled = true
+
+                    mapGoogle.setOnMyLocationButtonClickListener {
+                        if (isLocationEnabled()){
+                            btnMapaUbicacion.isEnabled = true
+                            getDeviceLocation()
+                            return@setOnMyLocationButtonClickListener true
+                        }else{
+                            btnMapaUbicacion.isEnabled = false
+                            turnOnGPS()
+                            return@setOnMyLocationButtonClickListener false
+                        }
+                    }
                 }else{
-                    btnMapaUbicacion.isEnabled = false
-                    turnOnGPS()
-                    return@setOnMyLocationButtonClickListener false
+                    activity?.let {
+                        requestPermissions(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+                            PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION)
+                    }
+
+                }
+            }else{
+                if(getLocationPermission()){ // true
+                    if (isLocationEnabled()){
+                        btnMapaUbicacion.isEnabled = true
+                        getDeviceLocation()
+                    }else{
+                        btnMapaUbicacion.isEnabled = false
+                        turnOnGPS()
+                    }
+                    mapGoogle.isMyLocationEnabled = true
+
+                    mapGoogle.setOnMyLocationButtonClickListener {
+                        if (isLocationEnabled()){
+                            btnMapaUbicacion.isEnabled = true
+                            getDeviceLocation()
+                            return@setOnMyLocationButtonClickListener true
+                        }else{
+                            btnMapaUbicacion.isEnabled = false
+                            turnOnGPS()
+                            return@setOnMyLocationButtonClickListener false
+                        }
+                    }
+                }else{
+                    activity?.let {
+                        requestPermissions(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+                            PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION)
+                    }
+
                 }
             }
         }
-
-
-
     }
 
     private fun isLocationEnabled(): Boolean {
@@ -190,26 +223,10 @@ class MapCityFragment(private val applicationContext: Context,
         mapFragment.onStop()
     }
 
-    private fun getLocationPermission(getLocation:Boolean) {
-        if (ContextCompat.checkSelfPermission(this.applicationContext,
-                Manifest.permission.ACCESS_FINE_LOCATION)
-            == PackageManager.PERMISSION_GRANTED) {
-                if(getLocation){
-                    if (isLocationEnabled()){
-                        btnMapaUbicacion.isEnabled = true
-                        getDeviceLocation()
-                    }else{
-                        btnMapaUbicacion.isEnabled = false
-                        turnOnGPS()
-                    }
-                }
-        } else {
-            activity?.let {
-                ActivityCompat.requestPermissions(
-                    it, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
-                    PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION)
-            }
-        }
+    private fun getLocationPermission():Boolean {
+        return (ContextCompat.checkSelfPermission(this.applicationContext,
+            Manifest.permission.ACCESS_FINE_LOCATION)
+                == PackageManager.PERMISSION_GRANTED)
     }
 
     private fun getDeviceLocation() {
@@ -243,58 +260,84 @@ class MapCityFragment(private val applicationContext: Context,
         }
     }
 
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        when(requestCode){
+            PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION ->{
+                val perms: MutableMap<String, Int> = HashMap()
+                perms[Manifest.permission.ACCESS_COARSE_LOCATION] = PackageManager.PERMISSION_GRANTED
+                if (grantResults.isNotEmpty()) {
+                    for (i in permissions.indices) perms[permissions[i]] = grantResults[i]
+                    if (perms[Manifest.permission.ACCESS_COARSE_LOCATION] === PackageManager.PERMISSION_GRANTED) {
+                        if (isLocationEnabled()){
+                            btnMapaUbicacion.isEnabled = true
+                            getDeviceLocation()
+                        }else{
+                            btnMapaUbicacion.isEnabled = false
+                            turnOnGPS()
+                        }
+                        if(!isOnlyView){
+                            mapGoogle.isMyLocationEnabled = true
+                            mapGoogle.setOnMyLocationButtonClickListener {
+                                if (isLocationEnabled()){
+                                    btnMapaUbicacion.isEnabled = true
+                                    getDeviceLocation()
+                                    return@setOnMyLocationButtonClickListener true
+                                }else{
+                                    btnMapaUbicacion.isEnabled = false
+                                    turnOnGPS()
+                                    return@setOnMyLocationButtonClickListener false
+                                }
+                            }
+                        }
+                    }else{
+                        showDialogOK("Esta aplicación requiere el uso de gps.") { _, which ->
+                            when (which) {
+                                DialogInterface.BUTTON_POSITIVE -> activity?.let { requestPermissions(
+                                    arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+                                    PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION)
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+    }
+
+    private fun showDialogOK(message: String, okListener: DialogInterface.OnClickListener) {
+        AlertDialog.Builder(context)
+            .setMessage(message)
+            .setPositiveButton("OK", okListener)
+            .create()
+            .show()
+    }
+
     @SuppressLint("ShowToast")
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (resultCode == Activity.RESULT_OK) {
-            if (requestCode == PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION){
-                if (isLocationEnabled()){
-                    btnMapaUbicacion.isEnabled = true
-                    getDeviceLocation()
-                }else{
-                    btnMapaUbicacion.isEnabled = false
-                    turnOnGPS()
-                }
-                Snackbar
-                    .make(
-                        rltMapaUbicacion,
-                        "Permiso de ubicación habilitado, vuelva a intentarlo.",
-                        Snackbar.LENGTH_SHORT
-                    )
-                    .setAnimationMode(Snackbar.ANIMATION_MODE_SLIDE)
-                    .setBackgroundTint(resources.getColor(R.color.black))
-                    .show()
-            }
-            if (requestCode == GPS_ENABLE) {
-                getDeviceLocation()
-                btnMapaUbicacion.isEnabled = true
-                Snackbar
-                    .make(
-                        rltMapaUbicacion,
-                        "GPS habilitado, vuelva a intentarlo.",
-                        Snackbar.LENGTH_SHORT
-                    )
-                    .setAnimationMode(Snackbar.ANIMATION_MODE_SLIDE)
-                    .setBackgroundTint(resources.getColor(R.color.black))
-                    .show()
-            } else {
-                btnMapaUbicacion.isEnabled = false
-                Snackbar
-                    .make(
-                        rltMapaUbicacion,
-                        "Para continuar se requiere la activación del GPS.",
-                        Snackbar.LENGTH_SHORT
-                    )
-                    .setAnimationMode(Snackbar.ANIMATION_MODE_SLIDE)
-                    .setBackgroundTint(resources.getColor(R.color.black))
-                    .show()
-            }
+        if (requestCode == GPS_ENABLE) {
+            getDeviceLocation()
+            btnMapaUbicacion.isEnabled = true
+            Snackbar
+                .make(
+                    rltMapaUbicacion,
+                    "GPS habilitado, vuelva a intentarlo.",
+                    Snackbar.LENGTH_SHORT
+                )
+                .setAnimationMode(Snackbar.ANIMATION_MODE_SLIDE)
+                .setBackgroundTint(resources.getColor(R.color.black))
+                .show()
         } else {
             btnMapaUbicacion.isEnabled = false
             Snackbar
                 .make(
                     rltMapaUbicacion,
-                    "Error al realizar la actualización de ubicación.",
+                    "Para continuar se requiere la activación del GPS.",
                     Snackbar.LENGTH_SHORT
                 )
                 .setAnimationMode(Snackbar.ANIMATION_MODE_SLIDE)

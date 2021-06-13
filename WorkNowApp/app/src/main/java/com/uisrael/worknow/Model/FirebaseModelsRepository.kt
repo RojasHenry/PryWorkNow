@@ -453,6 +453,33 @@ class FirebaseModelsRepository {
         }
     }
 
+    fun getCredentialEmailUser(email:String):Flow<CredencialesData?> {
+        return callbackFlow {
+            val databaseReference = database.getReference(REF_CREDENCIALES).orderByChild("correo").equalTo(email)
+            val eventListener = databaseReference.addValueEventListener(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    snapshot.let {
+                        var credencialesData: CredencialesData? = null
+                        if (snapshot.hasChildren()){
+                            for (child in snapshot.children) {
+                                credencialesData = child.getValue(CredencialesData::class.java)
+                            }
+                        }
+                        databaseReference.removeEventListener(this)
+                        this@callbackFlow.sendBlocking(credencialesData)
+                    }
+                }
+                override fun onCancelled(error: DatabaseError) {
+                    this@callbackFlow.close(error.toException())
+                }
+            })
+
+            awaitClose{
+                databaseReference.removeEventListener(eventListener)
+            }
+        }
+    }
+
     fun setUpdateUserProfile(uidUsuario: String, currentUser: UsuariosData): Any? {
         return try {
             val databaseReference = database.getReference(REF_USUARIOS)

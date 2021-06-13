@@ -13,7 +13,6 @@ import androidx.core.content.FileProvider
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import com.uisrael.worknow.R
-import com.uisrael.worknow.Views.TabsFragments.OffersRegisterFragment
 import kotlinx.android.synthetic.main.picture_dialog_fragment.view.*
 import java.io.File
 import java.io.IOException

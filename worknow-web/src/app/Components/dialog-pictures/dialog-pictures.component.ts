@@ -1,6 +1,5 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { MatDialogRef,MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { MatCarousel, MatCarouselComponent } from '@ngmodule/material-carousel';
 import { map } from 'rxjs/operators';
 import { DataBaseConnService } from 'src/app/Services/data-base-conn.service';
 

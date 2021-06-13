@@ -38,16 +38,6 @@
               </p>
             </div>
 
-            <div class="flex-container">
-              <h3 class="container-element">
-                Ciudad: 
-              </h3>
-              <p class="container-element">
-                {{getSolicitanteCiudad(publicacion.idUsuarioCli)}}
-              </p>
-            </div>
-
-
             <h3>Detalle de Solicitud:</h3>
             <mat-divider></mat-divider>
 
@@ -74,7 +64,7 @@
               Ubicación: 
             </h3>
             <p class="container-element">
-              {{publicacion.ubicacion}}
+              <a href="javascript:void(0)" (click)="goToMaps(publicacion.ubicacion)" >{{getUbicacion(publicacion.ubicacion)}}</a>
             </p>
           </div>
 
@@ -136,8 +126,9 @@
           </div>
 
           <div class="flex-container estadotext" [ngClass]="publicacion.estado == 'Publicado' ? 'publicado': 
-                                                            publicacion.estado == 'EnProgreso' ? 'enprogreso' : 
-                                                            publicacion.estado == 'Terminado' ? 'publicado' :'cancelado'" >
+                                                            publicacion.estado == 'Aceptado' ? 'enprogreso' : 
+                                                            publicacion.estado == 'Concluido' ? 'publicado' : 
+                                                            publicacion.estado == 'Terminado' ? 'enprogreso' :'cancelado'" >
               "{{publicacion.estado}}"
           </div>
 

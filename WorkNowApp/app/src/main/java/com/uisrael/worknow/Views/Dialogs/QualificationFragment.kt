@@ -72,12 +72,21 @@ class QualificationFragment (private var uidProf:String, var uidPub: String) : D
         }
 
         btnEnviarDialogCalif.setOnClickListener {
-            viewModel.viewModelScope.launch {
-                val responseQua = viewModel.setQualificationViewOffer(uidPub,ratingBarDialogCalif.rating.toDouble())
-                if(responseQua != null){
-                    val response = viewModel.setQualificationViewProf(uidPub,uidProf,ratingBarDialogCalif.rating.toDouble())
-                    if(response != null){
-                        dismiss()
+            val internetConnection: Boolean? = activity?.let { it1 -> Utilitity.isNetworkAvailable(it1) }
+            if (internetConnection == true){
+                viewModel.viewModelScope.launch {
+                    val responseQua = viewModel.setQualificationViewOffer(uidPub,ratingBarDialogCalif.rating.toDouble())
+                    if(responseQua != null){
+                        val response = viewModel.setQualificationViewProf(uidPub,uidProf,ratingBarDialogCalif.rating.toDouble())
+                        if(response != null){
+                            dismiss()
+                        }else{
+                            Snackbar
+                                .make(constrContenedorDialogCalif, "Error al calificar al profesional.", Snackbar.LENGTH_SHORT)
+                                .setAnimationMode(Snackbar.ANIMATION_MODE_SLIDE)
+                                .setBackgroundTint(resources.getColor(R.color.black))
+                                .show()
+                        }
                     }else{
                         Snackbar
                             .make(constrContenedorDialogCalif, "Error al calificar al profesional.", Snackbar.LENGTH_SHORT)
@@ -85,13 +94,14 @@ class QualificationFragment (private var uidProf:String, var uidPub: String) : D
                             .setBackgroundTint(resources.getColor(R.color.black))
                             .show()
                     }
-                }else{
-                    Snackbar
-                        .make(constrContenedorDialogCalif, "Error al calificar al profesional.", Snackbar.LENGTH_SHORT)
-                        .setAnimationMode(Snackbar.ANIMATION_MODE_SLIDE)
-                        .setBackgroundTint(resources.getColor(R.color.black))
-                        .show()
                 }
+            } else {
+                Snackbar
+                    .make(constrContenedorDialogCalif, "Sin conexión a internet, revise los ajustes de conexión para continuar.", Snackbar.LENGTH_SHORT)
+                    .setAnimationMode(Snackbar.ANIMATION_MODE_SLIDE)
+                    .setAnchorView(view)
+                    .setBackgroundTint(resources.getColor(R.color.purple_700))
+                    .show()
             }
         }
     }

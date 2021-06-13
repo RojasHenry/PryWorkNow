@@ -1,11 +1,11 @@
 package com.uisrael.worknow.Views.Utilities
 
-import android.R
 import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.Context
 import android.graphics.*
 import android.media.ExifInterface
+import android.net.ConnectivityManager
 import android.net.Uri
 import android.os.Handler
 import android.os.Looper
@@ -58,9 +58,16 @@ class Utilitity {
                     loadingDialog.dissmissLoading()
             }
         }
+
+        fun isNetworkAvailable(context: Context): Boolean {
+            val connectivityManager =
+                context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager?
+            val activeNetworkInfo = connectivityManager!!.activeNetworkInfo
+            return activeNetworkInfo != null && activeNetworkInfo.isConnected
+        }
     }
 
-    fun compressImage(imageUri: String, ctx: Context): String? {
+    fun compressImage(imageUri: String): String? {
         val filePath = imageUri
         var scaledBitmap: Bitmap? = null
         val options = BitmapFactory.Options()

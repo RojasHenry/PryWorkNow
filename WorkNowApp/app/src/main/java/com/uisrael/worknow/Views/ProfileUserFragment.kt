@@ -173,59 +173,80 @@ class ProfileUserFragment (var uidUser: String, private val currentUser: Any) : 
         }
 
         ciudadTxtUserProfile.setOnClickListener {
-            val datosCiudad =  viewModel.currentUser.ciudad.split("%DIR%")
-            val locationView = datosCiudad[0].replace("lat/lng: (","").replace(")","").split(",")
-            val nameLocation = datosCiudad[1].replace("address(","").replace(")","")
-            context?.let { it1 -> MapCityFragment(it1, this,false,
-                LatLng(locationView[0].toDouble(),locationView[1].toDouble()),nameLocation) }
-                ?.show(childFragmentManager, "mapcityfragment")
+            val internetConnection: Boolean? = activity?.let { it1 -> Utilitity.isNetworkAvailable(it1) }
+            if (internetConnection == true){
+                val datosCiudad =  viewModel.currentUser.ciudad.split("%DIR%")
+                val locationView = datosCiudad[0].replace("lat/lng: (","").replace(")","").split(",")
+                val nameLocation = datosCiudad[1].replace("address(","").replace(")","")
+                context?.let { it1 -> MapCityFragment(it1, this,false,
+                    LatLng(locationView[0].toDouble(),locationView[1].toDouble()),nameLocation) }
+                    ?.show(childFragmentManager, "mapcityfragment")
+            }else{
+                Snackbar
+                    .make(scrollDatosPersonalesUserProfile, "Sin conexión a internet, revise los ajustes de conexión para continuar.", Snackbar.LENGTH_SHORT)
+                    .setAnimationMode(Snackbar.ANIMATION_MODE_SLIDE)
+                    .setAnchorView(view)
+                    .setBackgroundTint(resources.getColor(R.color.purple_700))
+                    .show()
+            }
+
         }
 
         btnEditarUserProfile.setOnClickListener{
-            if (viewModel.setDataUserViewUpdateUserProfile(currentUserInfo)) {
-                context?.let { it1 ->
-                    Utilitity().showDialog(it1,"Aviso", "Esta seguro que desea actualizar su perfil?",R.drawable.ic_warning_24)
-                        ?.setPositiveButton("Aceptar") { dialog, _ ->
-                            viewModel.viewModelScope.launch {
-                                val response = viewModel.setUpdateViewUserProfile(uidUser)
-                                if (response != null) {
-                                    Snackbar
-                                        .make(
-                                            scrollDatosPersonalesUserProfile,
-                                            "Datos actualizados exitosamente.",
-                                            Snackbar.LENGTH_SHORT
-                                        )
-                                        .setAnimationMode(Snackbar.ANIMATION_MODE_SLIDE)
-                                        .setBackgroundTint(resources.getColor(R.color.black))
-                                        .show()
-                                } else {
-                                    Snackbar
-                                        .make(
-                                            scrollDatosPersonalesUserProfile,
-                                            "Error al actualizar los datos del usuario.",
-                                            Snackbar.LENGTH_SHORT
-                                        )
-                                        .setAnimationMode(Snackbar.ANIMATION_MODE_SLIDE)
-                                        .setBackgroundTint(resources.getColor(R.color.black))
-                                        .show()
+            val internetConnection: Boolean? = activity?.let { it1 -> Utilitity.isNetworkAvailable(it1) }
+            if (internetConnection == true){
+                if (viewModel.setDataUserViewUpdateUserProfile(currentUserInfo)) {
+                    context?.let { it1 ->
+                        Utilitity().showDialog(it1,"Aviso", "Esta seguro que desea actualizar su perfil?",R.drawable.ic_warning_24)
+                            ?.setPositiveButton("Aceptar") { dialog, _ ->
+                                viewModel.viewModelScope.launch {
+                                    val response = viewModel.setUpdateViewUserProfile(uidUser)
+                                    if (response != null) {
+                                        Snackbar
+                                            .make(
+                                                scrollDatosPersonalesUserProfile,
+                                                "Datos actualizados exitosamente.",
+                                                Snackbar.LENGTH_SHORT
+                                            )
+                                            .setAnimationMode(Snackbar.ANIMATION_MODE_SLIDE)
+                                            .setBackgroundTint(resources.getColor(R.color.black))
+                                            .show()
+                                    } else {
+                                        Snackbar
+                                            .make(
+                                                scrollDatosPersonalesUserProfile,
+                                                "Error al actualizar los datos del usuario.",
+                                                Snackbar.LENGTH_SHORT
+                                            )
+                                            .setAnimationMode(Snackbar.ANIMATION_MODE_SLIDE)
+                                            .setBackgroundTint(resources.getColor(R.color.black))
+                                            .show()
+                                    }
+                                    dialog.dismiss()
                                 }
-                                dialog.dismiss()
                             }
-                        }
-                        ?.setNegativeButton("Cancelar") { dialog, _ -> dialog.dismiss() }
-                        ?.show()
+                            ?.setNegativeButton("Cancelar") { dialog, _ -> dialog.dismiss() }
+                            ?.show()
+                    }
+                } else {
+                    Snackbar
+                        .make(
+                            scrollDatosPersonalesUserProfile,
+                            "Se deben realizar cambios para actualizar los datos.",
+                            Snackbar.LENGTH_INDEFINITE
+                        )
+                        .setAnimationMode(Snackbar.ANIMATION_MODE_SLIDE)
+                        .setBackgroundTint(resources.getColor(R.color.black))
+                        .setActionTextColor(resources.getColor(R.color.purple_500))
+                        .setAction("OK") {}
+                        .show()
                 }
-            } else {
+            }else{
                 Snackbar
-                    .make(
-                        scrollDatosPersonalesUserProfile,
-                        "Se deben realizar cambios para actualizar los datos.",
-                        Snackbar.LENGTH_INDEFINITE
-                    )
+                    .make(scrollDatosPersonalesUserProfile, "Sin conexión a internet, revise los ajustes de conexión para continuar.", Snackbar.LENGTH_SHORT)
                     .setAnimationMode(Snackbar.ANIMATION_MODE_SLIDE)
-                    .setBackgroundTint(resources.getColor(R.color.black))
-                    .setActionTextColor(resources.getColor(R.color.purple_500))
-                    .setAction("OK") {}
+                    .setAnchorView(view)
+                    .setBackgroundTint(resources.getColor(R.color.purple_700))
                     .show()
             }
         }
@@ -480,7 +501,7 @@ class ProfileUserFragment (var uidUser: String, private val currentUser: Any) : 
         super.onActivityResult(requestCode, resultCode, data)
 
         if (resultCode == Activity.RESULT_OK && requestCode == REQUESTCAMERA){
-            val picture64 = context?.let { Utilitity().compressImage(picturePickerFragment.currentPhotoPath, it) }
+            val picture64 = context?.let { Utilitity().compressImage(picturePickerFragment.currentPhotoPath) }
             val imageBytes = Base64.decode(picture64, Base64.DEFAULT)
             val decodedImage = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.size)
             if (viewModel.currentUser.foto.isNotBlank()){
@@ -496,7 +517,7 @@ class ProfileUserFragment (var uidUser: String, private val currentUser: Any) : 
 
         if (resultCode == Activity.RESULT_OK && requestCode == REQUESTGALLERY){
             currentPhotoPath = data?.data?.let { getRealPathFromURI(it) }.toString()
-            val picture64 = context?.let { Utilitity().compressImage(currentPhotoPath, it) }
+            val picture64 = context?.let { Utilitity().compressImage(currentPhotoPath) }
             val imageBytes = Base64.decode(picture64, Base64.DEFAULT)
             val decodedImage = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.size)
             if (viewModel.currentUser.foto.isNotBlank()){
