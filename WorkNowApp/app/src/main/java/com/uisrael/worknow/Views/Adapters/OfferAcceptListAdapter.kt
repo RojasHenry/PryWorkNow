@@ -26,7 +26,7 @@ class OfferAcceptListAdapter(
     var publicaciones: ArrayList<PublicationsData>,
     var supportFragmentManager: FragmentManager,
     val activity: FragmentActivity,
-    val dashboardViewModel: DashboardViewModel
+    private val dashboardViewModel: DashboardViewModel
 ) : BaseAdapter() {
 
     override fun getCount(): Int {
@@ -61,7 +61,7 @@ class OfferAcceptListAdapter(
             val locationView = datosCiudad[0].replace("lat/lng: (","").replace(")","")
             val nameLocation = datosCiudad[1].replace("address(","").replace(")","")
 
-            convertView.ubicacionTxtAcceptOfferList.text = "${nameLocation}; (${locationView})"
+            convertView.ubicacionTxtAcceptOfferList.text = nameLocation
             convertView.inmediatoTxtAcceptOfferList.text = if(publicaciones[position].inmediato) "Si" else "No"
             convertView.cantidadTxtAcceptOfferList.text = if(publicaciones[position].soloUnaPersona) "Una sola persona" else "${publicaciones[position].cantidad} personas"
 
@@ -99,7 +99,13 @@ class OfferAcceptListAdapter(
 
             convertView.btnVermasAcceptOfferList.setOnClickListener {
                 if (Utilitity.isNetworkAvailable(c)){
-                    val offerBottomSheetFragment = OfferBottomSheetFragment(c, publicaciones[position], fromDashboard = false,fromPubAccept = true, fromPubCli = false, supportFragmentManager)
+                    val offerBottomSheetFragment = OfferBottomSheetFragment(c, publicaciones[position],
+                        validateEstadoOffer = false,
+                        showUsuarioCli = true,
+                        showButtonsAceptCan = false,
+                        showButtonsCanSol = false,
+                        supportFragmentManager = supportFragmentManager
+                    )
                     offerBottomSheetFragment.show(supportFragmentManager, "ModalBottomOffer")
                 }
             }

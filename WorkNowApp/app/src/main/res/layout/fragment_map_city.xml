@@ -25,14 +25,14 @@
             android:id="@+id/titleMapaUbicacion"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:fontFamily="@font/nunitosansbold"
             android:layout_below="@+id/imgCloseMapaUbicacion"
+            android:layout_centerVertical="true"
+            android:layout_marginHorizontal="10dp"
+            android:fontFamily="@font/nunitosansbold"
             android:text="Seleccione la ubicación:"
             android:textColor="#6c6d70"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            android:layout_marginHorizontal="10dp"/>
+            android:textSize="16sp"
+            android:textStyle="bold" />
     </RelativeLayout>
 
     <RelativeLayout
@@ -78,7 +78,7 @@
             android:fontFamily="@font/nunitosansregular"
             android:gravity="center"
             android:paddingRight="5dp"
-            android:text="Escoger Ubicación"
+            android:text="Usar ubicación"
             android:textColor="#FFFFFF"
             android:textSize="13sp" />
     </RelativeLayout>

@@ -33,9 +33,10 @@ import kotlinx.coroutines.launch
 class OfferBottomSheetFragment(
     var c: Context,
     var publicationsData: PublicationsData,
-    var fromDashboard: Boolean,
-    var fromPubAccept: Boolean,
-    var fromPubCli: Boolean,
+    var validateEstadoOffer: Boolean,
+    var showUsuarioCli: Boolean,
+    var showButtonsAceptCan :Boolean,
+    var showButtonsCanSol :Boolean,
     val supportFragmentManager:FragmentManager
 ) : BottomSheetDialogFragment() {
 
@@ -58,9 +59,7 @@ class OfferBottomSheetFragment(
         val convertView: View? = LayoutInflater.from(c).inflate(R.layout.offer_bottomdialog_fragment, null)
         if (convertView != null) {
 
-            if (fromDashboard){
-                convertView.rltClientOfferDataDialog.visibility = View.GONE
-            }else{
+            if(validateEstadoOffer){
                 jobForCancel = viewModel.viewModelScope.launch {
                     viewModel.getEstadoViewCurrentOffer(publicationsData.uid).collect {
                         if(it?.estado.equals(Utilitity.ESTADO_ACEPTADO)){
@@ -71,30 +70,34 @@ class OfferBottomSheetFragment(
                     }
                 }
             }
-            viewModel.viewModelScope.launch {
-                viewModel.getCurrentViewUser(publicationsData.idUsuarioCli).collect {
-                    if(it != null){
-                        convertView.nombreClientOfferDialog.text = "Solicitante: ${it.nombre} ${it.apellido}"
 
-                        if (it.foto.isNotBlank()){
-                            if(Utilitity().isValidUrl(it.foto)){
-                                Picasso
-                                    .get()
-                                    .load(it.foto)
-                                    .resize(250, 250)
-                                    .centerCrop()
-                                    .into(convertView.imageClientOfferDialog)
+            if(showUsuarioCli){
+                viewModel.viewModelScope.launch {
+                    viewModel.getCurrentViewUser(publicationsData.idUsuarioCli).collect {
+                        if(it != null){
+                            convertView.nombreClientOfferDialog.text = "Solicitante: ${it.nombre} ${it.apellido}"
+                            if (it.foto.isNotBlank()){
+                                if(Utilitity().isValidUrl(it.foto)){
+                                    Picasso
+                                        .get()
+                                        .load(it.foto)
+                                        .resize(250, 250)
+                                        .centerCrop()
+                                        .into(convertView.imageClientOfferDialog)
+                                }else{
+                                    val imageBytes = Base64.decode(it.foto, Base64.DEFAULT)
+                                    val decodedImage = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.size)
+                                    convertView.imageClientOfferDialog.setImageBitmap(Utilitity().getRoundedCornerBitmap(decodedImage))
+                                }
+                                convertView.iconClientOfferDialog.visibility = View.GONE
                             }else{
-                                val imageBytes = Base64.decode(it.foto, Base64.DEFAULT)
-                                val decodedImage = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.size)
-                                convertView.imageClientOfferDialog.setImageBitmap(Utilitity().getRoundedCornerBitmap(decodedImage))
+                                convertView.iconClientOfferDialog.text = "${it.nombre.get(0)}${it.apellido.get(0)}"
                             }
-                            convertView.iconClientOfferDialog.visibility = View.GONE
-                        }else{
-                            convertView.iconClientOfferDialog.text = "${it.nombre.get(0)}${it.apellido.get(0)}"
                         }
                     }
                 }
+            }else{
+                convertView.rltClientOfferDataDialog.visibility = View.GONE
             }
 
             convertView.descripcionTxtOfferListDialog.text = publicationsData.descripcion
@@ -110,7 +113,7 @@ class OfferBottomSheetFragment(
             val locationView = datosCiudad[0].replace("lat/lng: (","").replace(")","")
             val nameLocation = datosCiudad[1].replace("address(","").replace(")","")
 
-            convertView.ubicacionTxtOfferListDialog.text = "${nameLocation}; (${locationView})"
+            convertView.ubicacionTxtOfferListDialog.text = nameLocation
 
             convertView.ubicacionTxtOfferListDialog.setOnClickListener {
                 val internetConnection: Boolean? = activity?.let { it1 -> Utilitity.isNetworkAvailable(it1) }
@@ -167,11 +170,11 @@ class OfferBottomSheetFragment(
             }
 
             if(publicationsData.estado == Utilitity.ESTADO_PUBLICADO){
-                convertView.cardViewButtonCancelOfferDialog.visibility = if (fromPubCli) View.VISIBLE else View.GONE
+                convertView.cardViewButtonCancelOfferDialog.visibility = if (showButtonsCanSol) View.VISIBLE else View.GONE
                 convertView.btnCancelOffer.setOnClickListener {
                     val internetConnection: Boolean? = activity?.let { it1 -> Utilitity.isNetworkAvailable(it1) }
                     if (internetConnection == true){
-                        Utilitity().showDialog(c,"Aviso", "Esta seguro que desea 'cancelar' la oferta actual?",R.drawable.ic_warning_24)
+                        Utilitity().showDialog(c,"Aviso", "¿Está seguro que desea cancelar la oferta actual?",R.drawable.ic_warning_24)
                             ?.setPositiveButton("Aceptar") { dialog, _ ->
                                 viewModel.getUidProfesional().observe(viewLifecycleOwner, {
                                     viewModel.viewModelScope.launch {
@@ -203,39 +206,34 @@ class OfferBottomSheetFragment(
                 }
             }
 
-
-            if(fromPubAccept){
-                convertView.cardViewButtonsOfferDialog.visibility = View.GONE
-            }else{
-                convertView.cardViewButtonsOfferDialog.visibility = if (fromDashboard) View.GONE else View.VISIBLE
-                if(!fromDashboard){
-
-                    convertView.btnAceptarOfferDialog.setOnClickListener {
-                        val internetConnection: Boolean? = activity?.let { it1 -> Utilitity.isNetworkAvailable(it1) }
-                        if (internetConnection == true){
-                            viewModel.getUidProfesional().observe(viewLifecycleOwner, {
-                                viewModel.viewModelScope.launch {
-                                    Utilitity.showLoading(c,"Cargando, por favor espere...",supportFragmentManager)
-                                    val response = viewModel.setOfferViewAcceptProf(it.uid,publicationsData.uid,Utilitity.ESTADO_ACEPTADO)
-                                    if (response != null){
-                                        dismiss()
-                                    }else{
-                                        Snackbar
-                                            .make(convertView, "Error al aceptar la solicitud actual.", Snackbar.LENGTH_SHORT)
-                                            .setAnimationMode(Snackbar.ANIMATION_MODE_SLIDE)
-                                            .setBackgroundTint(c.resources.getColor(R.color.black))
-                                            .show()
-                                    }
+            if(showButtonsAceptCan){
+                convertView.btnAceptarOfferDialog.setOnClickListener {
+                    val internetConnection: Boolean? = activity?.let { it1 -> Utilitity.isNetworkAvailable(it1) }
+                    if (internetConnection == true){
+                        viewModel.getUidProfesional().observe(viewLifecycleOwner, {
+                            viewModel.viewModelScope.launch {
+                                Utilitity.showLoading(c,"Cargando, por favor espere...",supportFragmentManager)
+                                val response = viewModel.setOfferViewAcceptProf(it.uid,publicationsData.uid,Utilitity.ESTADO_ACEPTADO)
+                                if (response != null){
+                                    dismiss()
+                                }else{
+                                    Snackbar
+                                        .make(convertView, "Error al aceptar la solicitud actual.", Snackbar.LENGTH_SHORT)
+                                        .setAnimationMode(Snackbar.ANIMATION_MODE_SLIDE)
+                                        .setBackgroundTint(c.resources.getColor(R.color.black))
+                                        .show()
                                 }
+                            }
 
-                            })
-                        }
-                    }
-
-                    convertView.btnCancelOfferDialog.setOnClickListener {
-                        dismiss()
+                        })
                     }
                 }
+
+                convertView.btnCancelOfferDialog.setOnClickListener {
+                    dismiss()
+                }
+            }else{
+                convertView.cardViewButtonsOfferDialog.visibility = View.GONE
             }
         }
         return convertView
@@ -247,7 +245,7 @@ class OfferBottomSheetFragment(
     }
 
     override fun dismiss() {
-        if (!fromDashboard){
+        if (validateEstadoOffer){
             jobForCancel?.cancel()
         }
         super.dismiss()

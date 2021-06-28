@@ -55,6 +55,19 @@ class ProfileUserViewModel : ViewModel() {
         }
         return info != currentUserAux.toString()
     }
+
+    fun setDataUserViewUpdateUserProfile (info:String, infoProf: String):Boolean{
+        var currentUserAux:UsuariosData = currentUser
+        currentUserAux.nombre = _nombreUser.value
+        currentUserAux.apellido = _apellidoUser.value
+        currentUserAux.ciudad = _ciudadUser.value
+        currentUserAux.telefono = _telefonoUser.value
+        if (currentUserAux.rol == Utilitity.ROL_PROFESIONAL){
+            currentUserAux.datosProf.categorias = _usuarioProfesional.value.categorias
+            currentUserAux.datosProf.descripcion = _usuarioProfesional.value.descripcion
+        }
+        return info != currentUserAux.toString() && infoProf != currentUserAux.datosProf.toString()
+    }
     fun setUpdateViewUserProfile (uidUsuario:String): Any? {
         currentUser.nombre = _nombreUser.value
         currentUser.apellido = _apellidoUser.value
@@ -139,7 +152,7 @@ class ProfileUserViewModel : ViewModel() {
         val isTelefonoValid = (validatorTelefono.nonEmpty().check() and Patterns.PHONE.matcher(validatorTelefono.text).matches() and validatorTelefono.minLength(numLengthTelefono).check())
 
         val isDescripcionValid = if (currentUser.rol == Utilitity.ROL_PROFESIONAL) validatorDescripcion.nonEmpty().minLength(caracteres).check() else true
-        val isCategoriasValid = if (currentUser.rol == Utilitity.ROL_PROFESIONAL) validatorCategorias.nonEmpty().check() and (validatorCategorias.text != "A") and (validatorCategorias.text != "N") and (validatorCategorias.text != "C") and (validatorCategorias.text != "Escoja su categoria") else true
+        val isCategoriasValid = if (currentUser.rol == Utilitity.ROL_PROFESIONAL) validatorCategorias.nonEmpty().check() and (validatorCategorias.text != "A") and (validatorCategorias.text != "N") and (validatorCategorias.text != "C") and (validatorCategorias.text != "Escoja su categoría") else true
 
         val isCorreoValid = validatorCorreo.nonEmpty().validEmail().check()
         val isPasswordValid = if(isFromSocNet) true else validatorPassword.nonEmpty().check()
@@ -220,7 +233,7 @@ class ProfileUserViewModel : ViewModel() {
             }
         }else{
             respuesta.respuesta = 3
-            respuesta.mensaje = "Complete el campo de Telefono"
+            respuesta.mensaje = "Complete el campo de Teléfono"
         }
 
         if (respuesta.respuesta != 0){
@@ -236,12 +249,12 @@ class ProfileUserViewModel : ViewModel() {
         val respuesta = Respuesta()
         if(categorias[0].isEmpty()){
             respuesta.respuesta = 2
-            respuesta.mensaje = "Escoja por lo menos una categoria"
+            respuesta.mensaje = "Escoja por lo menos una categoría"
         }else{
             when(categorias[0]){
-                "A","C","N", "Escoja su categoria" -> {
+                "A","C","N", "Escoja su categoría" -> {
                     respuesta.respuesta = 1
-                    respuesta.mensaje = "Escoja por lo menos una categoria"
+                    respuesta.mensaje = "Escoja por lo menos una categoría"
                 }
             }
         }

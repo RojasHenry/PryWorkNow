@@ -102,10 +102,16 @@ class DashboardFragment(var isProf: Boolean, var tabUsersActivity: TabUsersActiv
                         dashboardViewModel.getOffersViewAcceptAndPublic(user.uid).collect {
                             progressOffersPublic.visibility = View.GONE
                             if(it.size > 0){
-                                if(it.size <= 2){
+                                if(it.size >= 2){
                                     listOffersPublic.isVisible = true
                                     tabUsersActivity.moveTabViewpagerFragment(0)
                                     tabUsersActivity.disableViewpagerFragment(1,false)
+                                    adapterPublic.publicaciones = it as ArrayList<PublicationsData>
+                                    adapterPublic.notifyDataSetChanged()
+                                    rltErrorlistOffersPublic.isVisible = false
+                                    Utilitity.dissMissLoading(3000)
+                                }else{
+                                    listOffersPublic.isVisible = true
                                     adapterPublic.publicaciones = it as ArrayList<PublicationsData>
                                     adapterPublic.notifyDataSetChanged()
                                     rltErrorlistOffersPublic.isVisible = false

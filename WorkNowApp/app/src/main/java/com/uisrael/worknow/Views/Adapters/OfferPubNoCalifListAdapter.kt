@@ -95,8 +95,12 @@ class OfferPubNoCalifListAdapter(
 
                 convertView.btnVermasOfferPubliNoCalif.setOnClickListener {
                     if(Utilitity.isNetworkAvailable(c)){
-                        val offerBottomSheetFragment = OfferBottomSheetFragment(c, publicaciones[position], fromDashboard = true,
-                            fromPubAccept = false, fromPubCli = true, supportFragmentManager)
+                        val offerBottomSheetFragment = OfferBottomSheetFragment(c, publicaciones[position],
+                            validateEstadoOffer = false,
+                            showUsuarioCli = false,
+                            showButtonsAceptCan = false,
+                            showButtonsCanSol = true,
+                            supportFragmentManager =  supportFragmentManager)
                         offerBottomSheetFragment.show(supportFragmentManager, "ModalBottomOffer")
                     }
                 }

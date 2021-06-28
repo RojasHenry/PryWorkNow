@@ -259,7 +259,7 @@
                     android:gravity="start|top"
                     android:padding="10dp"
                     android:layout_gravity="center"
-                    android:text="Escoja su categoria"
+                    android:text="Escoja su categoría"
                     android:singleLine="true"
                     android:textColor="#9E9FA1"
                     android:drawableRight="@drawable/ic_arrowdrop"

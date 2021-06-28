@@ -390,7 +390,7 @@ class ProfessionalRegisterFragment(private val userGoogle: FirebaseUser?,
 
                 categoriasList.clear()
 
-                spinnerCategoriasProf.text = "Escoja su categoria"
+                spinnerCategoriasProf.text = "Escoja su categoría"
 
                 if(!isCategoriaTypedProf){
                     isCategoriaTypedProf = true

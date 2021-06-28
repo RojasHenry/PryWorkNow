@@ -9,6 +9,10 @@ import com.uisrael.worknow.Model.Data.ComentariosData
 import com.uisrael.worknow.R
 import kotlinx.android.synthetic.main.comment_item_emisor.view.*
 import kotlinx.android.synthetic.main.comment_item_receptor.view.*
+import java.text.SimpleDateFormat
+import java.util.*
+import kotlin.collections.ArrayList
+
 class CommentsOfferListAdapter(
     val c: Context,
     var comentarios: ArrayList<ComentariosData>,
@@ -41,11 +45,20 @@ class CommentsOfferListAdapter(
         when (comentarios[position].idEmisor){
             currentUid ->{
                 convertView?.mensajeTxtEmisor?.text = comentarios[position].mensaje
+                convertView?.fechaHoraTxtEmisor?.text =  comentarios[position].estado + " · " + getTime(comentarios[position].timespan.toLong())
             }else ->{
                 convertView?.mensajeTxtReceptor?.text = comentarios[position].mensaje
+                convertView?.fechaHoraTxtReceptor?.text = getTime(comentarios[position].timespan.toLong())+ " · " + comentarios[position].estado
             }
         }
 
         return convertView
+    }
+
+    private fun getTime (timespan:Long): String{
+        val sdf = SimpleDateFormat("dd/MM/yy hh:mm a")
+        val netDate = Date(timespan)
+        val date = sdf.format(netDate)
+        return date.toString()
     }
 }

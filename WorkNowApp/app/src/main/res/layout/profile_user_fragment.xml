@@ -484,7 +484,7 @@
                         android:gravity="start|top"
                         android:padding="10dp"
                         android:singleLine="true"
-                        android:text="Escoja su categoria"
+                        android:text="Escoja su categoría"
                         android:textColor="#9E9FA1" />
                 </RelativeLayout>
 

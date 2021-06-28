@@ -199,7 +199,7 @@ class OffersRegisterFragment : Fragment() ,IResponseMapFragment {
             builder.setNeutralButton("Limpiar"){ _: DialogInterface, _: Int ->
                 categoriasList.clear()
 
-                spinnerCategoriasOffer.text = "Escoja una categoria"
+                spinnerCategoriasOffer.text = "Escoja una categoría"
 
                 updateFieldsInterface(null,false)
                 if(!isCategoriaTypedOffer){
@@ -401,6 +401,11 @@ class OffersRegisterFragment : Fragment() ,IResponseMapFragment {
                                     offersRegisterViewModel.clearFormViewModel(
                                         it1.uid
                                     )
+                                    rltDatosSolicitudOffer.isVisible = false
+                                    titleDetallesOffer.isVisible = false
+                                    rltDetallesOffer.isVisible = false
+                                    btnRegisterOffer.isVisible = false
+                                    spinnerCategoriasOffer.text = "Escoja una categoría"
                                 }
                             }
                         }else{
@@ -429,7 +434,6 @@ class OffersRegisterFragment : Fragment() ,IResponseMapFragment {
         }
 
         if(categoria != null){
-
             if(currentCategoria?.uid == categoria.uid){
                 offersRegisterViewModel.fechaIniFin = categoria.fechaIniFin
                 offersRegisterViewModel.masPersonas = categoria.masPersonas
@@ -453,9 +457,7 @@ class OffersRegisterFragment : Fragment() ,IResponseMapFragment {
                     }
                 }
             }else{
-
                 clearFormTypedsView()
-
                 lifecycleScope.launch {
                     offersRegisterViewModel.clearFormViewModel(categoria.uid)
                 }
@@ -486,7 +488,6 @@ class OffersRegisterFragment : Fragment() ,IResponseMapFragment {
             }
             currentCategoria = categoria
         }else{
-
             clearFormTypedsView()
             clearFormValuesView()
 
@@ -498,8 +499,6 @@ class OffersRegisterFragment : Fragment() ,IResponseMapFragment {
             lifecycleScope.launch {
                 offersRegisterViewModel.clearFormViewModel("")
             }
-
-
         }
     }
 
@@ -536,7 +535,6 @@ class OffersRegisterFragment : Fragment() ,IResponseMapFragment {
 
         adapter.notifyDataSetChanged()
     }
-
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
@@ -862,7 +860,7 @@ class OffersRegisterFragment : Fragment() ,IResponseMapFragment {
 
     fun updateImages(postion:Int) {
         val builder = AlertDialog.Builder(context)
-        builder.setMessage("¿Está seguro que desea eliminar la imágen?")
+        builder.setMessage("¿Está seguro que desea eliminar la imagen?")
             .setPositiveButton("Aceptar") { dialog, _ ->
                 fotosList[postion] = ""
                 adapter.images = fotosList.sortedBy { it.length }.reversed() as ArrayList<String>

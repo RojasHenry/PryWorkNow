@@ -55,6 +55,7 @@
                         android:layout_height="wrap_content"
                         android:layout_toRightOf="@id/idTituloHistoricOfferList"
                         android:fontFamily="@font/nunitosansregular"
+                        android:maxLines="1"
                         android:text="--------" />
 
                 </RelativeLayout>
@@ -173,7 +174,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_below="@id/rltDescripcionHistoricOfferList"
-                    android:layout_marginTop="10sp">
+                    android:layout_marginTop="10sp"
+                    android:visibility="gone">
 
                     <TextView
                         android:id="@+id/ubicacionTituloHistoricOfferList"

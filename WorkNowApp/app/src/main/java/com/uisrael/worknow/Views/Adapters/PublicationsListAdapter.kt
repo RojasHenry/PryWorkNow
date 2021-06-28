@@ -47,17 +47,18 @@ class PublicationsListAdapter(
             val datosCiudad = publicaciones[position].ubicacion.split("%DIR%")
             val locationView = datosCiudad[0].replace("lat/lng: (","").replace(")","")
             val nameLocation = datosCiudad[1].replace("address(","").replace(")","")
-            convertView.ubicacionTxtOfferList.text = "${nameLocation}; (${locationView})"
+            convertView.ubicacionTxtOfferList.text = nameLocation
             convertView.inmediatoTxtOfferList.text = if(publicaciones[position].inmediato) "Si" else "No"
             convertView.cantidadTxtOfferList.text = if(publicaciones[position].soloUnaPersona) "Una sola persona" else "${publicaciones[position].cantidad} personas"
 
             convertView.btnVermasOfferList.setOnClickListener {
                 if (Utilitity.isNetworkAvailable(c) ){
-                    val offerBottomSheetFragment = OfferBottomSheetFragment(
-                        c,
-                        publicaciones[position],
-                        fromDashboard = false, fromPubAccept = false, fromPubCli = false,
-                        supportFragmentManager
+                    val offerBottomSheetFragment = OfferBottomSheetFragment(c, publicaciones[position],
+                        validateEstadoOffer = true,
+                        showUsuarioCli = true,
+                        showButtonsAceptCan = true,
+                        showButtonsCanSol = false,
+                        supportFragmentManager = supportFragmentManager
                     )
                     offerBottomSheetFragment.show(supportFragmentManager, "ModalBottomOffer")
                 }

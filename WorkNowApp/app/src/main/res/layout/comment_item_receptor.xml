@@ -3,15 +3,37 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
-    <TextView
-        android:id="@+id/mensajeTxtReceptor"
-        android:layout_width="wrap_content"
+
+    <RelativeLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/background_item_comment_receptor"
-        android:fontFamily="@font/nunitosansregular"
-        android:padding="10dp"
-        android:layout_marginEnd="60sp"
+        android:padding="12dp"
+        android:layout_marginEnd="60dp"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent">
+        <TextView
+            android:id="@+id/mensajeTxtReceptor"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/nunitosansregular" />
+
+        <View
+            android:id="@+id/dividerTxtReceptor"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginVertical="5dp"
+            android:layout_below="@id/mensajeTxtReceptor"
+            android:background="?android:attr/listDivider" />
+
+        <TextView
+            android:id="@+id/fechaHoraTxtReceptor"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/dividerTxtReceptor"
+            android:fontFamily="@font/nunitosansregular"
+            android:textSize="10sp" />
+    </RelativeLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
 

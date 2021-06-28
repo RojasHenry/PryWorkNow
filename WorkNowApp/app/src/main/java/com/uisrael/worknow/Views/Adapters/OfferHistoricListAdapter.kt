@@ -57,13 +57,13 @@ class OfferHistoricListAdapter(
             val datosCiudad = publicaciones[position].ubicacion.split("%DIR%")
             val locationView = datosCiudad[0].replace("lat/lng: (","").replace(")","")
             val nameLocation = datosCiudad[1].replace("address(","").replace(")","")
-            convertView.ubicacionTxtHistoricOfferList.text = "${nameLocation}; (${locationView})"
+            convertView.ubicacionTxtHistoricOfferList.text = nameLocation
             convertView.inmediatoTxtHistoricOfferList.text = if(publicaciones[position].inmediato) "Si" else "No"
             convertView.cantidadTxtHistoricOfferList.text = if(publicaciones[position].soloUnaPersona) "Una sola persona" else "${publicaciones[position].cantidad} personas"
 
             convertView.btnVolverOfferHistoricOfferList.setOnClickListener {
                 if(Utilitity.isNetworkAvailable(c)){
-                    Utilitity().showDialog(c,"Aviso", "Esta seguro que desea volver a publicar la  oferta seleccionada.",R.drawable.ic_warning_24)
+                    Utilitity().showDialog(c,"Aviso", "¿Está seguro que desea volver a publicar la  oferta seleccionada.",R.drawable.ic_warning_24)
                         ?.setPositiveButton("Aceptar"){ dialog, _ ->
                             viewModel.viewModelScope.launch {
                                 val uid:String = viewModel.registerViewAgainOffer(publicaciones[position]) as String
@@ -85,7 +85,12 @@ class OfferHistoricListAdapter(
 
             convertView.btnVermasHistoricOfferList.setOnClickListener {
                 if(Utilitity.isNetworkAvailable(c)){
-                    val offerBottomSheetFragment = OfferBottomSheetFragment(c, publicaciones[position], fromDashboard = true,fromPubAccept = false, fromPubCli = false, supportFragmentManager)
+                    val offerBottomSheetFragment = OfferBottomSheetFragment(c, publicaciones[position],
+                        validateEstadoOffer = false,
+                        showUsuarioCli = false,
+                        showButtonsAceptCan = false,
+                        showButtonsCanSol = false,
+                        supportFragmentManager = supportFragmentManager)
                     offerBottomSheetFragment.show(supportFragmentManager, "ModalBottomOffer")
                 }
             }

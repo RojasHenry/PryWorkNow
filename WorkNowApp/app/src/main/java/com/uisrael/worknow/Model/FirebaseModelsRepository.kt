@@ -508,7 +508,7 @@ class FirebaseModelsRepository {
 
     fun getCommentsOffer(uidPub: String): Flow<MutableList<ComentariosData>> {
         return callbackFlow {
-            val databaseReference = database.getReference(REF_COMENTARIOS).child(uidPub).orderByChild("timespan")
+            val databaseReference = database.getReference(REF_COMENTARIOS).child(uidPub)
             val eventListener = databaseReference.addValueEventListener(object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
                     var listaComentariosData: MutableList<ComentariosData> = ArrayList()

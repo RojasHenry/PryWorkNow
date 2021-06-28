@@ -30,6 +30,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.navigation.NavigationView
 import com.google.firebase.messaging.FirebaseMessaging
 import com.squareup.picasso.Picasso
+import com.uisrael.worknow.Model.Data.ProfesionalData
 import com.uisrael.worknow.R
 import com.uisrael.worknow.ViewModel.TabUsersViewModel
 import com.uisrael.worknow.Views.Adapters.SectionsPagerAdapter
@@ -187,16 +188,20 @@ class TabUsersActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
                         val rltCalifContenedor = cabeceraView.findViewById<RelativeLayout>(R.id.rltCalifContenedor)
                         val califTxtUsuarioProf = cabeceraView.findViewById<TextView>(R.id.califTxtUsuarioProf)
                         val ratingUsuarioProf = cabeceraView.findViewById<RatingBar>(R.id.ratingUsuarioProf)
-                        rltCalifContenedor.isVisible = true
-
                         var califacionSum = 0.0
 
-                        it.datosProf.calificaciones.map { calificacionData ->
-                            califacionSum += calificacionData.calificacion
+                        if(it.datosProf.calificaciones.isNotEmpty()){
+                            rltCalifContenedor.isVisible = true
+                            it.datosProf.calificaciones.map { calificacionData ->
+                                califacionSum += calificacionData.calificacion
+                            }
+
+                            val promed =  (califacionSum / it.datosProf.calificaciones.size)
+
+                            califTxtUsuarioProf.text = String.format("%.2f",promed)
+                            ratingUsuarioProf.rating = String.format("%.2f",promed).toFloat()
                         }
 
-                        califTxtUsuarioProf.text = (califacionSum / it.datosProf.calificaciones.size).toString()
-                        ratingUsuarioProf.rating = (califacionSum / it.datosProf.calificaciones.size).toFloat()
                         ratingUsuarioProf.isEnabled = false
                     }
 
@@ -269,7 +274,7 @@ class TabUsersActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
             drawerLayout.closeDrawer(GravityCompat.START)
         } else {
             if(viewpager_fragments.currentItem == 0){
-                Utilitity().showDialog(this,"Aviso", "Esta seguro que desea salir de la aplicación?",R.drawable.ic_warning_24)
+                Utilitity().showDialog(this,"Aviso", "¿Está seguro que desea salir de la aplicación?",R.drawable.ic_warning_24)
                     ?.setPositiveButton("Aceptar"){ dialog, _ ->
                         super.onBackPressed()
                     }
@@ -289,7 +294,7 @@ class TabUsersActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
         when (item.itemId){
             R.id.navigation_logout -> {
                 if (Utilitity.isNetworkAvailable(this)){
-                    Utilitity().showDialog(this,"Aviso", "Esta seguro que desea cerrar la sesión actual?",R.drawable.ic_warning_24)
+                    Utilitity().showDialog(this,"Aviso", "¿Está seguro que desea cerrar la sesión actual?",R.drawable.ic_warning_24)
                         ?.setPositiveButton("Aceptar"){ dialog, _ ->
                             lifecycleScope.launch {
                                 viewModel.logOutUsuario()
@@ -306,7 +311,9 @@ class TabUsersActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
                 if (Utilitity.isNetworkAvailable(this)){
                     viewModel.viewModelScope.launch {
                         viewModel.getCurrentUser(uidUsuario, true).collect {
-                            val dialogProfileUserFragment = it?.let { it1 -> ProfileUserFragment(uidUsuario, it1) }
+                            val dialogProfileUserFragment = it?.let { it1 -> ProfileUserFragment(uidUsuario, it1,
+                                it.datosProf
+                            ) }
                             dialogProfileUserFragment?.show(supportFragmentManager,"dialogProfileUser")
                         }
                     }

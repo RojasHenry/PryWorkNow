@@ -13,6 +13,7 @@ import android.os.Bundle
 import android.provider.MediaStore
 import android.text.Editable
 import android.util.Base64
+import android.util.JsonReader
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -26,6 +27,7 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.material.snackbar.Snackbar
 import com.squareup.picasso.Picasso
 import com.uisrael.worknow.Model.Data.CategoriasData
+import com.uisrael.worknow.Model.Data.ProfesionalData
 import com.uisrael.worknow.Model.Data.UsuariosData
 import com.uisrael.worknow.R
 import com.uisrael.worknow.ViewModel.ProfileUserViewModel
@@ -38,7 +40,11 @@ import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
-class ProfileUserFragment (var uidUser: String, private val currentUser: Any) : DialogFragment(),
+class ProfileUserFragment(
+    var uidUser: String,
+    private val currentUser: Any,
+    private val datosProf: ProfesionalData
+    ) : DialogFragment(),
     IResponseMapFragment {
 
     var categoriasViewRepository: MutableList<CategoriasData> = ArrayList()
@@ -50,10 +56,11 @@ class ProfileUserFragment (var uidUser: String, private val currentUser: Any) : 
     private lateinit var viewModel: ProfileUserViewModel
     private var currentPhotoPath: String = ""
 
-    private val REQUESTCAMERA = 200
-    private val REQUESTGALLERY = 201
+    private val REQUEST_CAMERA = 200
+    private val REQUEST_GALLERY = 201
 
     private val currentUserInfo = currentUser.toString()
+    private val currentUserProfInfo = datosProf.toString()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -96,7 +103,7 @@ class ProfileUserFragment (var uidUser: String, private val currentUser: Any) : 
 
         spinnerCategoriasUserProfile.setOnClickListener{
             val builder = AlertDialog.Builder(context)
-            builder.setTitle("Escoja las categorias a las que desea aplicar")
+            builder.setTitle("Escoja las categorías a las que desea aplicar")
             builder.setCancelable(false)
 
             builder.setMultiChoiceItems(categoriasRepository,selectecCategoria) { dialogInterface: DialogInterface, i: Int, b: Boolean ->
@@ -149,7 +156,7 @@ class ProfileUserFragment (var uidUser: String, private val currentUser: Any) : 
 
                 categoriasList.clear()
 
-                spinnerCategoriasUserProfile.text = "Escoja su categoria"
+                spinnerCategoriasUserProfile.text = "Escoja su categoría"
 
                 if(spinnerCategoriasUserProfile.text.toString().isNotEmpty()){
                     viewModel.viewModelScope.launch { viewModel.setCategoriasUser(spinnerCategoriasUserProfile.text.toString()) }
@@ -195,9 +202,15 @@ class ProfileUserFragment (var uidUser: String, private val currentUser: Any) : 
         btnEditarUserProfile.setOnClickListener{
             val internetConnection: Boolean? = activity?.let { it1 -> Utilitity.isNetworkAvailable(it1) }
             if (internetConnection == true){
-                if (viewModel.setDataUserViewUpdateUserProfile(currentUserInfo)) {
+                var hasChanges = if(viewModel.currentUser.rol == Utilitity.ROL_PROFESIONAL){
+                    viewModel.setDataUserViewUpdateUserProfile(currentUserInfo,currentUserProfInfo)
+                }else{
+                    viewModel.setDataUserViewUpdateUserProfile(currentUserInfo)
+                }
+
+                if (hasChanges) {
                     context?.let { it1 ->
-                        Utilitity().showDialog(it1,"Aviso", "Esta seguro que desea actualizar su perfil?",R.drawable.ic_warning_24)
+                        Utilitity().showDialog(it1,"Aviso", "¿Está seguro que desea actualizar su perfil?",R.drawable.ic_warning_24)
                             ?.setPositiveButton("Aceptar") { dialog, _ ->
                                 viewModel.viewModelScope.launch {
                                     val response = viewModel.setUpdateViewUserProfile(uidUser)
@@ -500,7 +513,7 @@ class ProfileUserFragment (var uidUser: String, private val currentUser: Any) : 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
-        if (resultCode == Activity.RESULT_OK && requestCode == REQUESTCAMERA){
+        if (resultCode == Activity.RESULT_OK && requestCode == REQUEST_CAMERA){
             val picture64 = context?.let { Utilitity().compressImage(picturePickerFragment.currentPhotoPath) }
             val imageBytes = Base64.decode(picture64, Base64.DEFAULT)
             val decodedImage = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.size)
@@ -515,7 +528,7 @@ class ProfileUserFragment (var uidUser: String, private val currentUser: Any) : 
             }
         }
 
-        if (resultCode == Activity.RESULT_OK && requestCode == REQUESTGALLERY){
+        if (resultCode == Activity.RESULT_OK && requestCode == REQUEST_GALLERY){
             currentPhotoPath = data?.data?.let { getRealPathFromURI(it) }.toString()
             val picture64 = context?.let { Utilitity().compressImage(currentPhotoPath) }
             val imageBytes = Base64.decode(picture64, Base64.DEFAULT)

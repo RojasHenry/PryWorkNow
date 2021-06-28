@@ -217,7 +217,7 @@ class ProfessionalViewModel : ViewModel() {
             }
         }else{
             respuesta.respuesta = 3
-            respuesta.mensaje = "Complete el campo de Telefono"
+            respuesta.mensaje = "Complete el campo de Teléfono"
         }
 
         if (respuesta.respuesta != 0){
@@ -233,12 +233,12 @@ class ProfessionalViewModel : ViewModel() {
         val respuesta = Respuesta()
         if(categorias[0].isEmpty()){
             respuesta.respuesta = 2
-            respuesta.mensaje = "Escoja por lo menos una categoria"
+            respuesta.mensaje = "Escoja por lo menos una categoría"
         }else{
             when(categorias[0]){
-                "A","C","N", "Escoja su categoria" -> {
+                "A","C","N", "Escoja su categoría" -> {
                     respuesta.respuesta = 1
-                    respuesta.mensaje = "Escoja por lo menos una categoria"
+                    respuesta.mensaje = "Escoja por lo menos una categoría"
                 }
             }
         }

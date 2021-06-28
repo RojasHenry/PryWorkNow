@@ -40,7 +40,7 @@ class Utilitity {
 
         // Estados Comentarios
         const val COMMENT_ENVIADO = "Enviado"
-        const val COMMENT_LEIDO = "Leido"
+        const val COMMENT_LEIDO = "Leído"
 
         fun showLoading(ctx: Context, titulo:String, manager: FragmentManager){
             loadingDialog = LoadingFragment(ctx, titulo)

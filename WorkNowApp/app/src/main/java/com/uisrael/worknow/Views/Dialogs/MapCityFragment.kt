@@ -73,6 +73,7 @@ class MapCityFragment(private val applicationContext: Context,
         mapGoogle = googleMap
         mapGoogle.uiSettings.isTiltGesturesEnabled = false
         mapGoogle.uiSettings.isMapToolbarEnabled = isOnlyView
+        mapGoogle.setOnMarkerDragListener(this)
         if(isOnlyView){
             mapGoogle.uiSettings.isScrollGesturesEnabled = false
             mapGoogle.uiSettings.isRotateGesturesEnabled = false
@@ -187,7 +188,7 @@ class MapCityFragment(private val applicationContext: Context,
                 mapGoogle.clear()
                 mapGoogle.addMarker(MarkerOptions()
                     .position(ubicacionLocation)
-                    .title(place.name)
+                    .title(place.address.toString())
                     .draggable(true))
                 mapGoogle.moveCamera(CameraUpdateFactory.newLatLngZoom(ubicacionLocation, DEFAULT_ZOOM.toFloat()))
             }
@@ -237,7 +238,7 @@ class MapCityFragment(private val applicationContext: Context,
                     // Set the map's camera position to the current location of the device.
                     lastKnownLocation = task.result
                     val ubicacion = LatLng(lastKnownLocation.latitude, lastKnownLocation.longitude)
-                    addressLocation = "Mi Ubicación"
+                    addressLocation = "Ubicación Actual"
                     mapGoogle.clear()
                     mapGoogle.addMarker(MarkerOptions()
                         .position(ubicacion)
@@ -391,6 +392,7 @@ class MapCityFragment(private val applicationContext: Context,
 
     override fun onMarkerDragEnd(marker: Marker) {
         ubicacionLocation = marker.position
+        addressLocation = if(marker.title == "Ubicación Actual") "Ubicación Escogida" else marker.title
         mapGoogle.moveCamera(CameraUpdateFactory.newLatLngZoom(marker.position, DEFAULT_ZOOM.toFloat()))
     }
 }

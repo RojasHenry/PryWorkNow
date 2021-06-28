@@ -183,7 +183,7 @@ class ClientViewModel : ViewModel() {
             }
         }else{
             respuesta.respuesta = 3
-            respuesta.mensaje = "Complete el campo de Telefono"
+            respuesta.mensaje = "Complete el campo de Teléfono"
         }
 
         if (respuesta.respuesta != 0){

@@ -61,7 +61,7 @@ class OfferProgressListAdapter(
             val locationView = datosCiudad[0].replace("lat/lng: (","").replace(")","")
             val nameLocation = datosCiudad[1].replace("address(","").replace(")","")
 
-            convertView.ubicacionTxtProgressOfferList.text = "${nameLocation}; (${locationView})"
+            convertView.ubicacionTxtProgressOfferList.text = nameLocation
             convertView.inmediatoTxtProgressOfferList.text = if(publicaciones[position].inmediato) "Si" else "No"
             convertView.cantidadTxtProgressOfferList.text = if(publicaciones[position].soloUnaPersona) "Una sola persona" else "${publicaciones[position].cantidad} personas"
 
@@ -108,7 +108,7 @@ class OfferProgressListAdapter(
 
                 convertView.btnTerminarProgressOfferList.setOnClickListener {
                     if(Utilitity.isNetworkAvailable(c)){
-                         Utilitity().showDialog(c,"Aviso", "Esta seguro que desea 'terminar' la oferta actual?",R.drawable.ic_warning_24)
+                         Utilitity().showDialog(c,"Aviso", "¿Está seguro que desea terminar la oferta actual?",R.drawable.ic_warning_24)
                         ?.setPositiveButton("Aceptar") { dialog, _ ->
                             inProgressViewModel.viewModelScope.launch {
                                 val response = inProgressViewModel.setOfferViewProfUpdateEstado(
@@ -163,7 +163,7 @@ class OfferProgressListAdapter(
 
                 convertView.btnFinishProgressOfferList.setOnClickListener {
                     if(Utilitity.isNetworkAvailable(c)){
-                        Utilitity().showDialog(c,"Aviso", "Esta seguro que desea 'finalizar' la oferta actual?",R.drawable.ic_warning_24)
+                        Utilitity().showDialog(c,"Aviso", "¿Está seguro que desea finalizar la oferta actual?",R.drawable.ic_warning_24)
                             ?.setPositiveButton("Aceptar") { dialog, _ ->
                                 Utilitity.showLoading(c,"Cargando, por favor espere...",supportFragmentManager)
                                 inProgressViewModel.viewModelScope.launch {
@@ -197,7 +197,7 @@ class OfferProgressListAdapter(
 
                 convertView.btnCancelProgressOfferList.setOnClickListener {
                     if(Utilitity.isNetworkAvailable(c)){
-                        Utilitity().showDialog(c,"Aviso", "Esta seguro que desea 'cancelar' la oferta actual?",R.drawable.ic_warning_24)
+                        Utilitity().showDialog(c,"Aviso", "¿Está seguro que desea cancelar la oferta actual?",R.drawable.ic_warning_24)
                             ?.setPositiveButton("Aceptar") { dialog, _ ->
                                 inProgressViewModel.viewModelScope.launch {
                                     val response = inProgressViewModel.setOfferViewProfUpdateEstado(publicaciones[position].uid,Utilitity.ESTADO_CANCELADO)
@@ -230,7 +230,12 @@ class OfferProgressListAdapter(
 
                 convertView.btnVermasProgressOfferList.setOnClickListener {
                     if(Utilitity.isNetworkAvailable(c)){
-                        val offerBottomSheetFragment = OfferBottomSheetFragment(c, publicaciones[position], fromDashboard = true,fromPubAccept = false, fromPubCli = false, supportFragmentManager)
+                        val offerBottomSheetFragment = OfferBottomSheetFragment(c, publicaciones[position],
+                            validateEstadoOffer = false,
+                            showUsuarioCli = false,
+                            showButtonsAceptCan = false,
+                            showButtonsCanSol = false,
+                            supportFragmentManager = supportFragmentManager)
                         offerBottomSheetFragment.show(supportFragmentManager, "ModalBottomOffer")
                     }
                 }

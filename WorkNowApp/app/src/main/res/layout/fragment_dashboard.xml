@@ -142,7 +142,7 @@
                             android:layout_below="@id/imageErrorlistOffersNoCalif"
                             android:layout_centerHorizontal="true"
                             android:fontFamily="@font/nunitosansbold"
-                            android:text="No hay ofertas sin calificar."
+                            android:text="No hay solicitudes sin calificar."
                             android:textAlignment="center"
                             android:textColor="#AEAEAE" />
                     </RelativeLayout>

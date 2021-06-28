@@ -39,7 +39,8 @@
                 <RelativeLayout
                     android:id="@+id/rltIdProgressOfferList"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:visibility="gone">
 
                     <TextView
                         android:id="@+id/idTituloProgressOfferList"
@@ -173,7 +174,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_below="@id/rltDescripcionProgressOfferList"
-                    android:layout_marginTop="10sp">
+                    android:layout_marginTop="10sp"
+                    android:visibility="gone">
 
                     <TextView
                         android:id="@+id/ubicacionTituloProgressOfferList"
@@ -262,7 +264,7 @@
                     android:id="@+id/btnCancelProgressOfferList"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentStart="true"
+                    android:layout_alignParentEnd="true"
                     android:fontFamily="@font/nunitosansblack"
                     android:paddingHorizontal="20dp"
                     android:paddingVertical="10dp"
@@ -273,12 +275,13 @@
                     android:id="@+id/btnVermasProgressOfferList"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentStart="true"
                     android:fontFamily="@font/nunitosansblack"
                     android:paddingHorizontal="20dp"
                     android:paddingVertical="10dp"
                     android:background="@drawable/background_buttons_itemlist"
-                    android:text="Ver más" />
+                    android:text="Ver más"
+                    android:visibility="gone"/>
             </RelativeLayout>
 
             <RelativeLayout

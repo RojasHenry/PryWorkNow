@@ -158,21 +158,22 @@ class LoginFragment : Fragment() {
                 if (internetConnection == true){
                     if (it) {
                         viewModel.getViewUserLogged().observe(viewLifecycleOwner, { userFire ->
+                            context?.let { it1 -> Utilitity.showLoading(it1,"Validando sesión, por favor espere...",childFragmentManager) }
                             lifecycleScope.launch {
                                 val uid = userFire.uid
                                 viewModel.getCurrentUser(uid).collect { user->
                                     if (user != null) {
                                         viewModel.getViewCredentialUser(uid).collect { cred ->
                                             if(cred?.estado == true){
-                                                context?.let { it1 -> Utilitity.showLoading(it1,"Iniciando sesión, por favor espere...",childFragmentManager) }
                                                 goToMenuPrincipal(user.rol, uid)
+                                            }else{
+                                                Utilitity.dissMissLoading(0)
                                             }
                                         }
-                                    }/*else{
+                                    }else{
+                                        // usuario sin datos llenos
                                         Utilitity.dissMissLoading(0)
-                                        val dialog = RegisterCompleteFragment(userFire)
-                                        dialog.show(childFragmentManager,"registerComplete")
-                                    }*/
+                                    }
                                 }
                             }
                         })
@@ -371,6 +372,7 @@ class LoginFragment : Fragment() {
                                 }else{
                                     val dialog = RegisterCompleteFragment(user)
                                     dialog.show(childFragmentManager,"registerComplete")
+                                    Utilitity.dissMissLoading(0)
                                 }
                             }
                         }

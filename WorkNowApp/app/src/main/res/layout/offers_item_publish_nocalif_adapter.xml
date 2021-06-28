@@ -55,7 +55,8 @@
                         android:layout_height="wrap_content"
                         android:layout_toRightOf="@id/idTituloOfferPubliNoCalif"
                         android:fontFamily="@font/nunitosansregular"
-                        android:text="--------" />
+                        android:text="--------"
+                        android:maxLines="1"/>
 
                 </RelativeLayout>
 
