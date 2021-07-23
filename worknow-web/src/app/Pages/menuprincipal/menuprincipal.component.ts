@@ -24,7 +24,7 @@ export class MenuprincipalComponent {
     );
 
   constructor(private breakpointObserver: BreakpointObserver, private router:Router, private authservice: AuthService, public dialog: MatDialog) {
-    /*this.authservice.isUserLog().subscribe(user => {
+    this.authservice.isUserLog().subscribe(user => {
       localStorage.setItem('user', JSON.stringify(user));
       const usuario = JSON.parse(localStorage.getItem('user')|| '{}');
       if(usuario !== null && usuario !== undefined && usuario !== {}){
@@ -32,7 +32,7 @@ export class MenuprincipalComponent {
       }else{
         this.router.navigate(['/login'])
       }
-    })*/
+    })
   }
 
   cerrarSesion(){

@@ -18,7 +18,7 @@ import androidx.fragment.app.FragmentManager
 import com.uisrael.worknow.R
 import kotlinx.android.synthetic.main.loading_dialog_fragment.*
 
-class LoadingFragment (val ctx: Context, val titulo: CharSequence?) : DialogFragment() {
+class LoadingFragment (private val ctx: Context, val titulo: CharSequence?) : DialogFragment() {
 
     override fun onCreateView(
         inflater: LayoutInflater,

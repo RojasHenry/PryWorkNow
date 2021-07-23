@@ -45,7 +45,6 @@ class PublicationsListAdapter(
             }
 
             val datosCiudad = publicaciones[position].ubicacion.split("%DIR%")
-            val locationView = datosCiudad[0].replace("lat/lng: (","").replace(")","")
             val nameLocation = datosCiudad[1].replace("address(","").replace(")","")
             convertView.ubicacionTxtOfferList.text = nameLocation
             convertView.inmediatoTxtOfferList.text = if(publicaciones[position].inmediato) "Si" else "No"

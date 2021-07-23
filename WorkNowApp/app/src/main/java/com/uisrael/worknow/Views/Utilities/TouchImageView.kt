@@ -195,7 +195,9 @@ class TouchImageView : AppCompatImageView, View.OnTouchListener,
         return false
     }
 
-    override fun onShowPress(motionEvent: MotionEvent) {}
+    override fun onShowPress(motionEvent: MotionEvent) {
+        // no used
+    }
     override fun onSingleTapUp(motionEvent: MotionEvent): Boolean {
         return false
     }
@@ -204,7 +206,9 @@ class TouchImageView : AppCompatImageView, View.OnTouchListener,
         return false
     }
 
-    override fun onLongPress(motionEvent: MotionEvent) {}
+    override fun onLongPress(motionEvent: MotionEvent) {
+        // no used
+    }
     override fun onFling(motionEvent: MotionEvent, motionEvent1: MotionEvent, v: Float, v1: Float): Boolean {
         return false
     }

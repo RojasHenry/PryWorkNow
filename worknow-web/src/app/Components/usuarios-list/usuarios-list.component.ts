@@ -1,10 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { map } from 'rxjs/operators';
-import { Breakpoints, BreakpointObserver } from '@angular/cdk/layout';
 import { DataBaseConnService } from 'src/app/Services/data-base-conn.service';
 import { MatDialog } from '@angular/material/dialog';
 import { DialogComponent } from '../dialog/dialog.component';
-import { Credenciales } from 'src/app/Models/credenciales';
 import Calificacion from 'src/app/Models/calificacion';
 
 @Component({
@@ -170,7 +168,15 @@ export class UsuariosListComponent implements OnInit{
   }
 
   getCalificaciones(calificaciones:Array<Calificacion>){
-    var total = 0
+    var total:number = 0
+    calificaciones.forEach(element => {
+      total+= Number(element.calificacion)
+    });
+    return Number(total / calificaciones.length).toFixed(1)
+  }
+
+  getCalificacion(calificaciones:Array<Calificacion>){
+    var total:number = 0
     calificaciones.forEach(element => {
       total+= Number(element.calificacion)
     });

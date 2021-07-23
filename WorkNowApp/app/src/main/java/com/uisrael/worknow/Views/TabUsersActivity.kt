@@ -131,9 +131,11 @@ class TabUsersActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
             }
 
             override fun onPageScrolled(arg0: Int, arg1: Float, arg2: Int) {
+                // no used
             }
 
             override fun onPageScrollStateChanged(arg0: Int) {
+                // no used
             }
         })
 
@@ -275,7 +277,7 @@ class TabUsersActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
         } else {
             if(viewpager_fragments.currentItem == 0){
                 Utilitity().showDialog(this,"Aviso", "¿Está seguro que desea salir de la aplicación?",R.drawable.ic_warning_24)
-                    ?.setPositiveButton("Aceptar"){ dialog, _ ->
+                    ?.setPositiveButton("Aceptar"){ _, _ ->
                         super.onBackPressed()
                     }
                     ?.setNegativeButton("Cancelar") { dialog, _ -> dialog.dismiss() }

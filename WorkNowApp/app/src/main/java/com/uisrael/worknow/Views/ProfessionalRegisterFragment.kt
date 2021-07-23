@@ -533,7 +533,7 @@ class ProfessionalRegisterFragment(private val userGoogle: FirebaseUser?,
                             Snackbar
                                 .make(
                                     rltContentDatosPersonalesProf,
-                                    "Error al crear el usuario",
+                                    getString(R.string.msgerrorusuario),
                                     Snackbar.LENGTH_SHORT
                                 )
                                 .setAnimationMode(Snackbar.ANIMATION_MODE_SLIDE)
@@ -544,7 +544,7 @@ class ProfessionalRegisterFragment(private val userGoogle: FirebaseUser?,
                         Snackbar
                             .make(
                                 rltContentDatosPersonalesProf,
-                                "Error al crear el usuario",
+                                getString(R.string.msgerrorusuario),
                                 Snackbar.LENGTH_SHORT
                             )
                             .setAnimationMode(Snackbar.ANIMATION_MODE_SLIDE)
@@ -555,7 +555,7 @@ class ProfessionalRegisterFragment(private val userGoogle: FirebaseUser?,
                     Snackbar
                         .make(
                             rltContentDatosPersonalesProf,
-                            "Error al crear el usuario",
+                            getString(R.string.msgerrorusuario),
                             Snackbar.LENGTH_SHORT
                         )
                         .setAnimationMode(Snackbar.ANIMATION_MODE_SLIDE)
@@ -591,7 +591,7 @@ class ProfessionalRegisterFragment(private val userGoogle: FirebaseUser?,
                                         Snackbar
                                             .make(
                                                 rltContentDatosPersonalesProf,
-                                                "Error al crear el usuario",
+                                                getString(R.string.msgerrorusuario),
                                                 Snackbar.LENGTH_SHORT
                                             )
                                             .setAnimationMode(Snackbar.ANIMATION_MODE_SLIDE)
@@ -602,7 +602,7 @@ class ProfessionalRegisterFragment(private val userGoogle: FirebaseUser?,
                                     Snackbar
                                         .make(
                                             rltContentDatosPersonalesProf,
-                                            "Error al crear el usuario",
+                                            getString(R.string.msgerrorusuario),
                                             Snackbar.LENGTH_SHORT
                                         )
                                         .setAnimationMode(Snackbar.ANIMATION_MODE_SLIDE)
@@ -613,7 +613,7 @@ class ProfessionalRegisterFragment(private val userGoogle: FirebaseUser?,
                                 Snackbar
                                     .make(
                                         rltContentDatosPersonalesProf,
-                                        "Error al crear el usuario",
+                                        getString(R.string.msgerrorusuario),
                                         Snackbar.LENGTH_SHORT
                                     )
                                     .setAnimationMode(Snackbar.ANIMATION_MODE_SLIDE)

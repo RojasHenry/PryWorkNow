@@ -277,14 +277,14 @@ class ProfileUserFragment(
             viewModel.getCredencialesViewUser().collect {
                 if (it != null) {
                     correoTxtUserProfile.text = Editable.Factory.getInstance().newEditable(it.correo)
-                    passwordTxtUserProfile.text = Editable.Factory.getInstance().newEditable(it.password)
+                    //passwordTxtUserProfile.text = Editable.Factory.getInstance().newEditable("")
                     correoTxtUserProfile.isEnabled = false
                     passwordTxtUserProfile.isEnabled = false
                     if(it.fromSocNet){
-                        rltPasswordUserProfile.isVisible = false
-                        errorPasswordUserProfile.isVisible = false
                         viewModel.isFromSocNet = true
                     }
+                    errorPasswordUserProfile.isVisible = false
+                    rltPasswordUserProfile.isVisible = false
                 }
             }
         }
@@ -315,10 +315,8 @@ class ProfileUserFragment(
         }
 
         imageContenedorUserProfile.setOnClickListener {
-            if(context != null){
-                picturePickerFragment = PicturePickerFragment(requireContext(),this,currentPhotoPath)
-                picturePickerFragment.show(childFragmentManager,"frg_dialog_picker")
-            }
+            picturePickerFragment = PicturePickerFragment(requireContext(),this,currentPhotoPath)
+            picturePickerFragment.show(childFragmentManager,"frg_dialog_picker")
         }
     }
 
@@ -486,13 +484,11 @@ class ProfileUserFragment(
                     val listCategoriaProf = viewModel.currentUser.datosProf.categorias
                     listCategoriaProf.mapIndexed { index, idCategoria ->
                         categoriasViewRepository.mapIndexed { index1, categoria->
-                            if(categoria.estado){
-                                if(idCategoria == categoria.uid){
-                                    categoriasSelected.add(categoria.nombre)
-                                    categoriasUis.add(idCategoria)
-                                    categoriasList.add(index1)
-                                    categoriasList.sort()
-                                }
+                            if(categoria.estado && idCategoria == categoria.uid){
+                                categoriasSelected.add(categoria.nombre)
+                                categoriasUis.add(idCategoria)
+                                categoriasList.add(index1)
+                                categoriasList.sort()
                             }
                         }
                     }
@@ -550,7 +546,7 @@ class ProfileUserFragment(
         val cursor: Cursor? = activity?.getContentResolver()
             ?.query(contentURI, null, null, null, null)
         if (cursor == null) {
-            result = contentURI.getPath().toString()
+            result = contentURI.path.toString()
         } else {
             cursor.moveToFirst()
             val idx: Int = cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA)

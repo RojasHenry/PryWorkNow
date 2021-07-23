@@ -170,18 +170,6 @@ class Utilitity {
         return Base64.encodeToString(data, Base64.NO_WRAP)
     }
 
-    private fun getRealPathFromURI(contentURI: String, ctx: Context): String? {
-        val contentUri = Uri.parse(contentURI)
-        val cursor = ctx.contentResolver.query(contentUri, null, null, null, null)
-        return if (cursor == null) {
-            contentUri.path
-        } else {
-            cursor.moveToFirst()
-            val index = cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA)
-            cursor.getString(index)
-        }
-    }
-
     fun calculateInSampleSize(options: BitmapFactory.Options, reqWidth: Int, reqHeight: Int): Int {
         val height = options.outHeight
         val width = options.outWidth

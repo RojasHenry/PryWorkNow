@@ -1,12 +1,12 @@
 package com.uisrael.worknow.Model
 
 import android.util.Log
-import com.google.android.gms.tasks.Task
 import com.google.firebase.database.*
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import com.uisrael.worknow.Model.Data.*
 import com.uisrael.worknow.Views.Utilities.Utilitity
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.channels.sendBlocking
 import kotlinx.coroutines.flow.Flow
@@ -47,14 +47,15 @@ class FirebaseModelsRepository {
         }
     }
 
+     @ExperimentalCoroutinesApi
      val getCategorias = callbackFlow<MutableList<CategoriasData>> {
          val databaseReference = database.getReference(REF_CATEGORIAS)
          val eventListener = databaseReference.addValueEventListener(object : ValueEventListener {
              override fun onDataChange(snapshot: DataSnapshot) {
                  snapshot.let {
-                     var listaCategoriasData: MutableList<CategoriasData> = ArrayList()
+                     val listaCategoriasData: MutableList<CategoriasData> = ArrayList()
                      for (child in snapshot.children) {
-                         var categoriasData: CategoriasData? = child.getValue(CategoriasData::class.java)
+                         val categoriasData: CategoriasData? = child.getValue(CategoriasData::class.java)
                          if (categoriasData != null) {
                              categoriasData.uid = child.key!!
                              listaCategoriasData.add(categoriasData)
@@ -64,7 +65,7 @@ class FirebaseModelsRepository {
                  }
              }
              override fun onCancelled(error: DatabaseError) {
-                 this@callbackFlow.close(error?.toException())
+                 this@callbackFlow.close(error.toException())
              }
          })
          awaitClose{
@@ -79,7 +80,7 @@ class FirebaseModelsRepository {
                 override fun onDataChange(snapshot: DataSnapshot) {
                     snapshot.let {
 
-                        var currentUser: UsuariosData? = snapshot.getValue(UsuariosData::class.java)
+                        val currentUser: UsuariosData? = snapshot.getValue(UsuariosData::class.java)
 
                         if(finish)
                             databaseReference.removeEventListener(this)
@@ -132,17 +133,16 @@ class FirebaseModelsRepository {
             val eventListener = databaseReference.addValueEventListener(object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
                         snapshot.let {
-                            var listaPublicationsData: MutableList<PublicationsData> = ArrayList()
+                            val listaPublicationsData: MutableList<PublicationsData> = ArrayList()
                             for (child in snapshot.children) {
-                                var publicacionData: PublicationsData? = child.getValue(PublicationsData::class.java)
-                                if (publicacionData != null) {
-                                    if(publicacionData.estado == Utilitity.ESTADO_PUBLICADO){
-                                        publicacionData.uid = child.key!!
-                                        listaPublicationsData.add(publicacionData)
-                                    }
+                                val publicacionData: PublicationsData? = child.getValue(PublicationsData::class.java)
+                                if (publicacionData != null && publicacionData.estado == Utilitity.ESTADO_PUBLICADO){
+                                    publicacionData.uid = child.key!!
+                                    listaPublicationsData.add(publicacionData)
                                 }
                             }
-                            var filterPublicacionesData: MutableList<PublicationsData> = listaPublicationsData.filter { publicationsData -> categorias.any { s ->  publicationsData.idCategoria == s } } as MutableList<PublicationsData>
+                            val filterPublicacionesData: MutableList<PublicationsData> = listaPublicationsData.filter {
+                                    publicationsData -> categorias.any { s ->  publicationsData.idCategoria == s } } as MutableList<PublicationsData>
                             this@callbackFlow.sendBlocking(filterPublicacionesData)
                         }
                     }
@@ -163,7 +163,7 @@ class FirebaseModelsRepository {
             val eventListener = databaseReference.addValueEventListener(object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
                     snapshot.let {
-                        var fotosPublicacionData = snapshot.getValue(FotosPublicacionData::class.java)
+                        val fotosPublicacionData = snapshot.getValue(FotosPublicacionData::class.java)
                         this@callbackFlow.sendBlocking(fotosPublicacionData)
                         databaseReference.removeEventListener(this)
                     }
@@ -185,7 +185,7 @@ class FirebaseModelsRepository {
             val eventListener = databaseReference.addValueEventListener(object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
                     snapshot.let {
-                        var categoriaData = snapshot.getValue(CategoriasData::class.java)
+                        val categoriaData = snapshot.getValue(CategoriasData::class.java)
                         this@callbackFlow.sendBlocking(categoriaData)
                         databaseReference.removeEventListener(this)
                     }
@@ -206,7 +206,7 @@ class FirebaseModelsRepository {
             val eventListener = databaseReference.addValueEventListener(object : ValueEventListener {
                     override fun onDataChange(snapshot: DataSnapshot) {
                         snapshot.let {
-                            var publicacionData = snapshot.getValue(PublicationsData::class.java)
+                            val publicacionData = snapshot.getValue(PublicationsData::class.java)
                             this@callbackFlow.sendBlocking(publicacionData)
                         }
                     }
@@ -227,13 +227,15 @@ class FirebaseModelsRepository {
             val databaseReference = database.getReference(REF_PUBLICACION).orderByChild("idUsuarioCli").equalTo(uidUser)
             val eventListener = databaseReference.addValueEventListener(object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
-                    var listaPublicationsData: MutableList<PublicationsData> = ArrayList()
+                    val listaPublicationsData: MutableList<PublicationsData> = ArrayList()
                     for (child in snapshot.children) {
-                        var publicacionData: PublicationsData? = child.getValue(PublicationsData::class.java)
+                        val publicacionData: PublicationsData? = child.getValue(PublicationsData::class.java)
                         if (publicacionData != null) {
-                            if(publicacionData.estado == estado){
-                                publicacionData.uid = child.key!!
-                                listaPublicationsData.add(publicacionData)
+                            when (publicacionData.estado) {
+                                estado -> {
+                                    publicacionData.uid = child.key!!
+                                    listaPublicationsData.add(publicacionData)
+                                }
                             }
                         }
                     }
@@ -255,13 +257,17 @@ class FirebaseModelsRepository {
             val databaseReference = database.getReference(REF_PUBLICACION).orderByChild("idUsuarioCli").equalTo(uidUser)
             val eventListener = databaseReference.addValueEventListener(object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
-                    var listaPublicationsData: MutableList<PublicationsData> = ArrayList()
+                    val listaPublicationsData: MutableList<PublicationsData> = ArrayList()
                     for (child in snapshot.children) {
-                        var publicacionData: PublicationsData? = child.getValue(PublicationsData::class.java)
+                        val publicacionData: PublicationsData? = child.getValue(PublicationsData::class.java)
                         if (publicacionData != null) {
-                            if(publicacionData.estado == Utilitity.ESTADO_PUBLICADO || publicacionData.estado == Utilitity.ESTADO_ACEPTADO || publicacionData.estado == Utilitity.ESTADO_PRO_TERMINADO){
-                                publicacionData.uid = child.key!!
-                                listaPublicationsData.add(publicacionData)
+                            when (publicacionData.estado){
+                                Utilitity.ESTADO_PUBLICADO,
+                                Utilitity.ESTADO_ACEPTADO,
+                                Utilitity.ESTADO_PRO_TERMINADO ->{
+                                    publicacionData.uid = child.key!!
+                                    listaPublicationsData.add(publicacionData)
+                                }
                             }
                         }
                     }
@@ -283,13 +289,15 @@ class FirebaseModelsRepository {
             val databaseReference = database.getReference(REF_PUBLICACION).orderByChild("idUsuarioCli").equalTo(uidUser)
             val eventListener = databaseReference.addValueEventListener(object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
-                    var listaPublicationsData: MutableList<PublicationsData> = ArrayList()
+                    val listaPublicationsData: MutableList<PublicationsData> = ArrayList()
                     for (child in snapshot.children) {
-                        var publicacionData: PublicationsData? = child.getValue(PublicationsData::class.java)
+                        val publicacionData: PublicationsData? = child.getValue(PublicationsData::class.java)
                         if (publicacionData != null) {
-                            if(publicacionData.estado == estado && publicacionData.calificacion == 0.0){
-                                publicacionData.uid = child.key!!
-                                listaPublicationsData.add(publicacionData)
+                            when {
+                                publicacionData.estado == estado && publicacionData.calificacion == 0.0 ->{
+                                    publicacionData.uid = child.key!!
+                                    listaPublicationsData.add(publicacionData)
+                                }
                             }
                         }
                     }
@@ -311,13 +319,15 @@ class FirebaseModelsRepository {
             val databaseReference = database.getReference(REF_PUBLICACION).orderByChild("idAceptadoProf").equalTo(uidProf)
             val eventListener = databaseReference.addValueEventListener(object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
-                    var listaPublicationsData: MutableList<PublicationsData> = ArrayList()
+                    val listaPublicationsData: MutableList<PublicationsData> = ArrayList()
                     for (child in snapshot.children) {
-                        var publicacionData: PublicationsData? = child.getValue(PublicationsData::class.java)
+                        val publicacionData: PublicationsData? = child.getValue(PublicationsData::class.java)
                         if (publicacionData != null) {
-                            if(publicacionData.estado == Utilitity.ESTADO_ACEPTADO || publicacionData.estado == Utilitity.ESTADO_PRO_TERMINADO){
-                                publicacionData.uid = child.key!!
-                                listaPublicationsData.add(publicacionData)
+                            when (publicacionData.estado){
+                                Utilitity.ESTADO_ACEPTADO, Utilitity.ESTADO_PRO_TERMINADO ->{
+                                    publicacionData.uid = child.key!!
+                                    listaPublicationsData.add(publicacionData)
+                                }
                             }
                         }
                     }
@@ -339,13 +349,15 @@ class FirebaseModelsRepository {
             val databaseReference = database.getReference(REF_PUBLICACION).orderByChild("idUsuarioCli").equalTo(uidCli)
             val eventListener = databaseReference.addValueEventListener(object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
-                    var listaPublicationsData: MutableList<PublicationsData> = ArrayList()
+                    val listaPublicationsData: MutableList<PublicationsData> = ArrayList()
                     for (child in snapshot.children) {
-                        var publicacionData: PublicationsData? = child.getValue(PublicationsData::class.java)
+                        val publicacionData: PublicationsData? = child.getValue(PublicationsData::class.java)
                         if (publicacionData != null) {
-                            if(publicacionData.estado != Utilitity.ESTADO_SOL_TERMINADO && publicacionData.estado != Utilitity.ESTADO_PUBLICADO && publicacionData.estado != Utilitity.ESTADO_CANCELADO){
-                                publicacionData.uid = child.key!!
-                                listaPublicationsData.add(publicacionData)
+                            when {
+                                publicacionData.estado != Utilitity.ESTADO_SOL_TERMINADO && publicacionData.estado != Utilitity.ESTADO_PUBLICADO && publicacionData.estado != Utilitity.ESTADO_CANCELADO ->{
+                                    publicacionData.uid = child.key!!
+                                    listaPublicationsData.add(publicacionData)
+                                }
                             }
                         }
                     }
@@ -367,13 +379,17 @@ class FirebaseModelsRepository {
             val databaseReference = database.getReference(REF_PUBLICACION).orderByChild("idAceptadoProf").equalTo(uidProf)
             val eventListener = databaseReference.addValueEventListener(object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
-                    var listaPublicationsData: MutableList<PublicationsData> = ArrayList()
+                    val listaPublicationsData: MutableList<PublicationsData> = ArrayList()
                     for (child in snapshot.children) {
-                        var publicacionData: PublicationsData? = child.getValue(PublicationsData::class.java)
+                        val publicacionData: PublicationsData? = child.getValue(PublicationsData::class.java)
                         if (publicacionData != null) {
-                            if(publicacionData.estado != Utilitity.ESTADO_SOL_TERMINADO && publicacionData.estado != Utilitity.ESTADO_PUBLICADO && publicacionData.estado != Utilitity.ESTADO_CANCELADO){
-                                publicacionData.uid = child.key!!
-                                listaPublicationsData.add(publicacionData)
+                            when {
+                                publicacionData.estado != Utilitity.ESTADO_SOL_TERMINADO &&
+                                        publicacionData.estado != Utilitity.ESTADO_PUBLICADO &&
+                                        publicacionData.estado != Utilitity.ESTADO_CANCELADO ->{
+                                    publicacionData.uid = child.key!!
+                                    listaPublicationsData.add(publicacionData)
+                                }
                             }
                         }
                     }
@@ -437,7 +453,7 @@ class FirebaseModelsRepository {
             val eventListener = databaseReference.addValueEventListener(object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
                     snapshot.let {
-                        var credencialesData = snapshot.getValue(CredencialesData::class.java)
+                        val credencialesData = snapshot.getValue(CredencialesData::class.java)
                         databaseReference.removeEventListener(this)
                         this@callbackFlow.sendBlocking(credencialesData)
                     }
@@ -511,9 +527,9 @@ class FirebaseModelsRepository {
             val databaseReference = database.getReference(REF_COMENTARIOS).child(uidPub)
             val eventListener = databaseReference.addValueEventListener(object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
-                    var listaComentariosData: MutableList<ComentariosData> = ArrayList()
+                    val listaComentariosData: MutableList<ComentariosData> = ArrayList()
                     for (child in snapshot.children) {
-                        var comentariosData: ComentariosData? = child.getValue(ComentariosData::class.java)
+                        val comentariosData: ComentariosData? = child.getValue(ComentariosData::class.java)
                         if (comentariosData != null) {
                             comentariosData.uid = child.key!!
                             listaComentariosData.add(comentariosData)
@@ -537,13 +553,15 @@ class FirebaseModelsRepository {
             val databaseReference = database.getReference(REF_COMENTARIOS).child(uidPub).orderByChild("idReceptor").equalTo(uidUser)
             val eventListener = databaseReference.addValueEventListener(object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
-                    var listaComentariosData: MutableList<ComentariosData> = ArrayList()
+                    val listaComentariosData: MutableList<ComentariosData> = ArrayList()
                     for (child in snapshot.children) {
-                        var comentariosData: ComentariosData? = child.getValue(ComentariosData::class.java)
+                        val comentariosData: ComentariosData? = child.getValue(ComentariosData::class.java)
                         if (comentariosData != null) {
-                            if(comentariosData.estado == Utilitity.COMMENT_ENVIADO){
-                                comentariosData.uid = child.key!!
-                                listaComentariosData.add(comentariosData)
+                            when (comentariosData.estado){
+                                Utilitity.COMMENT_ENVIADO ->{
+                                    comentariosData.uid = child.key!!
+                                    listaComentariosData.add(comentariosData)
+                                }
                             }
                         }
                     }

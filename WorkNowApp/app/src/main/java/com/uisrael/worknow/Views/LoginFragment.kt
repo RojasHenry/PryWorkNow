@@ -121,8 +121,6 @@ class LoginFragment : Fragment() {
                             showDialogOK("Esta aplicación requiere el uso de cámara y el almacenamiento del dispositivo.") { _, which ->
                                 when (which) {
                                     DialogInterface.BUTTON_POSITIVE -> validatePermissions()
-                                    DialogInterface.BUTTON_NEGATIVE -> {
-                                    }
                                 }
                             }
                         } else {
@@ -151,11 +149,10 @@ class LoginFragment : Fragment() {
 
     @InternalCoroutinesApi
     private fun collectorFlow() {
-
-        lifecycleScope.launch {
-            viewModel.validateViewUserLogged().observe(viewLifecycleOwner, {
-                val internetConnection: Boolean? = activity?.let { it1 -> Utilitity.isNetworkAvailable(it1) }
-                if (internetConnection == true){
+        val internetConnection: Boolean? = activity?.let { it1 -> Utilitity.isNetworkAvailable(it1) }
+        if (internetConnection == true) {
+            lifecycleScope.launch {
+                viewModel.validateViewUserLogged().observe(viewLifecycleOwner, {
                     if (it) {
                         viewModel.getViewUserLogged().observe(viewLifecycleOwner, { userFire ->
                             context?.let { it1 -> Utilitity.showLoading(it1,"Validando sesión, por favor espere...",childFragmentManager) }
@@ -178,8 +175,8 @@ class LoginFragment : Fragment() {
                             }
                         })
                     }
-                }
-            })
+                })
+            }
         }
 
         lifecycleScope.launch {
@@ -269,7 +266,7 @@ class LoginFragment : Fragment() {
                                             goToMenuPrincipal(it.rol,user.uid)
                                         }else{
                                             Snackbar
-                                                .make(rltContenedorViewLogin, "Error al iniciar sesión.", Snackbar.LENGTH_SHORT)
+                                                .make(rltContenedorViewLogin, getString(R.string.msgerroriniciosesion), Snackbar.LENGTH_SHORT)
                                                 .setAnimationMode(Snackbar.ANIMATION_MODE_SLIDE)
                                                 .setBackgroundTint(resources.getColor(R.color.black))
                                                 .show()
@@ -288,7 +285,7 @@ class LoginFragment : Fragment() {
 
                         }else{
                             Snackbar
-                                .make(rltContenedorViewLogin, "Error al iniciar sesión.", Snackbar.LENGTH_SHORT)
+                                .make(rltContenedorViewLogin, getString(R.string.msgerroriniciosesion), Snackbar.LENGTH_SHORT)
                                 .setAnimationMode(Snackbar.ANIMATION_MODE_SLIDE)
                                 .setBackgroundTint(resources.getColor(R.color.black))
                                 .show()
@@ -297,7 +294,7 @@ class LoginFragment : Fragment() {
                     }
                 } else {
                     Snackbar
-                        .make(rltContenedorViewLogin, "Error al iniciar sesión.", Snackbar.LENGTH_SHORT)
+                        .make(rltContenedorViewLogin, getString(R.string.msgerroriniciosesion), Snackbar.LENGTH_SHORT)
                         .setAnimationMode(Snackbar.ANIMATION_MODE_SLIDE)
                         .setBackgroundTint(resources.getColor(R.color.black))
                         .show()

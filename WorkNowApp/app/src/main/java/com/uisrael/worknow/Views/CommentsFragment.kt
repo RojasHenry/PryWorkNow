@@ -121,25 +121,9 @@ class CommentsFragment (
             }
         }
 
-        lifecycleScope.launch {
-            viewModel.isComentarioMensajeOk.collect { value ->
-                if (isMensajeTypedComment) {
-                    when (value.respuesta) {
-                        0 -> {
-
-                        }
-                        else -> {
-
-                        }
-                    }
-                }
-            }
-        }
-
         btnSendComments.setOnClickListener {
             val internetConnection: Boolean? = activity?.let { it1 -> Utilitity.isNetworkAvailable(it1) }
-            if (internetConnection == true){
-                if(editTxtComments.text?.isNotEmpty() == true){
+            if (internetConnection == true && editTxtComments.text?.isNotEmpty() == true){
                     viewModel.viewModelScope.launch {
                         when(viewModel.usuarioUidData){
                             uidSolClient ->{
@@ -174,7 +158,7 @@ class CommentsFragment (
                             }
                         }
                     }
-                }
+
             }
         }
     }

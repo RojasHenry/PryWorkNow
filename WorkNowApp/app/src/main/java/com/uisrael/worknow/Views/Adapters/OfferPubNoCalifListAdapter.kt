@@ -60,15 +60,17 @@ class OfferPubNoCalifListAdapter(
 
                         convertView.btnComentsOfferPubliNoCalif.setOnClickListener {
                             if(Utilitity.isNetworkAvailable(c)){
-                                if(requireActivity != null){
-                                    val intent = Intent(c, CommentsActivity::class.java).apply {
-                                        putExtra("uidPub", publicaciones[position].uid)
-                                        putExtra("uidUserAcceptProf", publicaciones[position].idAceptadoProf)
-                                        putExtra("uidSolClient",  publicaciones[position].idUsuarioCli)
+                                when {
+                                    requireActivity != null ->{
+                                        val intent = Intent(c, CommentsActivity::class.java).apply {
+                                            putExtra("uidPub", publicaciones[position].uid)
+                                            putExtra("uidUserAcceptProf", publicaciones[position].idAceptadoProf)
+                                            putExtra("uidSolClient",  publicaciones[position].idUsuarioCli)
+                                        }
+                                        requireActivity.startActivity(intent)
+                                        requireActivity.overridePendingTransition(R.anim.anim_left_toright  ,
+                                            R.anim.anim_right_toleft)
                                     }
-                                    requireActivity.startActivity(intent)
-                                    requireActivity.overridePendingTransition(R.anim.anim_left_toright  ,
-                                        R.anim.anim_right_toleft)
                                 }
                             }
                         }

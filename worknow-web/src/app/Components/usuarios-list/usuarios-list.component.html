@@ -103,7 +103,7 @@
           <div *ngIf="usuario.datosProf.calificaciones">
             <h2 style="font-weight: bold; font-size: 50px; margin-top: 20px;" *ngIf="usuario.datosProf.categorias">{{getCalificaciones(usuario.datosProf.calificaciones)}}</h2>
             <div *ngIf="usuario.rol == 'Profesional'" class="center-stars">
-              <ngx-stars [readonly]="true" [size]="1" [color]="'#ffcc00'"  [maxStars]="5" [initialStars]="getCalificaciones(usuario.datosProf.calificaciones)" class="inner-element" ></ngx-stars>
+              <ngx-stars [readonly]="true" [size]="1" [color]="'#ffcc00'"  [maxStars]="5" [initialStars]="getCalificacion(usuario.datosProf.calificaciones)" class="inner-element" ></ngx-stars>
             </div>
           </div>
          

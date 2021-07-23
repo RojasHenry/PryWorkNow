@@ -44,7 +44,7 @@ class ProfessionalViewModel : ViewModel() {
     val numLengthTelefono = 7
 
     suspend fun registerViewProf(): FirebaseUser? {
-        return authFirebaseRepository.registerUser(_usuarioCredentials.value.correo,_usuarioCredentials.value.password)?.user
+        return authFirebaseRepository.registerUser(_usuarioCredentials.value.correo,_passwordProf.value)?.user
     }
 
     fun getViewCredentialEmailUser(): Flow<CredencialesData?> {
@@ -117,7 +117,6 @@ class ProfessionalViewModel : ViewModel() {
 
     fun setPasswordProf (password: String){
         _passwordProf.value = password
-        _usuarioCredentials.value.password = password
         _usuarioCredencialesOK.value = true
     }
 
@@ -130,7 +129,7 @@ class ProfessionalViewModel : ViewModel() {
         val validatorDescripcion= Validator(_usuarioProfesional.value.descripcion)
         val validatorCategorias = Validator(_usuarioProfesional.value.categorias.joinToString())
         val validatorCorreo= Validator(_usuarioCredentials.value.correo)
-        val validatorPassword = Validator(_usuarioCredentials.value.password)
+        val validatorPassword = Validator(_passwordProf.value)
         val isNombreValid = validatorNombre.nonEmpty().check()
         val isApellidoValid = validatorApellido.nonEmpty().check()
         val isCiudadValid = validatorCiudad.nonEmpty().check()
@@ -138,7 +137,13 @@ class ProfessionalViewModel : ViewModel() {
         val isDescripcionValid = validatorDescripcion.nonEmpty().minLength(caracteres).check()
         val isCategoriasValid = validatorCategorias.nonEmpty().check() and (validatorCategorias.text != "A") and (validatorCategorias.text != "N") and (validatorCategorias.text != "C") and (validatorCategorias.text != "Escoja su categoria")
         val isCorreoValid = validatorCorreo.nonEmpty().validEmail().check()
-        val isPasswordValid = if (userGoogleView == null) validatorPassword.nonEmpty().check() else true
+        val isPasswordValid = when (userGoogleView) {
+            null -> {
+                validatorPassword.nonEmpty().check()
+            }
+            else -> true
+        }
+
         Log.i("Profesional",_usuarioDatos.value.toString())
         if(isNombreValid and isApellidoValid and isCiudadValid and isTelefonoValid and isCorreoValid and isPasswordValid and isDescripcionValid and isCategoriasValid){
             return@combine true

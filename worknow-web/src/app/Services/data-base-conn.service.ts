@@ -62,6 +62,10 @@ export class DataBaseConnService {
     return this.db.list(PathsFireDatabase.Publicaciones).update(key,credencial)
   }
 
+  getUsuarioEmail(email:string){
+    return this.db.list(PathsFireDatabase.Credenciales, ref=> ref.orderByChild('correo').equalTo(email)) 
+  }
+
 }
 
 enum PathsFireDatabase {

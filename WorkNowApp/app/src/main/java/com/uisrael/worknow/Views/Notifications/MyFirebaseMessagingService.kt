@@ -28,7 +28,6 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
     override fun onMessageReceived(remoteMessage: RemoteMessage) {
         super.onMessageReceived(remoteMessage)
 
-        // TODO(developer): Handle FCM messages here.
         // Not getting messages here? See why this may be: https://goo.gl/39bRNJ
         Log.d("Notificaciones", "From: ${remoteMessage.from}")
 
@@ -46,7 +45,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
     }
 
     private fun sendNotification(remoteMessage: RemoteMessage) {
-        val notification_id = System.currentTimeMillis().toInt()
+        val notificationId = System.currentTimeMillis().toInt()
         var notificationManager: NotificationManager? = null
         var mBuilder: NotificationCompat.Builder? = null
 
@@ -117,6 +116,6 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
                 .setVibrate(longArrayOf(100, 200, 300, 400, 500, 400, 300, 200, 400))
                 .setDefaults(Notification.DEFAULT_VIBRATE)
         }
-        notificationManager.notify(notification_id, mBuilder.build())
+        notificationManager.notify(notificationId, mBuilder.build())
     }
 }

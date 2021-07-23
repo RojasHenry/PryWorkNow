@@ -35,7 +35,7 @@ class ClientViewModel : ViewModel() {
     private val _usuarioCredencialesOK = MutableStateFlow(false)
 
     suspend fun registerViewCli(): FirebaseUser? {
-        return authFirebaseRepository.registerUser(_usuarioCredentials.value.correo,_usuarioCredentials.value.password)?.user
+        return authFirebaseRepository.registerUser(_usuarioCredentials.value.correo,_passwordCli.value)?.user
     }
 
     fun registerViewCliDataUsuario(uid: String): Any? {
@@ -92,7 +92,6 @@ class ClientViewModel : ViewModel() {
 
     fun setPasswordCli (password: String){
         _passwordCli.value = password
-        _usuarioCredentials.value.password = password
         _usuarioCredencialesOK.value = true
     }
 
@@ -102,7 +101,7 @@ class ClientViewModel : ViewModel() {
         val validatorCiudad = Validator(_usuarioDatos.value.ciudad)
         val validatorTelefono = Validator(_usuarioDatos.value.telefono)
         val validatorCorreo= Validator(_usuarioCredentials.value.correo)
-        val validatorPassword = Validator(_usuarioCredentials.value.password)
+        val validatorPassword = Validator(_passwordCli.value)
         val isNombreValid = validatorNombre.nonEmpty().check()
         val isApellidoValid = validatorApellido.nonEmpty().check()
         val isCiudadValid = validatorCiudad.nonEmpty().check()

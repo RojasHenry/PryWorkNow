@@ -356,7 +356,7 @@ class ClientRegisterFragment(
                             Snackbar
                                 .make(
                                     rltContentDatosPersonalesCli,
-                                    "Error al crear el usuario.",
+                                    getString(R.string.msgerrorusuario),
                                     Snackbar.LENGTH_SHORT
                                 )
                                 .setAnimationMode(Snackbar.ANIMATION_MODE_SLIDE)
@@ -367,7 +367,7 @@ class ClientRegisterFragment(
                         Snackbar
                             .make(
                                 rltContentDatosPersonalesCli,
-                                "Error al crear el usuario.",
+                                getString(R.string.msgerrorusuario),
                                 Snackbar.LENGTH_SHORT
                             )
                             .setAnimationMode(Snackbar.ANIMATION_MODE_SLIDE)
@@ -378,7 +378,7 @@ class ClientRegisterFragment(
                     Snackbar
                         .make(
                             rltContentDatosPersonalesCli,
-                            "Error al crear el usuario.",
+                            getString(R.string.msgerrorusuario),
                             Snackbar.LENGTH_SHORT
                         )
                         .setAnimationMode(Snackbar.ANIMATION_MODE_SLIDE)
@@ -414,7 +414,7 @@ class ClientRegisterFragment(
                                         Snackbar
                                             .make(
                                                 rltContentDatosPersonalesCli,
-                                                "Error al crear el usuario.",
+                                                getString(R.string.msgerrorusuario),
                                                 Snackbar.LENGTH_SHORT
                                             )
                                             .setAnimationMode(Snackbar.ANIMATION_MODE_SLIDE)
@@ -425,7 +425,7 @@ class ClientRegisterFragment(
                                     Snackbar
                                         .make(
                                             rltContentDatosPersonalesCli,
-                                            "Error al crear el usuario.",
+                                            getString(R.string.msgerrorusuario),
                                             Snackbar.LENGTH_SHORT
                                         )
                                         .setAnimationMode(Snackbar.ANIMATION_MODE_SLIDE)
@@ -436,7 +436,7 @@ class ClientRegisterFragment(
                                 Snackbar
                                     .make(
                                         rltContentDatosPersonalesCli,
-                                        "Error al crear el usuario.",
+                                        getString(R.string.msgerrorusuario),
                                         Snackbar.LENGTH_SHORT
                                     )
                                     .setAnimationMode(Snackbar.ANIMATION_MODE_SLIDE)
@@ -447,7 +447,7 @@ class ClientRegisterFragment(
                             Snackbar
                                 .make(
                                     rltContentDatosPersonalesCli,
-                                    "Error al crear el usuario.",
+                                    getString(R.string.msgerrorusuario),
                                     Snackbar.LENGTH_SHORT
                                 )
                                 .setAnimationMode(Snackbar.ANIMATION_MODE_SLIDE)

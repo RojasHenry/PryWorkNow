@@ -62,9 +62,11 @@ class OfferBottomSheetFragment(
             if(validateEstadoOffer){
                 jobForCancel = viewModel.viewModelScope.launch {
                     viewModel.getEstadoViewCurrentOffer(publicationsData.uid).collect {
-                        if(it?.estado.equals(Utilitity.ESTADO_ACEPTADO)){
-                            if (isVisible){
-                                dismiss()
+                        when (it?.estado){
+                            Utilitity.ESTADO_ACEPTADO ->{
+                                if (isVisible){
+                                    dismiss()
+                                }
                             }
                         }
                     }

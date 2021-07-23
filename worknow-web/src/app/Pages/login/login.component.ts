@@ -3,7 +3,9 @@ import { FormBuilder, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { DialogComponent } from 'src/app/Components/dialog/dialog.component';
+import { Credenciales } from 'src/app/Models/credenciales';
 import { AuthService } from 'src/app/Services/auth.service';
+import { DataBaseConnService } from 'src/app/Services/data-base-conn.service';
 
 @Component({
   selector: 'app-login',
@@ -22,7 +24,7 @@ export class LoginComponent {
 
   hide = true;
 
-  constructor(private fb: FormBuilder, private router:Router, private authservice: AuthService, public dialog: MatDialog) {
+  constructor(private fb: FormBuilder, private router:Router, private authservice: AuthService, public dialog: MatDialog, public dbService: DataBaseConnService) {
     this.authservice.isUserLog().subscribe(user => {
       localStorage.setItem('user', JSON.stringify(user));
       const usuario = JSON.parse(localStorage.getItem('user')|| '{}');
@@ -34,15 +36,27 @@ export class LoginComponent {
 
   onSubmit(): void {
     if(this.loginForm.valid){
-      this.authservice.iniciarSesionFire(this.email,this.password)
-      .then((result)=>{
-        this.router.navigate(['/menuprincipal'])
-      })
-      .catch((error)=>{
-        this.dialog.open(DialogComponent,{
-          disableClose: true,
-          data: {title: "Error", message: `Error: ${error}`,twoButtons:false}
-        });
+      this.dbService.getUsuarioEmail(this.email).valueChanges()
+      .subscribe(resp => {
+        var listCred: Array<Credenciales>  = resp as Array<Credenciales>
+        console.log(listCred)
+        if (listCred.length == 0){
+          this.authservice.iniciarSesionFire(this.email,this.password)
+          .then((result)=>{
+            this.router.navigate(['/menuprincipal'])
+          })
+          .catch((error)=>{
+            this.dialog.open(DialogComponent,{
+              disableClose: true,
+              data: {title: "Error", message: `Error: ${error}`,twoButtons:false}
+            });
+          })
+        }else{
+          this.dialog.open(DialogComponent,{
+            disableClose: true,
+            data: {title: "Error", message: `Usuario no autorizado`,twoButtons:false}
+          });
+        }
       })
     }else{
       this.dialog.open(DialogComponent,{

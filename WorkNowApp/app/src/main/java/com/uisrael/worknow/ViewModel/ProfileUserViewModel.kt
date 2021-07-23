@@ -132,7 +132,6 @@ class ProfileUserViewModel : ViewModel() {
 
     fun setPasswordUser (password: String){
         _passwordUser.value = password
-        _usuarioCredentials.value.password = password
         _usuarioCredencialesOK.value = true
     }
 
@@ -145,18 +144,32 @@ class ProfileUserViewModel : ViewModel() {
         val validatorDescripcion= Validator(_usuarioProfesional.value.descripcion)
         val validatorCategorias = Validator(_usuarioProfesional.value.categorias.joinToString())
         val validatorCorreo= Validator(_usuarioCredentials.value.correo)
-        val validatorPassword = Validator(_usuarioCredentials.value.password)
+        //val validatorPassword = Validator(_passwordUser.value)
         val isNombreValid = validatorNombre.nonEmpty().check()
         val isApellidoValid = validatorApellido.nonEmpty().check()
         val isCiudadValid = validatorCiudad.nonEmpty().check()
         val isTelefonoValid = (validatorTelefono.nonEmpty().check() and Patterns.PHONE.matcher(validatorTelefono.text).matches() and validatorTelefono.minLength(numLengthTelefono).check())
 
-        val isDescripcionValid = if (currentUser.rol == Utilitity.ROL_PROFESIONAL) validatorDescripcion.nonEmpty().minLength(caracteres).check() else true
-        val isCategoriasValid = if (currentUser.rol == Utilitity.ROL_PROFESIONAL) validatorCategorias.nonEmpty().check() and (validatorCategorias.text != "A") and (validatorCategorias.text != "N") and (validatorCategorias.text != "C") and (validatorCategorias.text != "Escoja su categoría") else true
+        val isDescripcionValid = when (currentUser.rol){
+            Utilitity.ROL_PROFESIONAL ->{
+                validatorDescripcion.nonEmpty().minLength(caracteres).check()
+            }
+            else -> true
+        }
+        val isCategoriasValid = when (currentUser.rol){
+            Utilitity.ROL_PROFESIONAL ->{
+                validatorCategorias.nonEmpty().check() and (validatorCategorias.text != "A") and (validatorCategorias.text != "N") and (validatorCategorias.text != "C") and (validatorCategorias.text != "Escoja su categoría")
+            }
+            else -> true
+        }
 
         val isCorreoValid = validatorCorreo.nonEmpty().validEmail().check()
-        val isPasswordValid = if(isFromSocNet) true else validatorPassword.nonEmpty().check()
-        if(isNombreValid and isApellidoValid and isCiudadValid and isTelefonoValid and isCorreoValid and isPasswordValid and isDescripcionValid and isCategoriasValid){
+        /*val isPasswordValid = when (isFromSocNet){
+            true -> true
+            else -> validatorPassword.nonEmpty().check()
+        }*/
+
+        if(isNombreValid and isApellidoValid and isCiudadValid and isTelefonoValid and isCorreoValid /*and isPasswordValid*/ and isDescripcionValid and isCategoriasValid){
             return@combine true
         }else{
             _usuarioDatosOK.value = false

@@ -288,14 +288,8 @@ class OffersRegisterFragment : Fragment() ,IResponseMapFragment {
         }
 
         checkDeInmediato.setOnCheckedChangeListener { _, isChecked ->
-            if(isChecked){
-                offersRegisterViewModel.viewModelScope.launch {
-                    offersRegisterViewModel.setInmediatoOffer(isChecked)
-                }
-            }else{
-                offersRegisterViewModel.viewModelScope.launch {
-                    offersRegisterViewModel.setInmediatoOffer(isChecked)
-                }
+            offersRegisterViewModel.viewModelScope.launch {
+                offersRegisterViewModel.setInmediatoOffer(isChecked)
             }
         }
 
@@ -315,14 +309,8 @@ class OffersRegisterFragment : Fragment() ,IResponseMapFragment {
         }
 
         checkSoloPersona.setOnCheckedChangeListener{ _, isChecked ->
-            if(isChecked){
-                offersRegisterViewModel.viewModelScope.launch {
-                    offersRegisterViewModel.setSoloUnaPersonaOffer(isChecked)
-                }
-            }else{
-                offersRegisterViewModel.viewModelScope.launch {
-                    offersRegisterViewModel.setSoloUnaPersonaOffer(isChecked)
-                }
+            offersRegisterViewModel.viewModelScope.launch {
+                offersRegisterViewModel.setSoloUnaPersonaOffer(isChecked)
             }
         }
 

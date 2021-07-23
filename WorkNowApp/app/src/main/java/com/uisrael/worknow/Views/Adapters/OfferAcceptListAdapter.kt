@@ -58,7 +58,6 @@ class OfferAcceptListAdapter(
             convertView.descripcionTxtAcceptOfferList.text = publicaciones[position].descripcion
 
             val datosCiudad = publicaciones[position].ubicacion.split("%DIR%")
-            val locationView = datosCiudad[0].replace("lat/lng: (","").replace(")","")
             val nameLocation = datosCiudad[1].replace("address(","").replace(")","")
 
             convertView.ubicacionTxtAcceptOfferList.text = nameLocation
