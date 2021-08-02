@@ -31,3 +31,15 @@ Kapp/src/main/java/com/uisrael/worknow/Views/ProfessionalRegisterFragment.kt,0/
 \app/src/main/java/com/uisrael/worknow/ViewModel/TabsFragViewModel/OffersRegisterViewModel.kt,a/2/a288bff393c8a1aa3b177bb6975ee44ec239ec88
 r
 Bapp/src/main/java/com/uisrael/worknow/ViewModel/ClientViewModel.kt,4/d/4da5afcb29ef575b97f952e3e7a5e4b2eb24a643
+u
+Eapp/src/main/java/com/uisrael/worknow/Views/ClientRegisterFragment.kt,7/1/7152c2fdbd44e5dc3b1b27d528d7c2df47a8cd97
+@
+app/build.gradle,f/4/f4a01d6a4fcb971362ec00a83903fd3902f52164
+o
+?app/src/main/java/com/uisrael/worknow/Views/RegisterFragment.kt,8/f/8f0b17d0089b0ac27c7ff8924a949cf086c0eeed
+o
+?app/src/main/java/com/uisrael/worknow/Views/TabUsersActivity.kt,4/f/4f1cd185cc029a4c6668af503aa9177d385ab76b
+r
+Bapp/src/main/java/com/uisrael/worknow/Views/ProfileUserFragment.kt,8/2/823048a1214a727f6053e399d44b7afb98ddfc80
+w
+Gapp/src/main/java/com/uisrael/worknow/ViewModel/ProfileUserViewModel.kt,6/e/6e161e09e9510bd0abc0beee314b1e65d91a5de0
